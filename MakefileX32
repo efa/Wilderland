@@ -1,0 +1,63 @@
+# Makefile to crosscompile 'Wilderland' for Win32 on Linux64 using gcc+GNUtoolchain
+# Copyright 2019 Valerio Messina efa@iol.it
+# Makefile is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Makefile is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Makefile. If not, see <http://www.gnu.org/licenses/>.
+
+# require MXE SDL2_image in /opt/mxe/usr/i686-w64-mingw32.static
+
+MXE=/opt/mxe/usr/bin
+CROSS=i686-w64-mingw32.static-
+CC = $(CROSS)gcc
+LD = $(CROSS)gcc
+PKG_CONFIG=$(CROSS)pkg-config
+AR=$(CROSS)ar
+STRIP = $(CROSS)strip
+CFLAGS = -m32 -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1
+SDLCFLAGS = $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=/opt/mxe/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --cflags SDL2_image)
+SDLMINGWLDFLAGS = -mconsole # on MINGW + SDL force console for debug
+LDFLAGS = -m32 $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=/opt/mxe/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --libs SDL2_image) $(SDLMINGWLDFLAGS)
+FILE = WL
+SOURCE = $(FILE)
+TARGET = $(FILE)
+
+all: TapCon/TapCon.exe $(TARGET).exe
+
+$(TARGET).exe: $(SOURCE).o SDLTWE.o spectrum.o Z80.o
+	$(MXE)/$(LD) $^ $(LDFLAGS) -o $@
+
+$(SOURCE).o: $(SOURCE).c WL.h GLOBAL_VARS.h MapCoordinates.h SDLTWE.h SPECTRUM.h Z80/Z80.h
+	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+SDLTWE.o: SDLTWE.c WL.h SDLTWE.h
+	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+spectrum.o: Spectrum.c GLOBAL_VARS.h SPECTRUM.h WL.h SDLTWE.h Z80/Z80.h
+	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
+	$(MXE)/$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+TapCon/TapCon.exe: TapCon/TapCon.c
+	$(MXE)/$(CC) $(CFLAGS) $^ -o TapCon/TapCon.exe
+
+strip:
+	$(MXE)/$(STRIP) $(TARGET).exe TapCon/TapCon.exe
+
+cleanobj:
+	rm -f *.o
+
+cleanexe:
+	rm -f $(TARGET).exe TapCon/TapCon.exe
+
+clean:
+	rm -f *.o && rm -f $(TARGET).exe TapCon/TapCon.exe

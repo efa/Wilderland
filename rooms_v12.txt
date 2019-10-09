@@ -1,0 +1,916 @@
+
+Room 01
+LBA97:  DB      84                  ;light, IN
+        DB      A0                  ;ROOM_PROP_VOLUME
+        DW      1309                ;hall 
+        DW      0703                ;tunnel 
+        DW      03DA                ;like 
+        DW      B575                ;comfortable tunnel like hall 
+        DB      03,05,04            ;E  --05--> 04
+        DB      FF
+
+Room 02
+LBED3:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      054F                ;road 
+        DW      02A0                ;forest 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,03            ;E  --00--> 03
+        DB      04,00,2E            ;W  --00--> 2E
+        DB      FF
+
+Room 03
+LBEE4:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      02A0                ;forest 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      04,00,02            ;W  --00--> 02
+        DB      03,00,2D            ;E  --00--> 2D
+        DB      FF
+
+Room 04
+LBAA5:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0400                ;lonelands 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      B57E                ;gloomy empty land dreary hills ahead 
+        DB      04,05,01            ;W  --05--> 01
+        DB      03,00,05            ;E  --00--> 05
+        DB      01,00,05            ;N  --00--> 05
+        DB      05,00,06            ;NE --00--> 06
+        DB      FF
+
+Room 05
+LBABC:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0127                ;clearing 
+        DW      06FD                ;trolls 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      08,00,04            ;SW --00--> 04
+        DB      07,00,09            ;SE --00--> 09
+        DB      01,00,06            ;N  --00--> 06
+        DB      FF
+
+Room 06
+LBAD0:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04D4                ;path 
+        DW      06FD                ;trolls 
+        DW      0000                ;---
+        DW      B58C                ;hidden path trolls foot print S [16]
+        DB      02,00,05            ;S  --00--> 05
+        DB      01,01,07            ;N  --01--> 07
+        DB      FF
+
+Room 07
+LBAE1:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0112                ;cave 
+        DW      06FD                ;trolls 
+        DW      0000                ;---
+        DW      B59A                ;trolls cave 
+        DB      02,01,06            ;S  --01--> 06
+        DB      FF
+
+Room 08
+LBEF5:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      054A                ;river 
+        DW      0570                ;running 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,00,2D            ;N  --00--> 2D
+        DB      04,00,03            ;W  --00--> 03
+        DB      FF
+
+Room 09
+LBAEF:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      8541                ;rivendell 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,0A            ;E  --00--> 0A
+        DB      04,00,05            ;W  --00--> 05
+        DB      FF
+
+Room 0A
+LBB00:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      044E                ;mountain 
+        DW      0440                ;misty 
+        DW      0000                ;---
+        DW      B59F                ;hard dangerous path misty mountains 
+        DB      03,00,0B            ;E  --00--> 0B
+        DB      01,00,44            ;N  --00--> 44
+        DB      04,00,09            ;W  --00--> 09
+        DB      02,00,49            ;S  --00--> 49
+        DB      FF
+
+Room 0B
+LBB17:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14E6                ;place 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      B5AC                ;narrow place dreadful drop into dim valley 
+        DB      03,00,0C            ;E  --00--> 0C
+        DB      04,00,0A            ;W  --00--> 0A
+        DB      01,00,0E            ;N  --00--> 0E
+        DB      FF
+
+Room 0C
+LBB2B:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0185                ;dangerous 
+        DW      0464                ;narrow 
+        DW      B5BE                ;narrow dangerous path 
+        DB      03,00,16            ;E  --00--> 16
+        DB      04,00,0B            ;W  --00--> 0B
+        DB      FF
+
+Room 0D
+LBCDA:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      01EF                ;dungeon 
+        DW      02E8                ;goblins 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,11,10            ;N  --11--> 10
+        DB      04,1B,12            ;W  --1B--> 12
+        DB      FF
+
+Room 0E
+LBB3C:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      1112                ;cave 
+        DW      03BF                ;large 
+        DW      01EC                ;dry 
+        DW      B5C5                ;large dry cave which climb quite comfortable 
+        DB      0A,06,0F            ;DN --06--> 0F
+        DB      02,00,0B            ;S  --00--> 0B
+        DB      FF
+
+Room 0F
+LBB4D:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      09,06,0E            ;UP --06--> 0E
+        DB      02,00,34            ;S  --00--> 34
+        DB      05,00,3A            ;NE --00--> 3A
+        DB      FF
+
+Room 10
+LBC6A:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0116                ;cavern 
+        DW      00A2                ;big 
+        DW      02E8                ;goblins 
+        DW      B5D3                ;big cavern torch ESalong wall S [16]
+        DB      0A,00,39            ;DN --00--> 39
+        DB      05,00,12            ;NE --00--> 12
+        DB      07,11,0D            ;SE --11--> 0D
+        DB      FF
+
+Room 11
+LBC7E:  DB      08                  ;dark, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      03B7                ;lake 
+        DW      0196                ;deep 
+        DW      018E                ;dark 
+        DW      B5E4                ;brink deep dark under ground lake 
+        DB      01,00,37            ;N  --00--> 37
+        DB      FF
+
+Room 12
+LBC8C:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      0785                ;winding 
+        DW      0000                ;---
+        DB      08,00,10            ;SW --00--> 10
+        DB      07,00,3F            ;SE --00--> 3F
+        DB      01,1B,0D            ;N  --1B--> 0D
+        DB      FF
+
+Room 13
+LBCA0:  DB      02                  ;dark, INSIDE
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      82C4                ;gate 
+        DW      037B                ;inside 
+        DW      02E8                ;goblins 
+        DW      B5F3                ;goblins gate 
+        DB      04,00,10            ;W  --00--> 10
+        DB      01,00,10            ;N  --00--> 10
+        DB      02,00,10            ;S  --00--> 10
+        DB      09,0A,14            ;UP --0A--> 14
+        DB      03,00,10            ;E  --00--> 10
+        DB      07,00,10            ;SE --00--> 10
+        DB      08,00,10            ;SW --00--> 10
+        DB      0A,00,10            ;DN --00--> 10
+        DB      05,00,41            ;NE --00--> 41
+        DB      06,00,10            ;NW --00--> 10
+        DB      FF
+
+Room 14
+LBCC9:  DB      80                  ;light, OUTSIDE
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      82C4                ;gate 
+        DW      04C2                ;outside 
+        DW      02E8                ;goblins 
+        DW      B5F3                ;goblins gate 
+        DB      0A,0A,13            ;DN --0A--> 13
+        DB      03,00,15            ;E  --00--> 15
+        DB      FF
+
+Room 15
+LBCEB:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04B8                ;opening 
+        DW      06F0                ;treeless 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,16            ;E  --00--> 16
+        DB      04,00,14            ;W  --00--> 14
+        DB      FF
+
+Room 16
+LBCFC:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      8369                ;house 
+        DW      0093                ;beorns 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      05,00,18            ;NE --00--> 18
+        DB      06,00,14            ;NW --00--> 14
+        DB      02,00,2E            ;S  --00--> 2E
+        DB      08,00,0C            ;SW --00--> 0C
+        DB      01,00,31            ;N  --00--> 31
+        DB      FF
+
+Room 17
+LBF06:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      82A6                ;forestriver 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      07,2A,21            ;SE --2A--> 21
+        DB      01,00,30            ;N  --00--> 30
+        DB      FF
+
+Room 18
+LBD16:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      02C4                ;gate 
+        DW      02A0                ;forest 
+        DW      0000                ;---
+        DW      B5F8                ;gate mirkwood 
+        DB      04,00,16            ;W  --00--> 16
+        DB      02,00,2E            ;S  --00--> 2E
+        DB      03,00,19            ;E  --00--> 19
+        DB      FF
+
+Room 19
+LBD2A:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04E6                ;place 
+        DW      0099                ;bewitched 
+        DW      02D8                ;gloomy 
+        DW      0000                ;---
+        DB      04,00,18            ;W  --00--> 18
+        DB      03,00,42            ;E  --00--> 42
+        DB      02,09,00            ;S  --09--> 00
+        DB      FF
+
+Room 1A
+LBD3E:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04E6                ;place 
+        DW      0623                ;spider 
+        DW      06BA                ;threads 
+        DW      B60F                ;place black spider S [16]
+        DB      03,07,1D            ;E  --07--> 1D
+        DB      04,07,32            ;W  --07--> 32
+        DB      01,07,1C            ;N  --07--> 1C
+        DB      02,07,1B            ;S  --07--> 1B
+        DB      FF
+
+Room 1B
+LBD55:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      02A0                ;forest 
+        DW      05F3                ;smothering 
+        DW      0000                ;---
+        DW      B619                ;forest tangled smothering /3.Person/trees  [16]
+        DB      01,07,1A            ;N  --07--> 1A
+        DB      04,07,32            ;W  --07--> 32
+        DB      FF
+
+Room 1C
+LBD66:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      1127                ;clearing 
+        DW      03CC                ;levelled 
+        DW      0222                ;elvish 
+        DW      B624                ;Nelvish clearing levelled ground untie logs 
+        DB      04,00,19            ;W  --00--> 19
+        DB      03,07,1A            ;E  --07--> 1A
+        DB      05,0D,1E            ;NE --0D--> 1E
+        DB      FF
+
+Room 1D
+LBD7A:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      00BC                ;bog 
+        DW      0196                ;deep 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      04,07,1A            ;W  --07--> 1A
+        DB      FF
+
+Room 1E
+LBD88:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      030D                ;halls 
+        DW      0213                ;elvenkings 
+        DW      02FF                ;great 
+        DW      0000                ;---
+        DB      03,08,1F            ;E  --08--> 1F
+        DB      02,00,20            ;S  --00--> 20
+        DB      04,0D,1C            ;W  --0D--> 1C
+        DB      FF
+
+Room 1F
+LBD9C:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      11EF                ;dungeon 
+        DW      018E                ;dark 
+        DW      0000                ;---
+        DW      B632                ;dark dungeon elvenkings halls 
+        DB      08,08,20            ;SW --08--> 20
+        DB      04,08,1E            ;W  --08--> 1E
+        DB      FF
+
+Room 20
+LBDAD:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      011C                ;cellar 
+        DW      0213                ;elvenkings 
+        DW      0000                ;---
+        DW      B63D                ;cellar where king keeps his barrel Swine 
+        DB      05,08,1F            ;NE --08--> 1F
+        DB      01,00,1E            ;N  --00--> 1E
+        DB      0A,0C,21            ;DN --0C--> 21
+        DB      FF
+
+Room 21
+LBDC1:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      82A6                ;forestriver 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,27,22            ;E  --27--> 22
+        DB      09,0C,00            ;UP --0C--> 00
+        DB      02,2A,00            ;S  --2A--> 00
+        DB      FF
+
+Room 22
+LBDD5:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      83B7                ;lake 
+        DW      040F                ;long 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,00,24            ;N  --00--> 24
+        DB      03,00,23            ;E  --00--> 23
+        DB      06,27,21            ;NW --27--> 21
+        DB      02,00,2D            ;S  --00--> 2D
+        DB      FF
+
+Room 23
+LBDEC:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      86DC                ;town 
+        DW      03B7                ;lake 
+        DW      0000                ;---
+        DW      B64F                ;wooden town middle long lake 
+        DB      01,00,22            ;N  --00--> 22
+        DB      02,00,22            ;S  --00--> 22
+        DB      03,00,22            ;E  --00--> 22
+        DB      04,00,22            ;W  --00--> 22
+        DB      FF
+
+Room 24
+LBE03:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      854A                ;river 
+        DW      0570                ;running 
+        DW      0000                ;---
+        DW      B65D                ;strong river :current climb now strong move against 
+        DB      09,00,25            ;UP --00--> 25
+        DB      02,00,22            ;S  --00--> 22
+        DB      FF
+
+Room 25
+LBE14:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      019F                ;desolation 
+        DW      01CE                ;dragons 
+        DW      0000                ;---
+        DW      B671                ;bleak barren land that was once green 
+        DB      01,00,26            ;N  --00--> 26
+        DB      0A,00,24            ;DN --00--> 24
+        DB      FF
+
+Room 26
+LBE25:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      872F                ;valley 
+        DW      0181                ;dale 
+        DW      0000                ;---
+        DW      B680                ;ruins town dale 
+        DB      01,00,27            ;N  --00--> 27
+        DB      02,00,25            ;S  --00--> 25
+        DB      06,00,28            ;NW --00--> 28
+        DB      FF
+
+Room 27
+LBE39:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      02C4                ;gate 
+        DW      0940                ;front 
+        DW      0000                ;---
+        DW      B68A                ;front gate lonely mountain 
+        DB      01,00,29            ;N  --00--> 29
+        DB      02,00,26            ;S  --00--> 26
+        DB      04,00,28            ;W  --00--> 28
+        DB      FF
+
+Room 28
+LBE4D:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      8521                ;ravenhill 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      B695                ;west side ravenhill 
+        DB      01,00,2A            ;N  --00--> 2A
+        DB      07,00,25            ;SE --00--> 25
+        DB      03,00,27            ;E  --00--> 27
+        DB      FF
+
+Room 29
+LBE61:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      830D                ;halls 
+        DW      041A                ;lower 
+        DW      0000                ;---
+        DW      B69D                ;halls where /3.Person/sleeps  [16]
+        DB      02,00,27            ;S  --00--> 27
+        DB      03,00,2B            ;E  --00--> 2B
+        DB      09,00,2C            ;UP --00--> 2C
+        DB      FF
+
+Room 2A
+LBE75:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      05AA                ;sidedoor 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      B6A7                ;little steep bay ,still untie quiet ,an over hanging cliff 
+        DB      02,00,28            ;S  --00--> 28
+        DB      03,0B,2B            ;E  --0B--> 2B
+        DB      01,00,33            ;N  --00--> 33
+        DB      FF
+
+Room 2B
+LBE89:  DB      04                  ;dark, IN
+        DB      B0                  ;ROOM_PROP_VOLUME
+        DW      14CD                ;passage 
+        DW      05ED                ;smooth 
+        DW      0646                ;straight 
+        DW      B6BE                ;smooth straight passage 
+        DB      04,0B,2A            ;W  --0B--> 2A
+        DB      03,00,29            ;E  --00--> 29
+        DB      FF
+
+Room 2C
+LBE9A:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      844E                ;mountain 
+        DW      0409                ;lonely 
+        DW      0000                ;---
+        DW      B6C5                ;lonely mountain 
+        DB      0A,00,29            ;DN --00--> 29
+        DB      04,00,2A            ;W  --00--> 2A
+        DB      02,00,27            ;S  --00--> 27
+        DB      08,00,28            ;SW --00--> 28
+        DB      FF
+
+Room 2D
+LBEC2:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0763                ;waterfall 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      02,00,08            ;S  --00--> 08
+        DB      04,00,03            ;W  --00--> 03
+        DB      FF
+
+Room 2E
+LBEB1:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      054F                ;road 
+        DW      02A0                ;forest 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,02            ;E  --00--> 02
+        DB      01,00,18            ;N  --00--> 18
+        DB      FF
+
+Room 2F
+LBF42:  DB      84                  ;light, IN
+        DB      FE                  ;ROOM_PROP_VOLUME
+        DW      04E6                ;place 
+        DW      0228                ;empty 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      FF
+
+Room 30
+LBF17:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      0456                ;mountains 
+        DW      0000                ;---
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      08,00,31            ;SW --00--> 31
+        DB      03,00,2F            ;E  --00--> 2F
+        DB      07,00,17            ;SE --00--> 17
+        DB      FF
+
+Room 31
+LBF2B:  DB      88                  ;light, AT
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      054A                ;river 
+        DW      02FF                ;great 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      05,00,30            ;NE --00--> 30
+        DB      02,00,16            ;S  --00--> 16
+        DB      03,00,18            ;E  --00--> 18
+        DB      08,00,0A            ;SW --00--> 0A
+        DB      FF
+
+Room 32
+LBF4D:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      02A0                ;forest 
+        DW      0304                ;green 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      05,07,1A            ;NE --07--> 1A
+        DB      04,00,43            ;W  --00--> 43
+        DB      FF
+
+Room 33
+LBF5E:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04E6                ;place 
+        DW      0228                ;empty 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,00,2F            ;N  --00--> 2F
+        DB      02,00,2A            ;S  --00--> 2A
+        DB      09,00,2C            ;UP --00--> 2C
+        DB      FF
+
+Room 34
+LBB61:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      01,00,0F            ;N  --00--> 0F
+        DB      0A,00,35            ;DN --00--> 35
+        DB      09,00,36            ;UP --00--> 36
+        DB      FF
+
+Room 35
+LBB75:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      09,00,34            ;UP --00--> 34
+        DB      FF
+
+Room 36
+LBB83:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      0A,00,34            ;DN --00--> 34
+        DB      07,00,37            ;SE --00--> 37
+        DB      02,00,40            ;S  --00--> 40
+        DB      08,00,11            ;SW --00--> 11
+        DB      FF
+
+Room 37
+LBB9A:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      02,00,11            ;S  --00--> 11
+        DB      05,00,36            ;NE --00--> 36
+        DB      08,00,3D            ;SW --00--> 3D
+        DB      04,00,3C            ;W  --00--> 3C
+        DB      FF
+
+Room 38
+LBBB1:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      08,00,3C            ;SW --00--> 3C
+        DB      FF
+
+Room 39
+LBBBF:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      09,00,10            ;UP --00--> 10
+        DB      04,00,41            ;W  --00--> 41
+        DB      01,00,3A            ;N  --00--> 3A
+        DB      FF
+
+Room 3A
+LBBD3:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      07,00,3E            ;SE --00--> 3E
+        DB      03,00,0F            ;E  --00--> 0F
+        DB      02,00,39            ;S  --00--> 39
+        DB      09,00,3B            ;UP --00--> 3B
+        DB      FF
+
+Room 3B
+LBBEA:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      0A,00,3A            ;DN --00--> 3A
+        DB      02,00,3C            ;S  --00--> 3C
+        DB      FF
+
+Room 3C
+LBBFB:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      07,00,3D            ;SE --00--> 3D
+        DB      01,00,3B            ;N  --00--> 3B
+        DB      06,00,38            ;NW --00--> 38
+        DB      FF
+
+Room 3D
+LBC0F:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      01,00,36            ;N  --00--> 36
+        DB      06,00,3C            ;NW --00--> 3C
+        DB      FF
+
+Room 3E
+LBC20:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      03,00,3D            ;E  --00--> 3D
+        DB      FF
+
+Room 3F
+LBC2E:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      09,00,40            ;UP --00--> 40
+        DB      01,00,12            ;N  --00--> 12
+        DB      03,00,3A            ;E  --00--> 3A
+        DB      FF
+
+Room 40
+LBC42:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      06,00,41            ;NW --00--> 41
+        DB      04,00,36            ;W  --00--> 36
+        DB      08,00,3F            ;SW --00--> 3F
+        DB      FF
+
+Room 41
+LBC56:  DB      04                  ;dark, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      04CD                ;passage 
+        DW      018E                ;dark 
+        DW      066A                ;stuffy 
+        DW      0000                ;---
+        DB      01,00,40            ;N  --00--> 40
+        DB      07,00,39            ;SE --00--> 39
+        DB      03,00,13            ;E  --00--> 13
+        DB      FF
+
+Room 42
+LBF72:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      081E                ;bank 
+        DW      0779                ;west 
+        DW      0000                ;---
+        DW      B6CA                ;west  [02] [04]east bank black river 
+        DB      04,00,19            ;W  --00--> 19
+        DB      03,09,43            ;E  --09--> 43
+        DB      FF
+
+Room 43
+LBF83:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      081E                ;bank 
+        DW      01FE                ;east 
+        DW      0000                ;---
+        DW      B6CF                ;east bank black river 
+        DB      03,00,32            ;E  --00--> 32
+        DB      04,09,42            ;W  --09--> 42
+        DB      FF
+
+Room 44
+LBF94:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,47            ;E  --00--> 47
+        DB      05,00,45            ;NE --00--> 45
+        DB      02,00,0A            ;S  --00--> 0A
+        DB      FF
+
+Room 45
+LBFA8:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,00,46            ;N  --00--> 46
+        DB      08,00,44            ;SW --00--> 44
+        DB      02,00,0A            ;S  --00--> 0A
+        DB      FF
+
+Room 46
+LBFBC:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      07,00,48            ;SE --00--> 48
+        DB      02,00,45            ;S  --00--> 45
+        DB      FF
+
+Room 47
+LBFCD:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      06,00,45            ;NW --00--> 45
+        DB      02,00,4A            ;S  --00--> 4A
+        DB      04,00,44            ;W  --00--> 44
+        DB      FF
+
+Room 48
+LBFE1:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      06,00,46            ;NW --00--> 46
+        DB      08,00,47            ;SW --00--> 47
+        DB      0A,00,4B            ;DN --00--> 4B
+        DB      FF
+
+Room 49
+LBFF5:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      03,00,4A            ;E  --00--> 4A
+        DB      01,00,0A            ;N  --00--> 0A
+        DB      FF
+
+Room 4A
+LC006:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      0464                ;narrow 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      01,00,47            ;N  --00--> 47
+        DB      04,00,49            ;W  --00--> 49
+        DB      FF
+
+Room 4B
+LC017:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      063C                ;steep 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      0A,00,4C            ;DN --00--> 4C
+        DB      FF
+
+Room 4C
+LC025:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      063C                ;steep 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      0A,00,4D            ;DN --00--> 4D
+        DB      FF
+
+Room 4D
+LC033:  DB      86                  ;light, ON
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      14D4                ;path 
+        DW      063C                ;steep 
+        DW      0000                ;---
+        DW      0000                ;---
+        DB      0A,00,4E            ;DN --00--> 4E
+        DB      FF
+
+Room 4E
+LC041:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      172F                ;valley 
+        DW      0196                ;deep 
+        DW      0440                ;misty 
+        DW      0000                ;---
+        DB      03,00,4F            ;E  --00--> 4F
+        DB      09,00,4D            ;UP --00--> 4D
+        DB      FF
+
+Room 4F
+LC052:  DB      84                  ;light, IN
+        DB      FF                  ;ROOM_PROP_VOLUME
+        DW      172F                ;valley 
+        DW      0196                ;deep 
+        DW      0440                ;misty 
+        DW      0000                ;---
+        DB      04,00,4E            ;W  --00--> 4E
+        DB      09,00,4A            ;UP --00--> 4A
+        DB      FF

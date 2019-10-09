@@ -1,0 +1,5028 @@
+6040  -  A
+  41  A  010   ARTICLE_MISC  
+  00  @  000
+  80  @  100
+
+
+6043  -  ACROSS
+  21  A  001   PREPOSITION   
+  63  C  011
+  12  R  000
+  0F  O  000
+  13  S  000
+  93  S  100
+
+
+6049  -  AFTER
+  21  A  001   PREPOSITION   
+  66  F  011
+  14  T  000
+  05  E  000
+  92  R  100
+
+
+604E  -  ALL
+  41  A  010   SYSTEM_PRONOUN
+  2C  L  001
+  8C  L  100
+
+
+6051  -  ALREADY
+  41  A  010   ARTICLE_MISC  
+  0C  L  000
+  12  R  000
+  05  E  000
+  01  A  000
+  04  D  000
+  99  Y  100
+
+
+6058  -  AN
+  41  A  010   ARTICLE_MISC  
+  0E  N  000
+  80  @  100
+
+
+605B  -  AND
+  41  A  010   AND           
+  4E  N  010
+  84  D  100
+
+
+605E  -  ANOTHER
+  41  A  010   ARTICLE_MISC  
+  0E  N  000
+  0F  O  000
+  14  T  000
+  08  H  000
+  05  E  000
+  92  R  100
+
+
+6065  -  ARE
+  41  A  010   ARTICLE_MISC  
+  12  R  000
+  85  E  100
+
+
+6068  -  ARM
+  21  A  001   NOUN          
+  32  R  001
+  8D  M  100
+
+
+606B  -  ARROW
+  21  A  001   NOUN          
+  32  R  001
+  12  R  000
+  0F  O  000
+  97  W  100
+
+
+6070  -  AT
+  21  A  001   PREPOSITION   
+  74  T  011
+  80  @  100
+
+
+6073  -  ATTACK
+  01  A  000   VERB          
+  F4  T  111   Beugung: S
+  14  T  000
+  01  A  000
+  03  C  000
+  8B  K  100
+
+
+6079  -  AXE
+  21  A  001   NOUN          
+  38  X  001
+  85  E  100
+
+
+607C  -  BACK
+  22  B  001   ADJECTIVE     
+  41  A  010
+  03  C  000
+  8B  K  100
+
+
+6080  -  BARD
+  22  B  001   NOUN          
+  21  A  001
+  12  R  000
+  84  D  100
+
+
+6084  -  BARREL
+  22  B  001   NOUN          
+  21  A  001
+  12  R  000
+  12  R  000
+  05  E  000
+  8C  L  100
+
+
+608A  -  BARREN
+  22  B  001   ADJECTIVE     
+  41  A  010
+  12  R  000
+  12  R  000
+  05  E  000
+  8E  N  100
+
+
+6090  -  BAY
+  22  B  001   NOUN          
+  21  A  001
+  99  Y  100
+
+
+6093  -  BEORNS
+  22  B  001   ADJECTIVE     
+  45  E  010
+  0F  O  000
+  12  R  000
+  0E  N  000
+  93  S  100
+
+
+6099  -  BEWITCHED
+  22  B  001   ADJECTIVE     
+  45  E  010
+  17  W  000
+  09  I  000
+  14  T  000
+  03  C  000
+  08  H  000
+  05  E  000
+  84  D  100
+
+
+60A2  -  BIG
+  22  B  001   ADJECTIVE     
+  49  I  010
+  87  G  100
+
+
+60A5  -  BLACK
+  22  B  001   ADJECTIVE     
+  4C  L  010
+  01  A  000
+  03  C  000
+  8B  K  100
+
+
+60AA  -  BLEAK
+  22  B  001   ADJECTIVE     
+  4C  L  010
+  05  E  000
+  01  A  000
+  8B  K  100
+
+
+60AF  -  BLOW
+  22  B  001   NOUN          
+  2C  L  001
+  0F  O  000
+  97  W  100
+
+
+60B3  -  BLOOD
+  22  B  001   NOUN          
+  2C  L  001
+  0F  O  000
+  0F  O  000
+  84  D  100
+
+
+60B8  -  BOAT
+  22  B  001   NOUN          
+  2F  O  001
+  01  A  000
+  94  T  100
+
+
+60BC  -  BOG
+  22  B  001   NOUN          
+  2F  O  001
+  87  G  100
+
+
+60BF  -  BODY
+  22  B  001   NOUN          
+  2F  O  001
+  04  D  000
+  99  Y  100
+
+
+60C3  -  BOW
+  22  B  001   NOUN          
+  2F  O  001
+  97  W  100
+
+
+60C6  -  BREAK
+  02  B  000   VERB          
+  F2  R  111   Beugung: S
+  05  E  000
+  01  A  000
+  CB  K  110
+  --> 6658
+
+
+60CD  -  BROKEN
+  22  B  001   ADJECTIVE     
+  52  R  010
+  0F  O  000
+  0B  K  000
+  05  E  000
+  8E  N  100
+
+
+60D3  -  BURN
+  02  B  000   VERB          
+  F5  U  111   Beugung: S
+  12  R  000
+  8E  N  100
+
+
+60D7  -  BUT
+  42  B  010   SYSTEM_PRONOUN
+  35  U  001
+  D4  T  110
+  --> 6245
+
+
+60DC  -  BUTLER
+  22  B  001   NOUN          
+  35  U  001
+  14  T  000
+  0C  L  000
+  05  E  000
+  92  R  100
+
+
+60E2  -  CACHE
+  23  C  001   NOUN          
+  21  A  001
+  03  C  000
+  08  H  000
+  85  E  100
+
+
+60E7  -  CAMP
+  23  C  001   NOUN          
+  21  A  001
+  0D  M  000
+  90  P  100
+
+
+60EB  -  CAN
+  43  C  010   ARTICLE_MISC  
+  01  A  000
+  8E  N  100
+
+
+60EE  -  CANNOT
+  43  C  010   ARTICLE_MISC  
+  01  A  000
+  0E  N  000
+  0E  N  000
+  0F  O  000
+  94  T  100
+
+
+60F4  -  CAPTURE
+  03  C  000   VERB          
+  E1  A  111   Beugung: S
+  10  P  000
+  14  T  000
+  15  U  000
+  12  R  000
+  C5  E  110
+  --> 6073
+
+
+60FD  -  CAREFULLY
+  03  C  000   ADVERB        
+  01  A  000
+  12  R  000
+  05  E  000
+  06  F  000
+  15  U  000
+  0C  L  000
+  0C  L  000
+  99  Y  100
+
+
+6106  -  CARROCK
+  23  C  001   NOUN          
+  21  A  001
+  12  R  000
+  12  R  000
+  0F  O  000
+  03  C  000
+  8B  K  100
+
+
+610D  -  CARRY
+  03  C  000   VERB          
+  E1  A  111   Beugung: @IES
+  72  R  011
+  12  R  000
+  99  Y  100
+
+
+6112  -  CAVE
+  23  C  001   NOUN          
+  21  A  001
+  16  V  000
+  85  E  100
+
+
+6116  -  CAVERN
+  23  C  001   NOUN          
+  21  A  001
+  16  V  000
+  05  E  000
+  12  R  000
+  8E  N  100
+
+
+611C  -  CELLAR
+  23  C  001   NOUN          
+  25  E  001
+  0C  L  000
+  0C  L  000
+  01  A  000
+  92  R  100
+
+
+6122  -  CHEST
+  23  C  001   NOUN          
+  28  H  001
+  05  E  000
+  13  S  000
+  94  T  100
+
+
+6127  -  CLEARING
+  23  C  001   NOUN          
+  2C  L  001
+  05  E  000
+  01  A  000
+  12  R  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+612F  -  CLIMB
+  03  C  000   VERB          
+  EC  L  111   Beugung: S
+  09  I  000
+  0D  M  000
+  82  B  100
+
+
+6134  -  CLOSE
+  03  C  000   VERB          
+  EC  L  111   Beugung: S
+  0F  O  000
+  13  S  000
+  85  E  100
+
+
+6139  -  CLOSED
+  23  C  001   ADJECTIVE     
+  4C  L  010
+  0F  O  000
+  13  S  000
+  05  E  000
+  84  D  100
+
+
+613F  -  COMFORTABLE
+  23  C  001   ADJECTIVE     
+  4F  O  010
+  0D  M  000
+  06  F  000
+  0F  O  000
+  12  R  000
+  14  T  000
+  01  A  000
+  02  B  000
+  0C  L  000
+  85  E  100
+
+
+614A  -  COUNTRY
+  23  C  001   NOUN          
+  2F  O  001
+  15  U  000
+  0E  N  000
+  14  T  000
+  12  R  000
+  99  Y  100
+
+
+6151  -  CRACK
+  23  C  001   NOUN          
+  32  R  001
+  01  A  000
+  03  C  000
+  8B  K  100
+
+
+6156  -  CROSS
+  03  C  000   VERB          
+  F2  R  111   Beugung: ES
+  2F  O  001
+  13  S  000
+  93  S  100
+
+
+615B  -  CUPBOARD
+  23  C  001   NOUN          
+  35  U  001
+  10  P  000
+  02  B  000
+  0F  O  000
+  01  A  000
+  12  R  000
+  84  D  100
+
+
+6163  -  CURIOUS
+  23  C  001   ADJECTIVE     
+  55  U  010
+  12  R  000
+  09  I  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+616A  -  CURTAIN
+  23  C  001   NOUN          
+  35  U  001
+  12  R  000
+  14  T  000
+  01  A  000
+  09  I  000
+  8E  N  100
+
+
+6171  -  CUNNING
+  23  C  001   ADJECTIVE     
+  55  U  010
+  0E  N  000
+  0E  N  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6178  -  CUT
+  03  C  000   VERB          
+  F5  U  111   Beugung: S
+  14  T  000
+  80  @  100
+
+
+617C  -  D
+  04  D  000   MOVE_DIR      
+  40  @  010
+  C0  @  110
+  --> 61C4
+
+
+6181  -  DALE
+  24  D  001   NOUN          
+  21  A  001
+  0C  L  000
+  85  E  100
+
+
+6185  -  DANGEROUS
+  24  D  001   ADJECTIVE     
+  41  A  010
+  0E  N  000
+  07  G  000
+  05  E  000
+  12  R  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+618E  -  DARK
+  24  D  001   ADJECTIVE     
+  41  A  010
+  12  R  000
+  8B  K  100
+
+
+6192  -  DEAD
+  24  D  001   ADJECTIVE     
+  45  E  010
+  01  A  000
+  84  D  100
+
+
+6196  -  DEEP
+  24  D  001   ADJECTIVE     
+  45  E  010
+  05  E  000
+  90  P  100
+
+
+619A  -  DENSE
+  24  D  001   ADJECTIVE     
+  45  E  010
+  0E  N  000
+  13  S  000
+  85  E  100
+
+
+619F  -  DESOLATION
+  24  D  001   NOUN          
+  25  E  001
+  13  S  000
+  0F  O  000
+  0C  L  000
+  01  A  000
+  14  T  000
+  09  I  000
+  0F  O  000
+  8E  N  100
+
+
+61A9  -  DIG
+  04  D  000   VERB          
+  E9  I  111   Beugung: S
+  07  G  000
+  80  @  100
+
+
+61AD  -  DIRECTION
+  44  D  010   ARTICLE_MISC  
+  09  I  000
+  12  R  000
+  05  E  000
+  03  C  000
+  14  T  000
+  09  I  000
+  0F  O  000
+  8E  N  100
+
+
+61B6  -  DISGUSTING
+  24  D  001   ADJECTIVE     
+  49  I  010
+  13  S  000
+  07  G  000
+  15  U  000
+  13  S  000
+  14  T  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+61C0  -  DOOR
+  24  D  001   NOUN          
+  2F  O  001
+  0F  O  000
+  92  R  100
+
+
+61C4  -  DOWN
+  04  D  000   MOVE_DIR      
+  4F  O  010
+  17  W  000
+  8E  N  100
+
+
+61C8  -  DRAGON
+  24  D  001   NOUN          
+  32  R  001
+  01  A  000
+  07  G  000
+  0F  O  000
+  8E  N  100
+
+
+61CE  -  DRAGONS
+  24  D  001   ADJECTIVE     
+  52  R  010
+  01  A  000
+  07  G  000
+  0F  O  000
+  0E  N  000
+  93  S  100
+
+
+61D5  -  DREADFUL
+  24  D  001   ADJECTIVE     
+  52  R  010
+  05  E  000
+  01  A  000
+  04  D  000
+  06  F  000
+  15  U  000
+  8C  L  100
+
+
+61DD  -  DREARY
+  24  D  001   ADJECTIVE     
+  52  R  010
+  05  E  000
+  01  A  000
+  12  R  000
+  99  Y  100
+
+
+61E3  -  DRINK
+  04  D  000   VERB          
+  F2  R  111   Beugung: S
+  09  I  000
+  0E  N  000
+  8B  K  100
+
+
+61E8  -  DROP
+  04  D  000   VERB          
+  F2  R  111   Beugung: S
+  0F  O  000
+  90  P  100
+
+
+61EC  -  DRY
+  24  D  001   ADJECTIVE     
+  52  R  010
+  99  Y  100
+
+
+61EF  -  DUNGEON
+  24  D  001   NOUN          
+  35  U  001
+  0E  N  000
+  07  G  000
+  05  E  000
+  0F  O  000
+  8E  N  100
+
+
+61F6  -  E
+  05  E  000   MOVE_DIR      
+  40  @  010
+  C0  @  110
+  --> 61FE
+
+
+61FB  -  EAR
+  25  E  001   NOUN          
+  21  A  001
+  92  R  100
+
+
+61FE  -  EAST
+  05  E  000   MOVE_DIR      
+  41  A  010
+  13  S  000
+  94  T  100
+
+
+6202  -  EAT
+  05  E  000   VERB          
+  E1  A  111   Beugung: S
+  14  T  000
+  80  @  100
+
+
+6206  -  EDGE
+  25  E  001   ADJECTIVE     
+  44  D  010
+  07  G  000
+  85  E  100
+
+
+620A  -  ELF
+  25  E  001   NOUN          
+  2C  L  001
+  86  F  100
+
+
+620D  -  ELROND
+  25  E  001   NOUN          
+  2C  L  001
+  12  R  000
+  0F  O  000
+  0E  N  000
+  84  D  100
+
+
+6213  -  ELVENKINGS
+  25  E  001   ADJECTIVE     
+  4C  L  010
+  16  V  000
+  05  E  000
+  0E  N  000
+  0B  K  000
+  09  I  000
+  0E  N  000
+  07  G  000
+  93  S  100
+
+
+621D  -  ELVES
+  25  E  001   NOUN          
+  2C  L  001
+  16  V  000
+  05  E  000
+  93  S  100
+
+
+6222  -  ELVISH
+  25  E  001   ADJECTIVE     
+  4C  L  010
+  16  V  000
+  09  I  000
+  13  S  000
+  88  H  100
+
+
+6228  -  EMPTY
+  05  E  000   VERB          
+  ED  M  111   Beugung: IES
+  50  P  010
+  14  T  000
+  99  Y  100
+
+
+622D  -  ENTER
+  05  E  000   VERB          
+  EE  N  111   Beugung: S
+  14  T  000
+  05  E  000
+  92  R  100
+
+
+6232  -  EVERYTHING
+  45  E  010   SYSTEM_PRONOUN
+  36  V  001
+  05  E  000
+  12  R  000
+  19  Y  000
+  14  T  000
+  08  H  000
+  09  I  000
+  0E  N  000
+  C7  G  110
+  --> 604E
+
+
+623E  -  EXAMINE
+  05  E  000   VERB          
+  F8  X  111   Beugung: S
+  01  A  000
+  0D  M  000
+  09  I  000
+  0E  N  000
+  85  E  100
+
+
+6245  -  EXCEPT
+  45  E  010   SYSTEM_PRONOUN
+  38  X  001
+  03  C  000
+  05  E  000
+  10  P  000
+  94  T  100
+
+
+624B  -  EYES
+  25  E  001   NOUN          
+  39  Y  001
+  05  E  000
+  93  S  100
+
+
+624F  -  FALL
+  06  F  000   VERB          
+  E1  A  111   Beugung: S
+  0C  L  000
+  8C  L  100
+
+
+6253  -  FAST
+  26  F  001   ADJECTIVE     
+  41  A  010
+  13  S  000
+  94  T  100
+
+
+6257  -  FEEBLY
+  06  F  000   ADVERB        
+  05  E  000
+  05  E  000
+  02  B  000
+  0C  L  000
+  99  Y  100
+
+
+625D  -  FEET
+  26  F  001   NOUN          
+  25  E  001
+  05  E  000
+  94  T  100
+
+
+6261  -  FILL
+  06  F  000   VERB          
+  E9  I  111   Beugung: S
+  0C  L  000
+  8C  L  100
+
+
+6265  -  FINGER
+  26  F  001   NOUN          
+  29  I  001
+  0E  N  000
+  07  G  000
+  05  E  000
+  92  R  100
+
+
+626B  -  FIST
+  26  F  001   NOUN          
+  29  I  001
+  13  S  000
+  94  T  100
+
+
+626F  -  FLAMES
+  26  F  001   NOUN          
+  2C  L  001
+  01  A  000
+  0D  M  000
+  05  E  000
+  93  S  100
+
+
+6275  -  FLAT
+  26  F  001   ADJECTIVE     
+  4C  L  010
+  01  A  000
+  94  T  100
+
+
+6279  -  FLOOR
+  26  F  001   NOUN          
+  2C  L  001
+  0F  O  000
+  0F  O  000
+  92  R  100
+
+
+627E  -  FLOWING
+  26  F  001   ADJECTIVE     
+  4C  L  010
+  0F  O  000
+  17  W  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6285  -  FOLLOW
+  06  F  000   VERB          
+  EF  O  111   Beugung: S
+  0C  L  000
+  0C  L  000
+  0F  O  000
+  97  W  100
+
+
+628B  -  FOOD
+  26  F  001   NOUN          
+  2F  O  001
+  0F  O  000
+  84  D  100
+
+
+628F  -  FOR
+  26  F  001   PREPOSITION   
+  6F  O  011
+  92  R  100
+
+
+6292  -  FORCEFULLY
+  06  F  000   ADVERB        
+  0F  O  000
+  12  R  000
+  03  C  000
+  05  E  000
+  06  F  000
+  15  U  000
+  0C  L  000
+  0C  L  000
+  99  Y  100
+
+
+629C  -  FORD
+  26  F  001   NOUN          
+  2F  O  001
+  12  R  000
+  84  D  100
+
+
+62A0  -  FOREST
+  26  F  001   NOUN          
+  2F  O  001
+  12  R  000
+  05  E  000
+  13  S  000
+  94  T  100
+
+
+62A6  -  FORESTRIVER
+  26  F  001   NOUN          
+  2F  O  001
+  12  R  000
+  05  E  000
+  13  S  000
+  14  T  000
+  12  R  000
+  09  I  000
+  16  V  000
+  05  E  000
+  92  R  100
+
+
+62B1  -  FOUL
+  26  F  001   ADJECTIVE     
+  4F  O  010
+  15  U  000
+  8C  L  100
+
+
+62B5  -  FROM
+  26  F  001   PREPOSITION   
+  72  R  011
+  0F  O  000
+  8D  M  100
+
+
+62B9  -  FULL
+  26  F  001   ADJECTIVE     
+  55  U  010
+  0C  L  000
+  8C  L  100
+
+
+62BD  -  GANDALF
+  27  G  001   NOUN          
+  21  A  001
+  0E  N  000
+  04  D  000
+  01  A  000
+  0C  L  000
+  86  F  100
+
+
+62C4  -  GATE
+  27  G  001   NOUN          
+  21  A  001
+  14  T  000
+  85  E  100
+
+
+62C8  -  GENTLY
+  27  G  001   ADJECTIVE     
+  45  E  010
+  0E  N  000
+  14  T  000
+  0C  L  000
+  99  Y  100
+
+
+62CE  -  GET
+  07  G  000   VERB          
+  E5  E  111   Beugung: S
+  14  T  000
+  C0  @  110
+  --> 668C
+
+
+62D4  -  GIVE
+  07  G  000   VERB          
+  E9  I  111   Beugung: S
+  16  V  000
+  85  E  100
+
+
+62D8  -  GLOOMY
+  27  G  001   ADJECTIVE     
+  4C  L  010
+  0F  O  000
+  0F  O  000
+  0D  M  000
+  99  Y  100
+
+
+62DE  -  GO
+  27  G  001   GO_RUN        
+  8F  O  100   Beugung: ES
+  20  @  001
+  80  @  100
+
+
+62E2  -  GOBLIN
+  27  G  001   NOUN          
+  2F  O  001
+  02  B  000
+  0C  L  000
+  09  I  000
+  8E  N  100
+
+
+62E8  -  GOBLINS
+  27  G  001   ADJECTIVE     
+  4F  O  010
+  02  B  000
+  0C  L  000
+  09  I  000
+  0E  N  000
+  93  S  100
+
+
+62EF  -  GOLD
+  27  G  001   NOUN          
+  2F  O  001
+  0C  L  000
+  84  D  100
+
+
+62F3  -  GOLDEN
+  27  G  001   ADJECTIVE     
+  4F  O  010
+  0C  L  000
+  04  D  000
+  05  E  000
+  8E  N  100
+
+
+62F9  -  GOLLUM
+  27  G  001   NOUN          
+  2F  O  001
+  0C  L  000
+  0C  L  000
+  15  U  000
+  8D  M  100
+
+
+62FF  -  GREAT
+  27  G  001   ADJECTIVE     
+  52  R  010
+  05  E  000
+  01  A  000
+  94  T  100
+
+
+6304  -  GREEN
+  27  G  001   ADJECTIVE     
+  52  R  010
+  05  E  000
+  05  E  000
+  8E  N  100
+
+
+6309  -  HALL
+  28  H  001   NOUN          
+  21  A  001
+  0C  L  000
+  8C  L  100
+
+
+630D  -  HALLS
+  28  H  001   NOUN          
+  21  A  001
+  0C  L  000
+  0C  L  000
+  93  S  100
+
+
+6312  -  HAND
+  28  H  001   NOUN          
+  21  A  001
+  0E  N  000
+  84  D  100
+
+
+6316  -  HARD
+  28  H  001   ADJECTIVE     
+  41  A  010
+  12  R  000
+  84  D  100
+
+
+631A  -  HEAD
+  28  H  001   NOUN          
+  25  E  001
+  01  A  000
+  84  D  100
+
+
+631E  -  HELP
+  48  H  010   SYSTEM_PRONOUN
+  25  E  001
+  0C  L  000
+  90  P  100
+
+
+6322  -  HEART
+  28  H  001   NOUN          
+  25  E  001
+  01  A  000
+  12  R  000
+  94  T  100
+
+
+6327  -  HEAVY
+  28  H  001   ADJECTIVE     
+  45  E  010
+  01  A  000
+  16  V  000
+  99  Y  100
+
+
+632C  -  HELLO
+  08  H  000   VERB          
+  65  E  011
+  0C  L  000
+  0C  L  000
+  8F  O  100
+
+
+6331  -  HIDDEN
+  28  H  001   ADJECTIVE     
+  49  I  010
+  04  D  000
+  04  D  000
+  05  E  000
+  8E  N  100
+
+
+6337  -  HIDEOUS
+  28  H  001   ADJECTIVE     
+  49  I  010
+  04  D  000
+  05  E  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+633E  -  HILL
+  28  H  001   NOUN          
+  29  I  001
+  0C  L  000
+  8C  L  100
+
+
+6342  -  HILLS
+  28  H  001   NOUN          
+  29  I  001
+  0C  L  000
+  0C  L  000
+  93  S  100
+
+
+6347  -  HIT
+  08  H  000   VERB          
+  E9  I  111   Beugung: S
+  14  T  000
+  C0  @  110
+  --> 6073
+
+
+634D  -  HOBBIT
+  28  H  001   ADJECTIVE     
+  4F  O  010
+  02  B  000
+  02  B  000
+  09  I  000
+  94  T  100
+
+
+6353  -  HOBBITLAND
+  28  H  001   NOUN          
+  2F  O  001
+  02  B  000
+  02  B  000
+  09  I  000
+  14  T  000
+  0C  L  000
+  01  A  000
+  0E  N  000
+  84  D  100
+
+
+635D  -  HOLE
+  28  H  001   NOUN          
+  2F  O  001
+  0C  L  000
+  85  E  100
+
+
+6361  -  HORRIBLE
+  28  H  001   ADJECTIVE     
+  4F  O  010
+  12  R  000
+  12  R  000
+  09  I  000
+  02  B  000
+  0C  L  000
+  85  E  100
+
+
+6369  -  HOUSE
+  28  H  001   ADJECTIVE     
+  4F  O  010
+  15  U  000
+  13  S  000
+  85  E  100
+
+
+636E  -  HURRY
+  08  H  000   VERB          
+  75  U  011
+  12  R  000
+  12  R  000
+  99  Y  100
+
+
+6373  -  I
+  09  I  000   ADVERB        
+  00  @  000
+  C0  @  110
+  --> 6392
+
+
+6378  -  IN
+  09  I  000   IN_INTO       
+  2E  N  001
+  80  @  100
+
+
+637B  -  INSIDE
+  29  I  001   PREPOSITION   
+  6E  N  011
+  13  S  000
+  09  I  000
+  04  D  000
+  85  E  100
+
+
+6381  -  INSIGNIFICANT
+  29  I  001   ADJECTIVE     
+  4E  N  010
+  13  S  000
+  09  I  000
+  07  G  000
+  0E  N  000
+  09  I  000
+  06  F  000
+  09  I  000
+  03  C  000
+  01  A  000
+  0E  N  000
+  94  T  100
+
+
+638E  -  INTO
+  09  I  000   IN_INTO       
+  2E  N  001
+  14  T  000
+  8F  O  100
+
+
+6392  -  INVENTORY
+  09  I  000   VERB          
+  6E  N  011
+  16  V  000
+  05  E  000
+  0E  N  000
+  14  T  000
+  0F  O  000
+  12  R  000
+  99  Y  100
+
+
+639B  -  IS
+  49  I  010   ARTICLE_MISC  
+  13  S  000
+  80  @  100
+
+
+639E  -  IT
+  49  I  010   SYSTEM_PRONOUN
+  34  T  001
+  80  @  100
+
+
+63A1  -  JUMP
+  0A  J  000   VERB          
+  F5  U  111   Beugung: S
+  0D  M  000
+  90  P  100
+
+
+63A5  -  KEY
+  2B  K  001   NOUN          
+  25  E  001
+  99  Y  100
+
+
+63A8  -  KILL
+  0B  K  000   VERB          
+  E9  I  111   Beugung: S
+  0C  L  000
+  CC  L  110
+  --> 6073
+
+
+63AE  -  KING
+  2B  K  001   NOUN          
+  29  I  001
+  0E  N  000
+  87  G  100
+
+
+63B2  -  L
+  0C  L  000   ADVERB        
+  00  @  000
+  C0  @  110
+  --> 6413
+
+
+63B7  -  LAKE
+  2C  L  001   NOUN          
+  21  A  001
+  0B  K  000
+  85  E  100
+
+
+63BB  -  LAND
+  2C  L  001   NOUN          
+  21  A  001
+  0E  N  000
+  84  D  100
+
+
+63BF  -  LARGE
+  2C  L  001   ADJECTIVE     
+  41  A  010
+  12  R  000
+  07  G  000
+  85  E  100
+
+
+63C4  -  LEAVE
+  0C  L  000   VERB          
+  E5  E  111   Beugung: S
+  01  A  000
+  16  V  000
+  85  E  100
+
+
+63C9  -  LEG
+  2C  L  001   NOUN          
+  25  E  001
+  87  G  100
+
+
+63CC  -  LEVELLED
+  2C  L  001   ADJECTIVE     
+  45  E  010
+  16  V  000
+  05  E  000
+  0C  L  000
+  0C  L  000
+  05  E  000
+  84  D  100
+
+
+63D4  -  LIFT
+  0C  L  000   VERB          
+  E9  I  111   Beugung: S
+  06  F  000
+  D4  T  110
+  --> 668C
+
+
+63DA  -  LIKE
+  2C  L  001   ADJECTIVE     
+  49  I  010
+  0B  K  000
+  85  E  100
+
+
+63DE  -  LIGHT
+  0C  L  000   VERB          
+  E9  I  111   Beugung: S
+  07  G  000
+  08  H  000
+  94  T  100
+
+
+63E3  -  LITTLE
+  2C  L  001   ADJECTIVE     
+  49  I  010
+  14  T  000
+  14  T  000
+  0C  L  000
+  85  E  100
+
+
+63E9  -  LO
+  0C  L  000   ADVERB        
+  0F  O  000
+  C0  @  110
+  --> 6413
+
+
+63EE  -  LOAD
+  4C  L  010   SYSTEM_PRONOUN
+  2F  O  001
+  01  A  000
+  84  D  100
+
+
+63F2  -  LOCK
+  0C  L  000   VERB          
+  EF  O  111   Beugung: S
+  03  C  000
+  8B  K  100
+
+
+63F6  -  LOCKED
+  2C  L  001   ADJECTIVE     
+  4F  O  010
+  03  C  000
+  0B  K  000
+  05  E  000
+  84  D  100
+
+
+63FC  -  LOGS
+  2C  L  001   NOUN          
+  2F  O  001
+  07  G  000
+  93  S  100
+
+
+6400  -  LONELANDS
+  2C  L  001   NOUN          
+  2F  O  001
+  0E  N  000
+  05  E  000
+  0C  L  000
+  01  A  000
+  0E  N  000
+  04  D  000
+  93  S  100
+
+
+6409  -  LONELY
+  2C  L  001   ADJECTIVE     
+  4F  O  010
+  0E  N  000
+  05  E  000
+  0C  L  000
+  99  Y  100
+
+
+640F  -  LONG
+  2C  L  001   ADJECTIVE     
+  4F  O  010
+  0E  N  000
+  87  G  100
+
+
+6413  -  LOOK
+  0C  L  000   VERB          
+  EF  O  111   Beugung: S
+  0F  O  000
+  8B  K  100
+
+
+6417  -  LOW
+  2C  L  001   ADJECTIVE     
+  4F  O  010
+  97  W  100
+
+
+641A  -  LOWER
+  2C  L  001   ADJECTIVE     
+  4F  O  010
+  17  W  000
+  05  E  000
+  92  R  100
+
+
+641F  -  LUNCH
+  2C  L  001   NOUN          
+  35  U  001
+  0E  N  000
+  03  C  000
+  88  H  100
+
+
+6424  -  MAGIC
+  2D  M  001   ADJECTIVE     
+  41  A  010
+  07  G  000
+  09  I  000
+  83  C  100
+
+
+6429  -  MAN
+  2D  M  001   NOUN          
+  21  A  001
+  8E  N  100
+
+
+642C  -  MAP
+  2D  M  001   NOUN          
+  21  A  001
+  90  P  100
+
+
+642F  -  ME
+  2D  M  001   NOUN          
+  25  E  001
+  C0  @  110
+  --> 67A8
+
+
+6434  -  MEAN
+  2D  M  001   ADJECTIVE     
+  45  E  010
+  01  A  000
+  8E  N  100
+
+
+6438  -  MIRKWOOD
+  2D  M  001   NOUN          
+  29  I  001
+  12  R  000
+  0B  K  000
+  17  W  000
+  0F  O  000
+  0F  O  000
+  84  D  100
+
+
+6440  -  MISTY
+  2D  M  001   ADJECTIVE     
+  49  I  010
+  13  S  000
+  14  T  000
+  99  Y  100
+
+
+6445  -  MONSTROUS
+  2D  M  001   ADJECTIVE     
+  4F  O  010
+  0E  N  000
+  13  S  000
+  14  T  000
+  12  R  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+644E  -  MOUNTAIN
+  2D  M  001   NOUN          
+  2F  O  001
+  15  U  000
+  0E  N  000
+  14  T  000
+  01  A  000
+  09  I  000
+  8E  N  100
+
+
+6456  -  MOUNTAINS
+  2D  M  001   NOUN          
+  2F  O  001
+  15  U  000
+  0E  N  000
+  14  T  000
+  01  A  000
+  09  I  000
+  0E  N  000
+  93  S  100
+
+
+645F  -  N
+  0E  N  000   MOVE_DIR      
+  40  @  010
+  C0  @  110
+  --> 6480
+
+
+6464  -  NARROW
+  2E  N  001   ADJECTIVE     
+  41  A  010
+  12  R  000
+  12  R  000
+  0F  O  000
+  97  W  100
+
+
+646A  -  NASTY
+  2E  N  001   ADJECTIVE     
+  41  A  010
+  13  S  000
+  14  T  000
+  99  Y  100
+
+
+646F  -  NE
+  0E  N  000   MOVE_DIR      
+  45  E  010
+  C0  @  110
+  --> 6485
+
+
+6474  -  NIGHT
+  2E  N  001   NOUN          
+  29  I  001
+  07  G  000
+  08  H  000
+  94  T  100
+
+
+6479  -  NOPRINT
+  4E  N  010   SYSTEM_PRONOUN
+  2F  O  001
+  10  P  000
+  12  R  000
+  09  I  000
+  0E  N  000
+  94  T  100
+
+
+6480  -  NORTH
+  0E  N  000   MOVE_DIR      
+  4F  O  010
+  12  R  000
+  14  T  000
+  88  H  100
+
+
+6485  -  NORTHEAST
+  0E  N  000   MOVE_DIR      
+  4F  O  010
+  12  R  000
+  14  T  000
+  08  H  000
+  05  E  000
+  01  A  000
+  13  S  000
+  94  T  100
+
+
+648E  -  NORTHWEST
+  0E  N  000   MOVE_DIR      
+  4F  O  010
+  12  R  000
+  14  T  000
+  08  H  000
+  17  W  000
+  05  E  000
+  13  S  000
+  94  T  100
+
+
+6497  -  NW
+  0E  N  000   MOVE_DIR      
+  57  W  010
+  C0  @  110
+  --> 648E
+
+
+649C  -  OF
+  2F  O  001   PREPOSITION   
+  66  F  011
+  80  @  100
+
+
+649F  -  OFF
+  2F  O  001   PREPOSITION   
+  66  F  011
+  86  F  100
+
+
+64A2  -  OFFER
+  0F  O  000   VERB          
+  E6  F  111   Beugung: S
+  06  F  000
+  05  E  000
+  92  R  100
+
+
+64A7  -  OLD
+  2F  O  001   ADJECTIVE     
+  4C  L  010
+  84  D  100
+
+
+64AA  -  ON
+  2F  O  001   PREPOSITION   
+  6E  N  011
+  80  @  100
+
+
+64AD  -  ONE
+  4F  O  010   SYSTEM_PRONOUN
+  2E  N  001
+  85  E  100
+
+
+64B0  -  ONTO
+  2F  O  001   PREPOSITION   
+  6E  N  011
+  14  T  000
+  8F  O  100
+
+
+64B4  -  OPEN
+  0F  O  000   VERB          
+  F0  P  111   Beugung: S
+  05  E  000
+  8E  N  100
+
+
+64B8  -  OPENING
+  2F  O  001   NOUN          
+  30  P  001
+  05  E  000
+  0E  N  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+64BF  -  OUT
+  2F  O  001   PREPOSITION   
+  75  U  011
+  94  T  100
+
+
+64C2  -  OUTSIDE
+  2F  O  001   ADJECTIVE     
+  55  U  010
+  14  T  000
+  13  S  000
+  09  I  000
+  04  D  000
+  85  E  100
+
+
+64C9  -  OVER
+  2F  O  001   PREPOSITION   
+  76  V  011
+  05  E  000
+  92  R  100
+
+
+64CD  -  PASSAGE
+  30  P  001   NOUN          
+  21  A  001
+  13  S  000
+  13  S  000
+  01  A  000
+  07  G  000
+  85  E  100
+
+
+64D4  -  PATH
+  30  P  001   NOUN          
+  21  A  001
+  14  T  000
+  88  H  100
+
+
+64D8  -  PAUSE
+  50  P  010   SYSTEM_PRONOUN
+  21  A  001
+  15  U  000
+  13  S  000
+  85  E  100
+
+
+64DD  -  PICK
+  10  P  000   VERB          
+  E9  I  111   Beugung: S
+  03  C  000
+  CB  K  110
+  --> 610D
+
+
+64E3  -  PIT
+  30  P  001   NOUN          
+  29  I  001
+  94  T  100
+
+
+64E6  -  PLACE
+  30  P  001   NOUN          
+  2C  L  001
+  01  A  000
+  03  C  000
+  85  E  100
+
+
+64EB  -  PLEASE
+  10  P  000   ADVERB        
+  0C  L  000
+  05  E  000
+  01  A  000
+  13  S  000
+  85  E  100
+
+
+64F1  -  PORTCULLIS
+  30  P  001   NOUN          
+  2F  O  001
+  12  R  000
+  14  T  000
+  03  C  000
+  15  U  000
+  0C  L  000
+  0C  L  000
+  09  I  000
+  93  S  100
+
+
+64FB  -  PRINT
+  50  P  010   SYSTEM_PRONOUN
+  32  R  001
+  09  I  000
+  0E  N  000
+  94  T  100
+
+
+6500  -  PULL
+  10  P  000   VERB          
+  F5  U  111   Beugung: S
+  0C  L  000
+  8C  L  100
+
+
+6504  -  PUSH
+  10  P  000   VERB          
+  F5  U  111   Beugung: ES
+  33  S  001
+  88  H  100
+
+
+6508  -  PUT
+  10  P  000   VERB          
+  F5  U  111   Beugung: S
+  14  T  000
+  80  @  100
+
+
+650C  -  QUICKLY
+  11  Q  000   ADVERB        
+  15  U  000
+  09  I  000
+  03  C  000
+  0B  K  000
+  0C  L  000
+  99  Y  100
+
+
+6513  -  QUIET
+  11  Q  000   ADVERB        
+  15  U  000
+  09  I  000
+  05  E  000
+  94  T  100
+
+
+6518  -  QUIT
+  51  Q  010   SYSTEM_PRONOUN
+  35  U  001
+  09  I  000
+  94  T  100
+
+
+651C  -  QUITE
+  31  Q  001   ADJECTIVE     
+  55  U  010
+  09  I  000
+  14  T  000
+  85  E  100
+
+
+6521  -  RAVENHILL
+  32  R  001   NOUN          
+  21  A  001
+  16  V  000
+  05  E  000
+  0E  N  000
+  08  H  000
+  09  I  000
+  0C  L  000
+  8C  L  100
+
+
+652A  -  RAVINE
+  32  R  001   NOUN          
+  21  A  001
+  16  V  000
+  09  I  000
+  0E  N  000
+  85  E  100
+
+
+6530  -  READ
+  12  R  000   VERB          
+  65  E  011
+  01  A  000
+  C4  D  110
+  --> 623E
+
+
+6536  -  RED
+  32  R  001   ADJECTIVE     
+  45  E  010
+  84  D  100
+
+
+6539  -  RIBS
+  32  R  001   NOUN          
+  29  I  001
+  02  B  000
+  93  S  100
+
+
+653D  -  RING
+  32  R  001   NOUN          
+  29  I  001
+  0E  N  000
+  87  G  100
+
+
+6541  -  RIVENDELL
+  32  R  001   NOUN          
+  29  I  001
+  16  V  000
+  05  E  000
+  0E  N  000
+  04  D  000
+  05  E  000
+  0C  L  000
+  8C  L  100
+
+
+654A  -  RIVER
+  32  R  001   NOUN          
+  29  I  001
+  16  V  000
+  05  E  000
+  92  R  100
+
+
+654F  -  ROAD
+  32  R  001   NOUN          
+  2F  O  001
+  01  A  000
+  84  D  100
+
+
+6553  -  ROCK
+  32  R  001   ADJECTIVE     
+  4F  O  010
+  03  C  000
+  8B  K  100
+
+
+6557  -  ROOM
+  32  R  001   NOUN          
+  2F  O  001
+  0F  O  000
+  8D  M  100
+
+
+655B  -  ROPE
+  32  R  001   NOUN          
+  2F  O  001
+  10  P  000
+  85  E  100
+
+
+655F  -  ROUND
+  32  R  001   ADJECTIVE     
+  4F  O  010
+  15  U  000
+  0E  N  000
+  84  D  100
+
+
+6564  -  RUG
+  32  R  001   NOUN          
+  35  U  001
+  87  G  100
+
+
+6567  -  RUINS
+  32  R  001   NOUN          
+  35  U  001
+  09  I  000
+  0E  N  000
+  93  S  100
+
+
+656C  -  RUN
+  32  R  001   GO_RUN        
+  95  U  100   Beugung: S
+  0E  N  000
+  80  @  100
+
+
+6570  -  RUNNING
+  32  R  001   NOUN          
+  35  U  001
+  0E  N  000
+  0E  N  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6577  -  S
+  13  S  000   MOVE_DIR      
+  40  @  010
+  C0  @  110
+  --> 6607
+
+
+657C  -  SAND
+  33  S  001   NOUN          
+  21  A  001
+  0E  N  000
+  84  D  100
+
+
+6580  -  SAVE
+  53  S  010   SYSTEM_PRONOUN
+  21  A  001
+  16  V  000
+  85  E  100
+
+
+6584  -  SAY
+  13  S  000   VERB          
+  E1  A  111   Beugung: S
+  19  Y  000
+  C0  @  110
+  --> 6690
+
+
+658A  -  SCORE
+  53  S  010   SYSTEM_PRONOUN
+  23  C  001
+  0F  O  000
+  12  R  000
+  85  E  100
+
+
+658F  -  SE
+  13  S  000   MOVE_DIR      
+  45  E  010
+  C0  @  110
+  --> 660C
+
+
+6594  -  SHOOT
+  13  S  000   VERB          
+  E8  H  111   Beugung: S
+  0F  O  000
+  0F  O  000
+  94  T  100
+
+
+6599  -  SHORT
+  33  S  001   ADJECTIVE     
+  48  H  010
+  0F  O  000
+  12  R  000
+  94  T  100
+
+
+659E  -  SHOULDER
+  33  S  001   NOUN          
+  28  H  001
+  0F  O  000
+  15  U  000
+  0C  L  000
+  04  D  000
+  05  E  000
+  92  R  100
+
+
+65A6  -  SIDE
+  33  S  001   ADJECTIVE     
+  49  I  010
+  04  D  000
+  85  E  100
+
+
+65AA  -  SIDEDOOR
+  33  S  001   NOUN          
+  29  I  001
+  04  D  000
+  05  E  000
+  04  D  000
+  0F  O  000
+  0F  O  000
+  92  R  100
+
+
+65B2  -  SIGN
+  33  S  001   NOUN          
+  29  I  001
+  07  G  000
+  8E  N  100
+
+
+65B6  -  SING
+  13  S  000   VERB          
+  69  I  011
+  0E  N  000
+  87  G  100
+
+
+65BA  -  SIT
+  13  S  000   VERB          
+  E9  I  111   Beugung: S
+  14  T  000
+  80  @  100
+
+
+65BE  -  SKULL
+  33  S  001   NOUN          
+  2B  K  001
+  15  U  000
+  0C  L  000
+  8C  L  100
+
+
+65C3  -  SLASH
+  13  S  000   VERB          
+  EC  L  111   Beugung: ES
+  21  A  001
+  13  S  000
+  C8  H  110
+  --> 6073
+
+
+65CA  -  SLEEP
+  13  S  000   VERB          
+  EC  L  111   Beugung: S
+  05  E  000
+  05  E  000
+  90  P  100
+
+
+65CF  -  SLICE
+  13  S  000   VERB          
+  EC  L  111   Beugung: S
+  09  I  000
+  03  C  000
+  C5  E  110
+  --> 6073
+
+
+65D6  -  SLIMY
+  33  S  001   ADJECTIVE     
+  4C  L  010
+  09  I  000
+  0D  M  000
+  99  Y  100
+
+
+65DB  -  SLOWLY
+  13  S  000   ADVERB        
+  0C  L  000
+  0F  O  000
+  17  W  000
+  0C  L  000
+  99  Y  100
+
+
+65E1  -  SMALL
+  33  S  001   ADJECTIVE     
+  4D  M  010
+  01  A  000
+  0C  L  000
+  8C  L  100
+
+
+65E6  -  SMASH
+  13  S  000   VERB          
+  ED  M  111   Beugung: ES
+  21  A  001
+  13  S  000
+  C8  H  110
+  --> 6658
+
+
+65ED  -  SMOOTH
+  33  S  001   ADJECTIVE     
+  4D  M  010
+  0F  O  000
+  0F  O  000
+  14  T  000
+  88  H  100
+
+
+65F3  -  SMOTHERING
+  33  S  001   ADJECTIVE     
+  4D  M  010
+  0F  O  000
+  14  T  000
+  08  H  000
+  05  E  000
+  12  R  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+65FD  -  SOFTLY
+  13  S  000   ADVERB        
+  0F  O  000
+  06  F  000
+  14  T  000
+  0C  L  000
+  99  Y  100
+
+
+6603  -  SOME
+  33  S  001   ADJECTIVE     
+  4F  O  010
+  0D  M  000
+  85  E  100
+
+
+6607  -  SOUTH
+  13  S  000   MOVE_DIR      
+  4F  O  010
+  15  U  000
+  14  T  000
+  88  H  100
+
+
+660C  -  SOUTHEAST
+  13  S  000   MOVE_DIR      
+  4F  O  010
+  15  U  000
+  14  T  000
+  08  H  000
+  05  E  000
+  01  A  000
+  13  S  000
+  94  T  100
+
+
+6615  -  SOUTHWEST
+  13  S  000   MOVE_DIR      
+  4F  O  010
+  15  U  000
+  14  T  000
+  08  H  000
+  17  W  000
+  05  E  000
+  13  S  000
+  94  T  100
+
+
+661E  -  SPACE
+  33  S  001   NOUN          
+  30  P  001
+  01  A  000
+  03  C  000
+  85  E  100
+
+
+6623  -  SPIDER
+  33  S  001   ADJECTIVE     
+  50  P  010
+  09  I  000
+  04  D  000
+  05  E  000
+  92  R  100
+
+
+6629  -  STAIRS
+  33  S  001   NOUN          
+  34  T  001
+  01  A  000
+  09  I  000
+  12  R  000
+  93  S  100
+
+
+662F  -  STATUE
+  33  S  001   NOUN          
+  34  T  001
+  01  A  000
+  14  T  000
+  15  U  000
+  85  E  100
+
+
+6635  -  STEAL
+  13  S  000   VERB          
+  F4  T  111   Beugung: S
+  05  E  000
+  01  A  000
+  CC  L  110
+  --> 668C
+
+
+663C  -  STEEP
+  33  S  001   ADJECTIVE     
+  54  T  010
+  05  E  000
+  05  E  000
+  90  P  100
+
+
+6641  -  STONE
+  33  S  001   NOUN          
+  34  T  001
+  0F  O  000
+  0E  N  000
+  85  E  100
+
+
+6646  -  STRAIGHT
+  33  S  001   ADJECTIVE     
+  54  T  010
+  12  R  000
+  01  A  000
+  09  I  000
+  07  G  000
+  08  H  000
+  94  T  100
+
+
+664E  -  STRETCHING
+  33  S  001   ADJECTIVE     
+  54  T  010
+  12  R  000
+  05  E  000
+  14  T  000
+  03  C  000
+  08  H  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6658  -  STRIKE
+  13  S  000   VERB          
+  F4  T  111   Beugung: S
+  12  R  000
+  09  I  000
+  0B  K  000
+  85  E  100
+
+
+665E  -  STROKE
+  33  S  001   NOUN          
+  34  T  001
+  12  R  000
+  0F  O  000
+  0B  K  000
+  85  E  100
+
+
+6664  -  STRONG
+  33  S  001   NOUN          
+  34  T  001
+  12  R  000
+  0F  O  000
+  0E  N  000
+  87  G  100
+
+
+666A  -  STUFFY
+  33  S  001   ADJECTIVE     
+  54  T  010
+  15  U  000
+  06  F  000
+  06  F  000
+  99  Y  100
+
+
+6670  -  STUNNED
+  33  S  001   ADJECTIVE     
+  54  T  010
+  15  U  000
+  0E  N  000
+  0E  N  000
+  05  E  000
+  84  D  100
+
+
+6677  -  SW
+  13  S  000   MOVE_DIR      
+  57  W  010
+  C0  @  110
+  --> 6615
+
+
+667C  -  SWIM
+  13  S  000   VERB          
+  F7  W  111   Beugung: S
+  09  I  000
+  8D  M  100
+
+
+6680  -  SWORD
+  33  S  001   NOUN          
+  37  W  001
+  0F  O  000
+  12  R  000
+  84  D  100
+
+
+6685  -  SYMBOLS
+  33  S  001   NOUN          
+  39  Y  001
+  0D  M  000
+  02  B  000
+  0F  O  000
+  0C  L  000
+  93  S  100
+
+
+668C  -  TAKE
+  14  T  000   VERB          
+  E1  A  111   Beugung: S
+  0B  K  000
+  85  E  100
+
+
+6690  -  TALK
+  14  T  000   VERB          
+  61  A  011
+  0C  L  000
+  8B  K  100
+
+
+6694  -  TANGLED
+  34  T  001   ADJECTIVE     
+  41  A  010
+  0E  N  000
+  07  G  000
+  0C  L  000
+  05  E  000
+  84  D  100
+
+
+669B  -  THAT
+  54  T  010   ARTICLE_MISC  
+  08  H  000
+  01  A  000
+  94  T  100
+
+
+669F  -  THE
+  54  T  010   ARTICLE_MISC  
+  08  H  000
+  85  E  100
+
+
+66A2  -  THEN
+  54  T  010   THEN          
+  68  H  011
+  05  E  000
+  8E  N  100
+
+
+66A6  -  THICK
+  34  T  001   ADJECTIVE     
+  48  H  010
+  09  I  000
+  03  C  000
+  8B  K  100
+
+
+66AB  -  THIEF
+  34  T  001   NOUN          
+  28  H  001
+  09  I  000
+  05  E  000
+  86  F  100
+
+
+66B0  -  THIN
+  34  T  001   ADJECTIVE     
+  48  H  010
+  09  I  000
+  8E  N  100
+
+
+66B4  -  THORIN
+  34  T  001   NOUN          
+  28  H  001
+  0F  O  000
+  12  R  000
+  09  I  000
+  8E  N  100
+
+
+66BA  -  THREADS
+  34  T  001   ADJECTIVE     
+  48  H  010
+  12  R  000
+  05  E  000
+  01  A  000
+  04  D  000
+  93  S  100
+
+
+66C1  -  THROUGH
+  34  T  001   PREPOSITION   
+  68  H  011
+  12  R  000
+  0F  O  000
+  15  U  000
+  07  G  000
+  88  H  100
+
+
+66C8  -  THROW
+  14  T  000   VERB          
+  E8  H  111   Beugung: S
+  12  R  000
+  0F  O  000
+  97  W  100
+
+
+66CD  -  TIE
+  14  T  000   VERB          
+  E9  I  111   Beugung: S
+  05  E  000
+  80  @  100
+
+
+66D1  -  TO
+  34  T  001   PREPOSITION   
+  6F  O  011
+  80  @  100
+
+
+66D4  -  TOO
+  34  T  001   PREPOSITION   
+  6F  O  011
+  8F  O  100
+
+
+66D7  -  TORCH
+  34  T  001   NOUN          
+  AF  O  101   Beugung: ES
+  32  R  001
+  03  C  000
+  88  H  100
+
+
+66DC  -  TOWN
+  34  T  001   NOUN          
+  2F  O  001
+  17  W  000
+  8E  N  100
+
+
+66E0  -  TRAP
+  34  T  001   ADJECTIVE     
+  52  R  010
+  01  A  000
+  90  P  100
+
+
+66E4  -  TREASURE
+  34  T  001   NOUN          
+  32  R  001
+  05  E  000
+  01  A  000
+  13  S  000
+  15  U  000
+  12  R  000
+  85  E  100
+
+
+66EC  -  TREE
+  34  T  001   NOUN          
+  B2  R  101   Beugung: S
+  05  E  000
+  85  E  100
+
+
+66F0  -  TREELESS
+  34  T  001   ADJECTIVE     
+  52  R  010
+  05  E  000
+  05  E  000
+  0C  L  000
+  05  E  000
+  13  S  000
+  93  S  100
+
+
+66F8  -  TROLL
+  34  T  001   NOUN          
+  32  R  001
+  0F  O  000
+  0C  L  000
+  8C  L  100
+
+
+66FD  -  TROLLS
+  34  T  001   ADJECTIVE     
+  52  R  010
+  0F  O  000
+  0C  L  000
+  0C  L  000
+  93  S  100
+
+
+6703  -  TUNNEL
+  34  T  001   ADJECTIVE     
+  55  U  010
+  0E  N  000
+  0E  N  000
+  05  E  000
+  8C  L  100
+
+
+6709  -  TURN
+  14  T  000   VERB          
+  F5  U  111   Beugung: S
+  12  R  000
+  8E  N  100
+
+
+670D  -  U
+  15  U  000   ADVERB        
+  00  @  000
+  C0  @  110
+  --> 6725
+
+
+6712  -  UNLOCK
+  15  U  000   VERB          
+  EE  N  111   Beugung: S
+  0C  L  000
+  0F  O  000
+  03  C  000
+  8B  K  100
+
+
+6718  -  UNLOCKED
+  35  U  001   ADJECTIVE     
+  4E  N  010
+  0C  L  000
+  0F  O  000
+  03  C  000
+  0B  K  000
+  05  E  000
+  84  D  100
+
+
+6720  -  UNTIE
+  15  U  000   VERB          
+  EE  N  111   Beugung: S
+  14  T  000
+  09  I  000
+  85  E  100
+
+
+6725  -  UP
+  15  U  000   MOVE_DIR      
+  50  P  010
+  80  @  100
+
+
+6728  -  VALIANT
+  36  V  001   ADJECTIVE     
+  41  A  010
+  0C  L  000
+  09  I  000
+  01  A  000
+  0E  N  000
+  94  T  100
+
+
+672F  -  VALLEY
+  36  V  001   NOUN          
+  21  A  001
+  0C  L  000
+  0C  L  000
+  05  E  000
+  99  Y  100
+
+
+6735  -  VALUABLE
+  36  V  001   ADJECTIVE     
+  41  A  010
+  0C  L  000
+  15  U  000
+  01  A  000
+  02  B  000
+  0C  L  000
+  85  E  100
+
+
+673D  -  VERY
+  36  V  001   ADJECTIVE     
+  45  E  010
+  12  R  000
+  99  Y  100
+
+
+6741  -  VICIOUS
+  36  V  001   ADJECTIVE     
+  49  I  010
+  03  C  000
+  09  I  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+6748  -  VICIOUSLY
+  16  V  000   ADVERB        
+  09  I  000
+  03  C  000
+  09  I  000
+  0F  O  000
+  15  U  000
+  13  S  000
+  0C  L  000
+  99  Y  100
+
+
+6751  -  W
+  17  W  000   MOVE_DIR      
+  40  @  010
+  C0  @  110
+  --> 6779
+
+
+6756  -  WAIT
+  17  W  000   VERB          
+  E1  A  111   Beugung: S
+  09  I  000
+  94  T  100
+
+
+675A  -  WALL
+  37  W  001   NOUN          
+  A1  A  101   Beugung: S
+  0C  L  000
+  8C  L  100
+
+
+675E  -  WATER
+  37  W  001   NOUN          
+  21  A  001
+  14  T  000
+  05  E  000
+  92  R  100
+
+
+6763  -  WATERFALL
+  37  W  001   NOUN          
+  21  A  001
+  14  T  000
+  05  E  000
+  12  R  000
+  06  F  000
+  01  A  000
+  0C  L  000
+  8C  L  100
+
+
+676C  -  WEAPON
+  37  W  001   NOUN          
+  25  E  001
+  01  A  000
+  10  P  000
+  0F  O  000
+  8E  N  100
+
+
+6772  -  WEAR
+  17  W  000   VERB          
+  E5  E  111   Beugung: S
+  01  A  000
+  92  R  100
+
+
+6776  -  WEB
+  37  W  001   NOUN          
+  25  E  001
+  82  B  100
+
+
+6779  -  WEST
+  17  W  000   MOVE_DIR      
+  45  E  010
+  13  S  000
+  94  T  100
+
+
+677D  -  WIDE
+  37  W  001   ADJECTIVE     
+  49  I  010
+  04  D  000
+  85  E  100
+
+
+6781  -  WILD
+  37  W  001   ADJECTIVE     
+  49  I  010
+  0C  L  000
+  84  D  100
+
+
+6785  -  WINDING
+  37  W  001   ADJECTIVE     
+  49  I  010
+  0E  N  000
+  04  D  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+678C  -  WINDOW
+  37  W  001   NOUN          
+  29  I  001
+  0E  N  000
+  04  D  000
+  0F  O  000
+  97  W  100
+
+
+6792  -  WINE
+  37  W  001   NOUN          
+  29  I  001
+  0E  N  000
+  85  E  100
+
+
+6796  -  WITH
+  37  W  001   PREPOSITION   
+  69  I  011
+  14  T  000
+  88  H  100
+
+
+679A  -  WARG
+  37  W  001   NOUN          
+  21  A  001
+  12  R  000
+  87  G  100
+
+
+679E  -  WOOD
+  37  W  001   ADJECTIVE     
+  4F  O  010
+  0F  O  000
+  84  D  100
+
+
+67A2  -  WOODEN
+  37  W  001   ADJECTIVE     
+  4F  O  010
+  0F  O  000
+  04  D  000
+  05  E  000
+  8E  N  100
+
+
+67A8  -  YOU
+  39  Y  001   NOUN          
+  2F  O  001
+  95  U  100
+
+
+67AC  -  ABLE
+  01  A  000
+  02  B  000
+  0C  L  000
+  85  E  100
+
+
+67B0  -  ABOUT
+  01  A  000
+  02  B  000
+  0F  O  000
+  15  U  000
+  94  T  100
+
+
+67B5  -  ABOVE
+  01  A  000
+  02  B  000
+  0F  O  000
+  16  V  000
+  85  E  100
+
+
+67BA  -  ADVENTURE
+  01  A  000
+  04  D  000
+  16  V  000
+  05  E  000
+  0E  N  000
+  14  T  000
+  15  U  000
+  12  R  000
+  85  E  100
+
+
+67C3  -  AGAIN
+  01  A  000
+  07  G  000
+  01  A  000
+  09  I  000
+  8E  N  100
+
+
+67C8  -  AGAINST
+  01  A  000
+  07  G  000
+  01  A  000
+  09  I  000
+  0E  N  000
+  13  S  000
+  94  T  100
+
+
+67CF  -  AHEAD
+  01  A  000
+  08  H  000
+  05  E  000
+  01  A  000
+  84  D  100
+
+
+67D4  -  ALIVE
+  01  A  000
+  0C  L  000
+  09  I  000
+  16  V  000
+  85  E  100
+
+
+67D9  -  ALMOST
+  01  A  000
+  0C  L  000
+  0D  M  000
+  0F  O  000
+  13  S  000
+  94  T  100
+
+
+67DF  -  ALONG
+  01  A  000
+  0C  L  000
+  0F  O  000
+  0E  N  000
+  87  G  100
+
+
+67E4  -  ANIMAL
+  01  A  000
+  0E  N  000
+  09  I  000
+  0D  M  000
+  01  A  000
+  8C  L  100
+
+
+67EA  -  APPEAR
+  01  A  000
+  90  P  100   Beugung: S
+  10  P  000
+  05  E  000
+  01  A  000
+  92  R  100
+
+
+67F0  -  APPROACH
+  01  A  000
+  90  P  100   Beugung: ING
+  B0  P  101
+  12  R  000
+  0F  O  000
+  01  A  000
+  03  C  000
+  88  H  100
+
+
+67F8  -  AROUND
+  01  A  000
+  12  R  000
+  0F  O  000
+  15  U  000
+  0E  N  000
+  84  D  100
+
+
+67FE  -  ARRIVES
+  01  A  000
+  12  R  000
+  12  R  000
+  09  I  000
+  16  V  000
+  05  E  000
+  93  S  100
+
+
+6805  -  AS
+  01  A  000
+  13  S  000
+  80  @  100
+
+
+6808  -  ASIDE
+  01  A  000
+  13  S  000
+  09  I  000
+  04  D  000
+  85  E  100
+
+
+680D  -  ASLEEP
+  01  A  000
+  13  S  000
+  0C  L  000
+  05  E  000
+  05  E  000
+  90  P  100
+
+
+6813  -  ATTEMPT
+  01  A  000
+  94  T  100   Beugung: S
+  14  T  000
+  05  E  000
+  0D  M  000
+  10  P  000
+  94  T  100
+
+
+681A  -  AWAY
+  01  A  000
+  17  W  000
+  01  A  000
+  99  Y  100
+
+
+681E  -  BANK
+  02  B  000
+  01  A  000
+  0E  N  000
+  8B  K  100
+
+
+6822  -  BE
+  02  B  000
+  05  E  000
+  80  @  100
+
+
+6825  -  BEHIND
+  02  B  000
+  05  E  000
+  08  H  000
+  09  I  000
+  0E  N  000
+  84  D  100
+
+
+682B  -  BELOW
+  02  B  000
+  05  E  000
+  0C  L  000
+  0F  O  000
+  97  W  100
+
+
+6830  -  BIRTHDAY
+  02  B  000
+  09  I  000
+  12  R  000
+  14  T  000
+  08  H  000
+  04  D  000
+  01  A  000
+  99  Y  100
+
+
+6838  -  BLIMEY
+  02  B  000
+  0C  L  000
+  09  I  000
+  0D  M  000
+  05  E  000
+  99  Y  100
+
+
+683E  -  BRANDISH
+  02  B  000
+  92  R  100   Beugung: ES
+  21  A  001
+  0E  N  000
+  04  D  000
+  09  I  000
+  13  S  000
+  88  H  100
+
+
+6846  -  BRINK
+  02  B  000
+  12  R  000
+  09  I  000
+  0E  N  000
+  8B  K  100
+
+
+684B  -  BROADSIDE
+  02  B  000
+  12  R  000
+  0F  O  000
+  01  A  000
+  04  D  000
+  13  S  000
+  09  I  000
+  04  D  000
+  85  E  100
+
+
+6854  -  BULBOUS
+  02  B  000
+  15  U  000
+  0C  L  000
+  02  B  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+685B  -  BY
+  02  B  000
+  19  Y  000
+  80  @  100
+
+
+685E  -  CARRYING
+  03  C  000
+  01  A  000
+  12  R  000
+  12  R  000
+  19  Y  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6866  -  CLEAVE
+  03  C  000
+  8C  L  100   Beugung: S
+  05  E  000
+  01  A  000
+  16  V  000
+  85  E  100
+
+
+686C  -  CLIFF
+  03  C  000
+  0C  L  000
+  09  I  000
+  06  F  000
+  86  F  100
+
+
+6871  -  COME
+  03  C  000
+  8F  O  100   Beugung: S
+  0D  M  000
+  85  E  100
+
+
+6875  -  COMPLETE
+  03  C  000
+  8F  O  100   Beugung: D
+  8D  M  100
+  10  P  000
+  0C  L  000
+  05  E  000
+  14  T  000
+  85  E  100
+
+
+687D  -  CONGRATULATION
+  03  C  000
+  8F  O  100   Beugung: S
+  0E  N  000
+  07  G  000
+  12  R  000
+  01  A  000
+  14  T  000
+  15  U  000
+  0C  L  000
+  01  A  000
+  14  T  000
+  09  I  000
+  0F  O  000
+  8E  N  100
+
+
+688B  -  COOK
+  03  C  000
+  0F  O  000
+  0F  O  000
+  8B  K  100
+
+
+688F  -  CURRENT
+  03  C  000
+  15  U  000
+  12  R  000
+  12  R  000
+  05  E  000
+  0E  N  000
+  94  T  100
+
+
+6896  -  CRISP
+  03  C  000
+  12  R  000
+  09  I  000
+  13  S  000
+  90  P  100
+
+
+689B  -  DAWN
+  04  D  000
+  81  A  100   Beugung: S
+  17  W  000
+  8E  N  100
+
+
+689F  -  DAY
+  04  D  000
+  01  A  000
+  99  Y  100
+
+
+68A2  -  DEFENSE
+  04  D  000
+  05  E  000
+  06  F  000
+  05  E  000
+  0E  N  000
+  13  S  000
+  85  E  100
+
+
+68A9  -  DESCENDS
+  04  D  000
+  05  E  000
+  13  S  000
+  03  C  000
+  05  E  000
+  0E  N  000
+  04  D  000
+  93  S  100
+
+
+68B1  -  DIE
+  04  D  000
+  09  I  000
+  85  E  100
+
+
+68B4  -  DID
+  04  D  000
+  09  I  000
+  84  D  100
+
+
+68B7  -  DIM
+  04  D  000
+  09  I  000
+  8D  M  100
+
+
+68BA  -  DISTANCE
+  04  D  000
+  09  I  000
+  13  S  000
+  14  T  000
+  01  A  000
+  0E  N  000
+  03  C  000
+  85  E  100
+
+
+68C2  -  DO
+  04  D  000
+  8F  O  100   Beugung: ES
+  20  @  001
+  80  @  100
+
+
+68C6  -  DO
+  04  D  000
+  8F  O  100   Beugung: ING
+  A0  @  101
+  80  @  100
+
+
+68CA  -  DRIPS
+  04  D  000
+  12  R  000
+  09  I  000
+  10  P  000
+  93  S  100
+
+
+68CF  -  EFFORT
+  05  E  000
+  06  F  000
+  06  F  000
+  0F  O  000
+  12  R  000
+  94  T  100
+
+
+68D5  -  END
+  05  E  000
+  8E  N  100   Beugung: S
+  04  D  000
+  80  @  100
+
+
+68D9  -  ENTRANCE
+  05  E  000
+  0E  N  000
+  14  T  000
+  12  R  000
+  01  A  000
+  0E  N  000
+  03  C  000
+  85  E  100
+
+
+68E1  -  EVAPORATE
+  05  E  000
+  96  V  100   Beugung: S
+  01  A  000
+  10  P  000
+  0F  O  000
+  12  R  000
+  01  A  000
+  14  T  000
+  85  E  100
+
+
+68EA  -  EVENING
+  05  E  000
+  16  V  000
+  05  E  000
+  0E  N  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+68F1  -  EXITS
+  05  E  000
+  18  X  000
+  09  I  000
+  14  T  000
+  93  S  100
+
+
+68F6  -  EXPECT
+  05  E  000
+  18  X  000
+  10  P  000
+  05  E  000
+  03  C  000
+  94  T  100
+
+
+68FC  -  FAILED
+  06  F  000
+  01  A  000
+  09  I  000
+  0C  L  000
+  05  E  000
+  84  D  100
+
+
+6902  -  FAILING
+  06  F  000
+  01  A  000
+  09  I  000
+  0C  L  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6909  -  FAR
+  06  F  000
+  01  A  000
+  92  R  100
+
+
+690C  -  FATAL
+  06  F  000
+  01  A  000
+  14  T  000
+  01  A  000
+  8C  L  100
+
+
+6911  -  FEED
+  06  F  000
+  05  E  000
+  05  E  000
+  84  D  100
+
+
+6915  -  FELT
+  06  F  000
+  05  E  000
+  0C  L  000
+  94  T  100
+
+
+6919  -  FIT
+  06  F  000
+  09  I  000
+  94  T  100
+
+
+691C  -  FIRST
+  06  F  000
+  09  I  000
+  12  R  000
+  13  S  000
+  94  T  100
+
+
+6921  -  FLAME
+  06  F  000
+  8C  L  100   Beugung: S
+  01  A  000
+  0D  M  000
+  85  E  100
+
+
+6926  -  FLOAT
+  06  F  000
+  8C  L  100   Beugung: S
+  0F  O  000
+  01  A  000
+  94  T  100
+
+
+692B  -  FLYING
+  06  F  000
+  0C  L  000
+  19  Y  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6931  -  FOOT
+  06  F  000
+  0F  O  000
+  0F  O  000
+  94  T  100
+
+
+6935  -  FOOTING
+  06  F  000
+  0F  O  000
+  0F  O  000
+  14  T  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+693C  -  FOUR
+  06  F  000
+  0F  O  000
+  15  U  000
+  92  R  100
+
+
+6940  -  FRONT
+  06  F  000
+  12  R  000
+  0F  O  000
+  0E  N  000
+  94  T  100
+
+
+6945  -  GETTING
+  07  G  000
+  05  E  000
+  14  T  000
+  14  T  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+694C  -  GLANCING
+  07  G  000
+  0C  L  000
+  01  A  000
+  0E  N  000
+  03  C  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6954  -  GLIDES
+  07  G  000
+  0C  L  000
+  09  I  000
+  04  D  000
+  05  E  000
+  93  S  100
+
+
+695A  -  GLUTTONY
+  07  G  000
+  0C  L  000
+  15  U  000
+  14  T  000
+  14  T  000
+  0F  O  000
+  0E  N  000
+  99  Y  100
+
+
+6962  -  GOT
+  07  G  000
+  0F  O  000
+  94  T  100
+
+
+6965  -  GROUND
+  07  G  000
+  12  R  000
+  0F  O  000
+  15  U  000
+  0E  N  000
+  84  D  100
+
+
+696B  -  GROW
+  07  G  000
+  12  R  000
+  0F  O  000
+  97  W  100
+
+
+696F  -  GUARD
+  07  G  000
+  15  U  000
+  01  A  000
+  12  R  000
+  84  D  100
+
+
+6974  -  HANGING
+  08  H  000
+  01  A  000
+  0E  N  000
+  07  G  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+697B  -  HAS
+  08  H  000
+  01  A  000
+  93  S  100
+
+
+697E  -  HAVE
+  08  H  000
+  01  A  000
+  16  V  000
+  85  E  100
+
+
+6982  -  HE
+  08  H  000
+  05  E  000
+  80  @  100
+
+
+6985  -  HEAR
+  08  H  000
+  85  E  100   Beugung: D
+  81  A  100
+  92  R  100
+
+
+6989  -  HERE
+  08  H  000
+  05  E  000
+  12  R  000
+  85  E  100
+
+
+698D  -  HIM
+  08  H  000
+  09  I  000
+  8D  M  100
+
+
+6990  -  HIS
+  08  H  000
+  09  I  000
+  93  S  100
+
+
+6993  -  HOW
+  08  H  000
+  0F  O  000
+  97  W  100
+
+
+6996  -  HOWLS
+  08  H  000
+  0F  O  000
+  17  W  000
+  0C  L  000
+  93  S  100
+
+
+699B  -  HURRY
+  08  H  000
+  15  U  000
+  12  R  000
+  12  R  000
+  99  Y  100
+
+
+69A0  -  INEFFECTIVE
+  09  I  000
+  0E  N  000
+  05  E  000
+  06  F  000
+  06  F  000
+  05  E  000
+  03  C  000
+  14  T  000
+  09  I  000
+  16  V  000
+  85  E  100
+
+
+69AB  -  ITS
+  09  I  000
+  14  T  000
+  93  S  100
+
+
+69AE  -  JOB
+  0A  J  000
+  0F  O  000
+  82  B  100
+
+
+69B1  -  JUST
+  0A  J  000
+  15  U  000
+  13  S  000
+  94  T  100
+
+
+69B5  -  LURCH
+  0C  L  000
+  15  U  000
+  12  R  000
+  03  C  000
+  88  H  100
+
+
+69BA  -  KEEPS
+  0B  K  000
+  05  E  000
+  05  E  000
+  10  P  000
+  93  S  100
+
+
+69BF  -  KNOCKS
+  0B  K  000
+  0E  N  000
+  0F  O  000
+  03  C  000
+  0B  K  000
+  93  S  100
+
+
+69C5  -  KNOW
+  0B  K  000
+  0E  N  000
+  0F  O  000
+  97  W  100
+
+
+69C9  -  LAST
+  0C  L  000
+  01  A  000
+  13  S  000
+  94  T  100
+
+
+69CD  -  LAUGHS
+  0C  L  000
+  01  A  000
+  15  U  000
+  07  G  000
+  08  H  000
+  93  S  100
+
+
+69D3  -  LAUGHTER
+  0C  L  000
+  01  A  000
+  15  U  000
+  07  G  000
+  08  H  000
+  14  T  000
+  05  E  000
+  92  R  100
+
+
+69DB  -  LIE
+  0C  L  000
+  89  I  100   Beugung: S
+  05  E  000
+  80  @  100
+
+
+69DF  -  LIFE
+  0C  L  000
+  09  I  000
+  06  F  000
+  85  E  100
+
+
+69E3  -  LIVES
+  0C  L  000
+  09  I  000
+  16  V  000
+  05  E  000
+  93  S  100
+
+
+69E8  -  LOSE
+  0C  L  000
+  8F  O  100   Beugung: S
+  13  S  000
+  85  E  100
+
+
+69EC  -  LOUD
+  0C  L  000
+  0F  O  000
+  15  U  000
+  84  D  100
+
+
+69F0  -  LUCKY
+  0C  L  000
+  15  U  000
+  03  C  000
+  0B  K  000
+  99  Y  100
+
+
+69F5  -  MADE
+  0D  M  000
+  01  A  000
+  04  D  000
+  85  E  100
+
+
+69F9  -  MAKE
+  0D  M  000
+  01  A  000
+  0B  K  000
+  85  E  100
+
+
+69FD  -  MARGIN
+  0D  M  000
+  01  A  000
+  12  R  000
+  07  G  000
+  09  I  000
+  8E  N  100
+
+
+6A03  -  MARVELLOUS
+  0D  M  000
+  01  A  000
+  12  R  000
+  16  V  000
+  05  E  000
+  0C  L  000
+  0C  L  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+6A0D  -  MAY
+  0D  M  000
+  01  A  000
+  99  Y  100
+
+
+6A10  -  MAYBE
+  0D  M  000
+  01  A  000
+  19  Y  000
+  02  B  000
+  85  E  100
+
+
+6A15  -  MEND
+  0D  M  000
+  85  E  100   Beugung: ING
+  AE  N  101
+  84  D  100
+
+
+6A19  -  MIDDLE
+  0D  M  000
+  09  I  000
+  04  D  000
+  04  D  000
+  0C  L  000
+  85  E  100
+
+
+6A1F  -  MIDDAY
+  0D  M  000
+  09  I  000
+  04  D  000
+  04  D  000
+  01  A  000
+  99  Y  100
+
+
+6A25  -  MISS
+  0D  M  000
+  89  I  100   Beugung: ES
+  33  S  001
+  93  S  100
+
+
+6A29  -  MOMENT
+  0D  M  000
+  0F  O  000
+  0D  M  000
+  05  E  000
+  0E  N  000
+  94  T  100
+
+
+6A2F  -  MOMENTARILY
+  0D  M  000
+  0F  O  000
+  0D  M  000
+  05  E  000
+  0E  N  000
+  14  T  000
+  01  A  000
+  12  R  000
+  09  I  000
+  0C  L  000
+  99  Y  100
+
+
+6A3A  -  MORN
+  0D  M  000
+  8F  O  100   Beugung: ING
+  B2  R  101
+  8E  N  100
+
+
+6A3E  -  MOUTHFULL
+  0D  M  000
+  0F  O  000
+  15  U  000
+  14  T  000
+  08  H  000
+  06  F  000
+  15  U  000
+  0C  L  000
+  8C  L  100
+
+
+6A47  -  MOVE
+  0D  M  000
+  0F  O  000
+  16  V  000
+  85  E  100
+
+
+6A4B  -  MUCH
+  0D  M  000
+  15  U  000
+  03  C  000
+  88  H  100
+
+
+6A4F  -  MY
+  0D  M  000
+  19  Y  000
+  80  @  100
+
+
+6A52  -  NO
+  0E  N  000
+  0F  O  000
+  80  @  100
+
+
+6A55  -  NOISE
+  0E  N  000
+  0F  O  000
+  09  I  000
+  13  S  000
+  85  E  100
+
+
+6A5A  -  NOT
+  0E  N  000
+  0F  O  000
+  94  T  100
+
+
+6A5D  -  NOTHING
+  0E  N  000
+  0F  O  000
+  14  T  000
+  08  H  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6A64  -  NOW
+  0E  N  000
+  0F  O  000
+  97  W  100
+
+
+6A67  -  ONCE
+  0F  O  000
+  0E  N  000
+  03  C  000
+  85  E  100
+
+
+6A6B  -  OTHER
+  0F  O  000
+  14  T  000
+  08  H  000
+  05  E  000
+  92  R  100
+
+
+6A70  -  PALE
+  10  P  000
+  01  A  000
+  0C  L  000
+  85  E  100
+
+
+6A74  -  PASSES
+  10  P  000
+  01  A  000
+  13  S  000
+  13  S  000
+  05  E  000
+  93  S  100
+
+
+6A7A  -  PAST
+  10  P  000
+  01  A  000
+  13  S  000
+  94  T  100
+
+
+6A7E  -  PLACE
+  10  P  000
+  8C  L  100   Beugung: D
+  81  A  100
+  03  C  000
+  85  E  100
+
+
+6A83  -  POCKET
+  10  P  000
+  8F  O  100   Beugung: S
+  03  C  000
+  0B  K  000
+  05  E  000
+  94  T  100
+
+
+6A89  -  PRECIOUS
+  10  P  000
+  92  R  100   Beugung: S
+  05  E  000
+  03  C  000
+  09  I  000
+  0F  O  000
+  15  U  000
+  93  S  100
+
+
+6A91  -  PREPARE
+  10  P  000
+  12  R  000
+  05  E  000
+  10  P  000
+  01  A  000
+  12  R  000
+  85  E  100
+
+
+6A98  -  PRESENT
+  10  P  000
+  12  R  000
+  05  E  000
+  13  S  000
+  05  E  000
+  0E  N  000
+  94  T  100
+
+
+6A9F  -  REACH
+  12  R  000
+  05  E  000
+  01  A  000
+  03  C  000
+  88  H  100
+
+
+6AA4  -  RECOVER
+  12  R  000
+  85  E  100   Beugung: S
+  03  C  000
+  0F  O  000
+  16  V  000
+  05  E  000
+  92  R  100
+
+
+6AAB  -  SAIL
+  13  S  000
+  81  A  100   Beugung: S
+  09  I  000
+  8C  L  100
+
+
+6AAF  -  SEE
+  13  S  000
+  05  E  000
+  85  E  100
+
+
+6AB2  -  SEEM
+  13  S  000
+  85  E  100   Beugung: S
+  05  E  000
+  8D  M  100
+
+
+6AB6  -  SHADOW
+  13  S  000
+  08  H  000
+  01  A  000
+  04  D  000
+  0F  O  000
+  97  W  100
+
+
+6ABC  -  SHAPE
+  13  S  000
+  08  H  000
+  01  A  000
+  10  P  000
+  85  E  100
+
+
+6AC1  -  SHATTER
+  13  S  000
+  88  H  100   Beugung: S
+  01  A  000
+  14  T  000
+  14  T  000
+  05  E  000
+  92  R  100
+
+
+6AC8  -  SING
+  13  S  000
+  89  I  100   Beugung: ING
+  AE  N  101
+  87  G  100
+
+
+6ACC  -  SINK
+  13  S  000
+  89  I  100   Beugung: ING
+  AE  N  101
+  8B  K  100
+
+
+6AD0  -  SIT
+  13  S  000
+  89  I  100   Beugung: S
+  14  T  000
+  80  @  100
+
+
+6AD4  -  SLIDE
+  13  S  000
+  8C  L  100   Beugung: S
+  09  I  000
+  04  D  000
+  85  E  100
+
+
+6AD9  -  SMELL
+  13  S  000
+  0D  M  000
+  05  E  000
+  0C  L  000
+  8C  L  100
+
+
+6ADE  -  SMELT
+  13  S  000
+  0D  M  000
+  05  E  000
+  0C  L  000
+  94  T  100
+
+
+6AE3  -  SOMEONE
+  13  S  000
+  0F  O  000
+  0D  M  000
+  05  E  000
+  0F  O  000
+  0E  N  000
+  85  E  100
+
+
+6AEA  -  SOMEWHERE
+  13  S  000
+  0F  O  000
+  0D  M  000
+  05  E  000
+  17  W  000
+  08  H  000
+  05  E  000
+  12  R  000
+  85  E  100
+
+
+6AF3  -  SOON
+  13  S  000
+  0F  O  000
+  0F  O  000
+  8E  N  100
+
+
+6AF7  -  SPECIAL
+  13  S  000
+  10  P  000
+  05  E  000
+  03  C  000
+  09  I  000
+  01  A  000
+  8C  L  100
+
+
+6AFE  -  SPOUT
+  13  S  000
+  90  P  100   Beugung: S
+  0F  O  000
+  15  U  000
+  94  T  100
+
+
+6B03  -  STAGGER
+  13  S  000
+  94  T  100   Beugung: S
+  01  A  000
+  07  G  000
+  07  G  000
+  05  E  000
+  92  R  100
+
+
+6B0A  -  STAND
+  13  S  000
+  94  T  100   Beugung: ING
+  A1  A  101
+  0E  N  000
+  84  D  100
+
+
+6B0F  -  STAR
+  13  S  000
+  94  T  100   Beugung: S
+  01  A  000
+  92  R  100
+
+
+6B13  -  STAR
+  13  S  000
+  94  T  100   Beugung: ING
+  A1  A  101
+  92  R  100
+
+
+6B17  -  START
+  13  S  000
+  94  T  100   Beugung: S
+  01  A  000
+  12  R  000
+  94  T  100
+
+
+6B1C  -  STILL
+  13  S  000
+  14  T  000
+  09  I  000
+  0C  L  000
+  8C  L  100
+
+
+6B21  -  STING
+  13  S  000
+  94  T  100   Beugung: S
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6B26  -  STRANGLE
+  13  S  000
+  94  T  100   Beugung: S
+  12  R  000
+  01  A  000
+  0E  N  000
+  07  G  000
+  0C  L  000
+  85  E  100
+
+
+6B2E  -  STRENGTH
+  13  S  000
+  14  T  000
+  12  R  000
+  05  E  000
+  0E  N  000
+  07  G  000
+  14  T  000
+  88  H  100
+
+
+6B36  -  SURROUNDED
+  13  S  000
+  15  U  000
+  12  R  000
+  12  R  000
+  0F  O  000
+  15  U  000
+  0E  N  000
+  04  D  000
+  05  E  000
+  84  D  100
+
+
+6B40  -  SWEEPS
+  13  S  000
+  17  W  000
+  05  E  000
+  05  E  000
+  10  P  000
+  93  S  100
+
+
+6B46  -  SWEPT
+  13  S  000
+  17  W  000
+  05  E  000
+  10  P  000
+  94  T  100
+
+
+6B4B  -  SWING
+  13  S  000
+  97  W  100   Beugung: S
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6B50  -  TERRIFIC
+  14  T  000
+  05  E  000
+  12  R  000
+  12  R  000
+  09  I  000
+  06  F  000
+  09  I  000
+  83  C  100
+
+
+6B58  -  THANK
+  14  T  000
+  08  H  000
+  01  A  000
+  0E  N  000
+  8B  K  100
+
+
+6B5D  -  THEM
+  14  T  000
+  08  H  000
+  05  E  000
+  8D  M  100
+
+
+6B61  -  THERE
+  14  T  000
+  08  H  000
+  05  E  000
+  12  R  000
+  85  E  100
+
+
+6B66  -  THING
+  14  T  000
+  08  H  000
+  09  I  000
+  0E  N  000
+  87  G  100
+
+
+6B6B  -  THIS
+  14  T  000
+  08  H  000
+  09  I  000
+  93  S  100
+
+
+6B6F  -  THRAINS
+  14  T  000
+  08  H  000
+  12  R  000
+  01  A  000
+  09  I  000
+  0E  N  000
+  93  S  100
+
+
+6B76  -  THREE
+  14  T  000
+  08  H  000
+  12  R  000
+  05  E  000
+  85  E  100
+
+
+6B7B  -  THROWN
+  14  T  000
+  08  H  000
+  12  R  000
+  0F  O  000
+  17  W  000
+  8E  N  100
+
+
+6B81  -  THRUST
+  14  T  000
+  88  H  100   Beugung: S
+  12  R  000
+  15  U  000
+  13  S  000
+  94  T  100
+
+
+6B87  -  TIME
+  14  T  000
+  09  I  000
+  0D  M  000
+  85  E  100
+
+
+6B8B  -  TIRED
+  14  T  000
+  09  I  000
+  12  R  000
+  05  E  000
+  84  D  100
+
+
+6B90  -  TRY
+  14  T  000
+  12  R  000
+  99  Y  100
+
+
+6B93  -  TOUCH
+  14  T  000
+  0F  O  000
+  15  U  000
+  03  C  000
+  88  H  100
+
+
+6B98  -  TWO
+  14  T  000
+  17  W  000
+  8F  O  100
+
+
+6B9B  -  UNDER
+  15  U  000
+  0E  N  000
+  04  D  000
+  05  E  000
+  92  R  100
+
+
+6BA0  -  US
+  15  U  000
+  13  S  000
+  80  @  100
+
+
+6BA3  -  VANISH
+  16  V  000
+  81  A  100   Beugung: ES
+  2E  N  001
+  09  I  000
+  13  S  000
+  88  H  100
+
+
+6BA9  -  VERB
+  16  V  000
+  05  E  000
+  12  R  000
+  82  B  100
+
+
+6BAD  -  VISIBLE
+  16  V  000
+  09  I  000
+  13  S  000
+  09  I  000
+  02  B  000
+  0C  L  000
+  85  E  100
+
+
+6BB4  -  WARN
+  17  W  000
+  81  A  100   Beugung: S
+  12  R  000
+  8E  N  100
+
+
+6BB8  -  WAS
+  17  W  000
+  01  A  000
+  93  S  100
+
+
+6BBB  -  WASTED
+  17  W  000
+  01  A  000
+  13  S  000
+  14  T  000
+  05  E  000
+  84  D  100
+
+
+6BC1  -  WE
+  17  W  000
+  05  E  000
+  80  @  100
+
+
+6BC4  -  WELL
+  17  W  000
+  05  E  000
+  0C  L  000
+  8C  L  100
+
+
+6BC8  -  WHAT
+  17  W  000
+  08  H  000
+  01  A  000
+  94  T  100
+
+
+6BCC  -  WHERE
+  17  W  000
+  08  H  000
+  05  E  000
+  12  R  000
+  85  E  100
+
+
+6BD1  -  WHICH
+  17  W  000
+  08  H  000
+  09  I  000
+  03  C  000
+  88  H  100
+
+
+6BD6  -  WILL
+  17  W  000
+  09  I  000
+  0C  L  000
+  8C  L  100
+
+
+6BDA  -  WIND
+  17  W  000
+  09  I  000
+  0E  N  000
+  84  D  100
+
+
+6BDE  -  WORD
+  17  W  000
+  0F  O  000
+  12  R  000
+  84  D  100
+
+
+6BE2  -  WOULD
+  17  W  000
+  0F  O  000
+  15  U  000
+  0C  L  000
+  84  D  100
+
+
+6BE7  -  YER
+  19  Y  000
+  05  E  000
+  92  R  100
+
+
+6BEA  -  YOUR
+  19  Y  000
+  0F  O  000
+  15  U  000
+  92  R  100
+
+
+6040  ARTICLE_MISC    A
+6043  PREPOSITION     ACROSS
+6049  PREPOSITION     AFTER
+604E  SYSTEM_PRONOUN  ALL
+6051  ARTICLE_MISC    ALREADY
+6058  ARTICLE_MISC    AN
+605B  AND             AND
+605E  ARTICLE_MISC    ANOTHER
+6065  ARTICLE_MISC    ARE
+6068  NOUN            ARM
+606B  NOUN            ARROW
+6070  PREPOSITION     AT
+6073  VERB            ATTACK
+6079  NOUN            AXE
+607C  ADJECTIVE       BACK
+6080  NOUN            BARD
+6084  NOUN            BARREL
+608A  ADJECTIVE       BARREN
+6090  NOUN            BAY
+6093  ADJECTIVE       BEORNS
+6099  ADJECTIVE       BEWITCHED
+60A2  ADJECTIVE       BIG
+60A5  ADJECTIVE       BLACK
+60AA  ADJECTIVE       BLEAK
+60AF  NOUN            BLOW
+60B3  NOUN            BLOOD
+60B8  NOUN            BOAT
+60BC  NOUN            BOG
+60BF  NOUN            BODY
+60C3  NOUN            BOW
+60C6  VERB            BREAK
+60CD  ADJECTIVE       BROKEN
+60D3  VERB            BURN
+60D7  SYSTEM_PRONOUN  BUT
+60DC  NOUN            BUTLER
+60E2  NOUN            CACHE
+60E7  NOUN            CAMP
+60EB  ARTICLE_MISC    CAN
+60EE  ARTICLE_MISC    CANNOT
+60F4  VERB            CAPTURE
+60FD  ADVERB          CAREFULLY
+6106  NOUN            CARROCK
+610D  VERB            CARRY
+6112  NOUN            CAVE
+6116  NOUN            CAVERN
+611C  NOUN            CELLAR
+6122  NOUN            CHEST
+6127  NOUN            CLEARING
+612F  VERB            CLIMB
+6134  VERB            CLOSE
+6139  ADJECTIVE       CLOSED
+613F  ADJECTIVE       COMFORTABLE
+614A  NOUN            COUNTRY
+6151  NOUN            CRACK
+6156  VERB            CROSS
+615B  NOUN            CUPBOARD
+6163  ADJECTIVE       CURIOUS
+616A  NOUN            CURTAIN
+6171  ADJECTIVE       CUNNING
+6178  VERB            CUT
+617C  MOVE_DIR        D
+6181  NOUN            DALE
+6185  ADJECTIVE       DANGEROUS
+618E  ADJECTIVE       DARK
+6192  ADJECTIVE       DEAD
+6196  ADJECTIVE       DEEP
+619A  ADJECTIVE       DENSE
+619F  NOUN            DESOLATION
+61A9  VERB            DIG
+61AD  ARTICLE_MISC    DIRECTION
+61B6  ADJECTIVE       DISGUSTING
+61C0  NOUN            DOOR
+61C4  MOVE_DIR        DOWN
+61C8  NOUN            DRAGON
+61CE  ADJECTIVE       DRAGONS
+61D5  ADJECTIVE       DREADFUL
+61DD  ADJECTIVE       DREARY
+61E3  VERB            DRINK
+61E8  VERB            DROP
+61EC  ADJECTIVE       DRY
+61EF  NOUN            DUNGEON
+61F6  MOVE_DIR        E
+61FB  NOUN            EAR
+61FE  MOVE_DIR        EAST
+6202  VERB            EAT
+6206  ADJECTIVE       EDGE
+620A  NOUN            ELF
+620D  NOUN            ELROND
+6213  ADJECTIVE       ELVENKINGS
+621D  NOUN            ELVES
+6222  ADJECTIVE       ELVISH
+6228  VERB            EMPTY
+622D  VERB            ENTER
+6232  SYSTEM_PRONOUN  EVERYTHING
+623E  VERB            EXAMINE
+6245  SYSTEM_PRONOUN  EXCEPT
+624B  NOUN            EYES
+624F  VERB            FALL
+6253  ADJECTIVE       FAST
+6257  ADVERB          FEEBLY
+625D  NOUN            FEET
+6261  VERB            FILL
+6265  NOUN            FINGER
+626B  NOUN            FIST
+626F  NOUN            FLAMES
+6275  ADJECTIVE       FLAT
+6279  NOUN            FLOOR
+627E  ADJECTIVE       FLOWING
+6285  VERB            FOLLOW
+628B  NOUN            FOOD
+628F  PREPOSITION     FOR
+6292  ADVERB          FORCEFULLY
+629C  NOUN            FORD
+62A0  NOUN            FOREST
+62A6  NOUN            FORESTRIVER
+62B1  ADJECTIVE       FOUL
+62B5  PREPOSITION     FROM
+62B9  ADJECTIVE       FULL
+62BD  NOUN            GANDALF
+62C4  NOUN            GATE
+62C8  ADJECTIVE       GENTLY
+62CE  VERB            GET
+62D4  VERB            GIVE
+62D8  ADJECTIVE       GLOOMY
+62DE  GO_RUN          GO
+62E2  NOUN            GOBLIN
+62E8  ADJECTIVE       GOBLINS
+62EF  NOUN            GOLD
+62F3  ADJECTIVE       GOLDEN
+62F9  NOUN            GOLLUM
+62FF  ADJECTIVE       GREAT
+6304  ADJECTIVE       GREEN
+6309  NOUN            HALL
+630D  NOUN            HALLS
+6312  NOUN            HAND
+6316  ADJECTIVE       HARD
+631A  NOUN            HEAD
+631E  SYSTEM_PRONOUN  HELP
+6322  NOUN            HEART
+6327  ADJECTIVE       HEAVY
+632C  VERB            HELLO
+6331  ADJECTIVE       HIDDEN
+6337  ADJECTIVE       HIDEOUS
+633E  NOUN            HILL
+6342  NOUN            HILLS
+6347  VERB            HIT
+634D  ADJECTIVE       HOBBIT
+6353  NOUN            HOBBITLAND
+635D  NOUN            HOLE
+6361  ADJECTIVE       HORRIBLE
+6369  ADJECTIVE       HOUSE
+636E  VERB            HURRY
+6373  ADVERB          I
+6378  IN_INTO         IN
+637B  PREPOSITION     INSIDE
+6381  ADJECTIVE       INSIGNIFICANT
+638E  IN_INTO         INTO
+6392  VERB            INVENTORY
+639B  ARTICLE_MISC    IS
+639E  SYSTEM_PRONOUN  IT
+63A1  VERB            JUMP
+63A5  NOUN            KEY
+63A8  VERB            KILL
+63AE  NOUN            KING
+63B2  ADVERB          L
+63B7  NOUN            LAKE
+63BB  NOUN            LAND
+63BF  ADJECTIVE       LARGE
+63C4  VERB            LEAVE
+63C9  NOUN            LEG
+63CC  ADJECTIVE       LEVELLED
+63D4  VERB            LIFT
+63DA  ADJECTIVE       LIKE
+63DE  VERB            LIGHT
+63E3  ADJECTIVE       LITTLE
+63E9  ADVERB          LO
+63EE  SYSTEM_PRONOUN  LOAD
+63F2  VERB            LOCK
+63F6  ADJECTIVE       LOCKED
+63FC  NOUN            LOGS
+6400  NOUN            LONELANDS
+6409  ADJECTIVE       LONELY
+640F  ADJECTIVE       LONG
+6413  VERB            LOOK
+6417  ADJECTIVE       LOW
+641A  ADJECTIVE       LOWER
+641F  NOUN            LUNCH
+6424  ADJECTIVE       MAGIC
+6429  NOUN            MAN
+642C  NOUN            MAP
+642F  NOUN            ME
+6434  ADJECTIVE       MEAN
+6438  NOUN            MIRKWOOD
+6440  ADJECTIVE       MISTY
+6445  ADJECTIVE       MONSTROUS
+644E  NOUN            MOUNTAIN
+6456  NOUN            MOUNTAINS
+645F  MOVE_DIR        N
+6464  ADJECTIVE       NARROW
+646A  ADJECTIVE       NASTY
+646F  MOVE_DIR        NE
+6474  NOUN            NIGHT
+6479  SYSTEM_PRONOUN  NOPRINT
+6480  MOVE_DIR        NORTH
+6485  MOVE_DIR        NORTHEAST
+648E  MOVE_DIR        NORTHWEST
+6497  MOVE_DIR        NW
+649C  PREPOSITION     OF
+649F  PREPOSITION     OFF
+64A2  VERB            OFFER
+64A7  ADJECTIVE       OLD
+64AA  PREPOSITION     ON
+64AD  SYSTEM_PRONOUN  ONE
+64B0  PREPOSITION     ONTO
+64B4  VERB            OPEN
+64B8  NOUN            OPENING
+64BF  PREPOSITION     OUT
+64C2  ADJECTIVE       OUTSIDE
+64C9  PREPOSITION     OVER
+64CD  NOUN            PASSAGE
+64D4  NOUN            PATH
+64D8  SYSTEM_PRONOUN  PAUSE
+64DD  VERB            PICK
+64E3  NOUN            PIT
+64E6  NOUN            PLACE
+64EB  ADVERB          PLEASE
+64F1  NOUN            PORTCULLIS
+64FB  SYSTEM_PRONOUN  PRINT
+6500  VERB            PULL
+6504  VERB            PUSH
+6508  VERB            PUT
+650C  ADVERB          QUICKLY
+6513  ADVERB          QUIET
+6518  SYSTEM_PRONOUN  QUIT
+651C  ADJECTIVE       QUITE
+6521  NOUN            RAVENHILL
+652A  NOUN            RAVINE
+6530  VERB            READ
+6536  ADJECTIVE       RED
+6539  NOUN            RIBS
+653D  NOUN            RING
+6541  NOUN            RIVENDELL
+654A  NOUN            RIVER
+654F  NOUN            ROAD
+6553  ADJECTIVE       ROCK
+6557  NOUN            ROOM
+655B  NOUN            ROPE
+655F  ADJECTIVE       ROUND
+6564  NOUN            RUG
+6567  NOUN            RUINS
+656C  GO_RUN          RUN
+6570  NOUN            RUNNING
+6577  MOVE_DIR        S
+657C  NOUN            SAND
+6580  SYSTEM_PRONOUN  SAVE
+6584  VERB            SAY
+658A  SYSTEM_PRONOUN  SCORE
+658F  MOVE_DIR        SE
+6594  VERB            SHOOT
+6599  ADJECTIVE       SHORT
+659E  NOUN            SHOULDER
+65A6  ADJECTIVE       SIDE
+65AA  NOUN            SIDEDOOR
+65B2  NOUN            SIGN
+65B6  VERB            SING
+65BA  VERB            SIT
+65BE  NOUN            SKULL
+65C3  VERB            SLASH
+65CA  VERB            SLEEP
+65CF  VERB            SLICE
+65D6  ADJECTIVE       SLIMY
+65DB  ADVERB          SLOWLY
+65E1  ADJECTIVE       SMALL
+65E6  VERB            SMASH
+65ED  ADJECTIVE       SMOOTH
+65F3  ADJECTIVE       SMOTHERING
+65FD  ADVERB          SOFTLY
+6603  ADJECTIVE       SOME
+6607  MOVE_DIR        SOUTH
+660C  MOVE_DIR        SOUTHEAST
+6615  MOVE_DIR        SOUTHWEST
+661E  NOUN            SPACE
+6623  ADJECTIVE       SPIDER
+6629  NOUN            STAIRS
+662F  NOUN            STATUE
+6635  VERB            STEAL
+663C  ADJECTIVE       STEEP
+6641  NOUN            STONE
+6646  ADJECTIVE       STRAIGHT
+664E  ADJECTIVE       STRETCHING
+6658  VERB            STRIKE
+665E  NOUN            STROKE
+6664  NOUN            STRONG
+666A  ADJECTIVE       STUFFY
+6670  ADJECTIVE       STUNNED
+6677  MOVE_DIR        SW
+667C  VERB            SWIM
+6680  NOUN            SWORD
+6685  NOUN            SYMBOLS
+668C  VERB            TAKE
+6690  VERB            TALK
+6694  ADJECTIVE       TANGLED
+669B  ARTICLE_MISC    THAT
+669F  ARTICLE_MISC    THE
+66A2  THEN            THEN
+66A6  ADJECTIVE       THICK
+66AB  NOUN            THIEF
+66B0  ADJECTIVE       THIN
+66B4  NOUN            THORIN
+66BA  ADJECTIVE       THREADS
+66C1  PREPOSITION     THROUGH
+66C8  VERB            THROW
+66CD  VERB            TIE
+66D1  PREPOSITION     TO
+66D4  PREPOSITION     TOO
+66D7  NOUN            TORCH
+66DC  NOUN            TOWN
+66E0  ADJECTIVE       TRAP
+66E4  NOUN            TREASURE
+66EC  NOUN            TREE
+66F0  ADJECTIVE       TREELESS
+66F8  NOUN            TROLL
+66FD  ADJECTIVE       TROLLS
+6703  ADJECTIVE       TUNNEL
+6709  VERB            TURN
+670D  ADVERB          U
+6712  VERB            UNLOCK
+6718  ADJECTIVE       UNLOCKED
+6720  VERB            UNTIE
+6725  MOVE_DIR        UP
+6728  ADJECTIVE       VALIANT
+672F  NOUN            VALLEY
+6735  ADJECTIVE       VALUABLE
+673D  ADJECTIVE       VERY
+6741  ADJECTIVE       VICIOUS
+6748  ADVERB          VICIOUSLY
+6751  MOVE_DIR        W
+6756  VERB            WAIT
+675A  NOUN            WALL
+675E  NOUN            WATER
+6763  NOUN            WATERFALL
+676C  NOUN            WEAPON
+6772  VERB            WEAR
+6776  NOUN            WEB
+6779  MOVE_DIR        WEST
+677D  ADJECTIVE       WIDE
+6781  ADJECTIVE       WILD
+6785  ADJECTIVE       WINDING
+678C  NOUN            WINDOW
+6792  NOUN            WINE
+6796  PREPOSITION     WITH
+679A  NOUN            WARG
+679E  ADJECTIVE       WOOD
+67A2  ADJECTIVE       WOODEN
+67A8  NOUN            YOU
+
+
+STATISTICS
+----------
+
+Maximum word length (Dict 1 & 2) = 14
+
+Word count in Dict1 = 355
+Word count in Dict2 = 207
+
+Word-Types in Dict1
+Type 00 ADVERB         --> 13
+Type 01 IN_INTO        --> 2
+Type 02 MOVE_DIR       --> 19
+Type 03 VERB           --> 59
+Type 04 GO_RUN         --> 2
+Type 05 NOUN           --> 121
+Type 06 ADJECTIVE      --> 96
+Type 07 PREPOSITION    --> 16
+Type 08 ARTICLE_MISC   --> 11
+Type 09 SYSTEM_PRONOUN --> 14
+Type 10 AND            --> 1
+Type 11 THEN           --> 1
+Type 12 TYPE12         --> 0
+Type 13 TYPE13         --> 0
+Type 14 TYPE14         --> 0
+Type 15 TYPE15         --> 0
