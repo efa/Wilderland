@@ -1,4 +1,4 @@
-Files supplied with Wilderland Version 1.08 - 20191005
+Files packaged with Wilderland Version 1.08 - 20191005
 ------------------------------------------------------
 CharSetSpectrum8x8.bin   Binary: Spectrum character set
 GameMap.png              PNG: Hobbit game map

@@ -4,7 +4,7 @@
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina.                       *
+* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
 * Contact: wilderland@aon.at                                                 *
 *                                                                            *
 * Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *

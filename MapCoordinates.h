@@ -1,8 +1,15 @@
-/* WL - Wilderland */
-/* (c) 2012 by CH  */
-/*                 */
-/* Map Coordinates */
-/* for V 10.       */
+/****************************************************************************\
+*                                                                            *
+*                              MapCoordinates.h                              *
+*                                                                            *
+* Map Coordinates for WL - Wilderland V 10                                   *
+*                                                                            *
+* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+*                                                                            *
+* V 1.08 - 20191005                                                          *
+*                                                                            *
+\****************************************************************************/
+
 
 struct MapCoordinatesStruct {
     byte RoomNumber;
