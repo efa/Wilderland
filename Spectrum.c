@@ -2,11 +2,11 @@
 *                                                                            *
 *                                Spectrum.c                                  *
 *                                                                            *
-* Spectrum specific subroutines for the WL project.                          *
+* Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -23,7 +23,6 @@
 
 /*** GLOBAL VARIABLES *******************************************************/
 #include "GLOBAL_VARS.h"
-
 
 color_t ColorTable[] =
 { SC_BLACK, SC_BLUE, SC_RED, SC_MAGENTA, SC_GREEN, SC_CYAN, SC_YELLOW, SC_WHITE,
@@ -116,6 +115,16 @@ void WriteAttributeByte(word address, byte v)
 
 
 /****************************************************************************\
+* RdZ80                                                                      *
+*                                                                            *
+\****************************************************************************/
+byte RdZ80(word A)
+{
+    return (ZXmem[A]);
+}
+
+
+/****************************************************************************\
 * WrZ80                                                                      *
 *                                                                            *
 \****************************************************************************/
@@ -134,16 +143,6 @@ void WrZ80(word A, byte v)
         WriteAttributeByte(A, v); // update SDL screen
         return;
     }
-}
-
-
-/****************************************************************************\
-* RdZ80                                                                      *
-*                                                                            *
-\****************************************************************************/
-byte RdZ80(word A)
-{
-    return (ZXmem[A]);
 }
 
 

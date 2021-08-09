@@ -4,9 +4,9 @@
 *                                                                            *
 * Map Coordinates for WL - Wilderland V 10                                   *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 

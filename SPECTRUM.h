@@ -2,11 +2,11 @@
 *                                                                            *
 *                              SPECTRUM.h                                    *
 *                                                                            *
-* The gloabal variables for the WL project.                                  *
+* Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -44,6 +44,7 @@ typedef Uint32 color_t;
 #define TSTATES_PER_LOOP ((int)(CLOCK_HZ / FPS)) // 140 kperiods/frame
 #define DELAY_MS ((int)(1000/FPS)) // 40 ms/frame
 
+// Spectrum Screen pixels and raw/col
 #define SP_WIDTH  256
 #define SP_HEIGHT 192
 #define SP_PIXELPERCHAR 8

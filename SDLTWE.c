@@ -4,13 +4,14 @@
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 
 
+/*** INCLUDES ***************************************************************/
 #include <stdio.h>
 #include <SDL2/SDL.h>
 

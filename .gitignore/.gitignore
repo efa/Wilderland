@@ -55,3 +55,20 @@ dkms.conf
 HOB_V12.bin
 HOB_OWN.bin
 HOB_V10.bin
+TapCon/HOBBIT12.TAP
+TapCon/HOB_V12.bin
+
+# Bin
+WL
+WL64
+WL32
+WL.exe
+WL32.exe
+WLmxe32.exe
+WLosx
+TapCon/TapCon
+TapCon/TapCon32
+TapCon/TapCon.exe
+TapCon/TapCon32.exe
+TapCon/TapConMxe32.exe
+TapCon/TapConOsx

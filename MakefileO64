@@ -1,0 +1,87 @@
+# MakefileO64: Copyright 2019-2021 Valerio Messina efa@iol.it
+# MakefileO64 is part of Wilderland - A Hobbit Environment
+# Wilderland is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Wilderland is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
+
+# Makefile to crosscompile 'Wilderland' for macOS on Linux64 using gcc+GNUtoolchain
+# used on: Linux=>macOS.bin64
+# require OSX SDL_image in /opt/osxcross/target/macports/pkgs/opt/local/lib
+
+# OSXROOT point to cross-compiler root path
+# OSX     point to cross-compiler tools path
+# OCROSS  cross-compiler tools prefix
+OSXROOT = /opt/osxcross
+OSX = $(OSXROOT)/target/bin
+OCROSS = x86_64-apple-darwin18-
+
+CC = $(OCROSS)clang
+LD = $(OCROSS)clang
+STRIP = $(OCROSS)strip
+PKG_CONFIG = $(OCROSS)pkg-config
+CFLAGS = -std=c99 -Wall -O3   # -I$(OSX)/target/macports/pkgs/opt/local/include
+SDLCFLAGS = $(shell PKG_CONFIG_LIBDIR=$(OSXROOT)/target/macports/pkgs/opt/local/lib/pkgconfig: $(OSX)/$(PKG_CONFIG) --cflags SDL2_image)
+#SDLMINGWLDFLAGS = -mconsole # on LinuxMinGW + SDL force console for debug
+LDFLAGS = $(shell PKG_CONFIG_LIBDIR=$(OSXROOT)/target/macports/pkgs/opt/local/lib/pkgconfig: $(OSX)/$(PKG_CONFIG) --libs SDL2_image) $(SDLMINGWLDFLAGS)
+FILE = WL
+SOURCE = $(FILE)
+TARGET = $(FILE)osx
+TAPCON = TapCon/TapConOsx
+
+all: $(TARGET) $(TAPCON)
+
+$(TARGET): $(SOURCE).o SDLTWE.o spectrum.o Z80.o
+	$(OSX)/$(LD) $^ $(LDFLAGS) -o $@
+
+$(SOURCE).o: $(SOURCE).c WL.h GLOBAL_VARS.h MapCoordinates.h SDLTWE.h SPECTRUM.h Z80/Z80.h
+	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+SDLTWE.o: SDLTWE.c WL.h SDLTWE.h
+	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+spectrum.o: Spectrum.c GLOBAL_VARS.h SPECTRUM.h WL.h SDLTWE.h Z80/Z80.h
+	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
+	$(OSX)/$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+
+$(TAPCON): TapCon/TapCon.c
+	$(OSX)/$(CC) $(CFLAGS) $^ -o $@
+
+strip:
+	$(OSX)/$(STRIP) $(TARGET) $(TAPCON)
+
+cleanobj:
+	rm -f *.o
+
+cleanexe:
+	rm -f $(TARGET) $(TAPCON)
+
+clean: cleanobj cleanexe
+
+bin: all cleanobj strip
+
+
+# Note: use this Makefile to cross-compile from Linux to macOS
+# Note: need to be exported the env vars:
+#       $(OSX)    point to cross-compiler environment path, eg. /opt/osxcross
+#       $(OCROSS) cross-compiler tools prefix, eg. x86_64-apple-darwin18-
+#       PATH=$(OSX)/target/bin:$PATH     location of ${OCROSS}tools
+#PATH=${OSX}/target/bin:$PATH # 
+
+#LIB = $(OSX)/target/macports/pkgs/opt/local/lib
+#LDFLAGS = -L$(LIB)
+#PLATFORM=$(shell uname -s)
+#LFLAGS = -L$(OSX)/target/macports/pkgs/opt/local/lib -lzip
+#LIBFILE = lib$(APPNAME).dylib
+#LFLAGS += -lboost_locale-mt
+#DYNLIBFLAGS = $(LFLAGS) -Wl,-install_name,$(LIBFILE)

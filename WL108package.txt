@@ -1,4 +1,4 @@
-Files packaged with Wilderland Version 1.08 - 20191005
+Files packaged with Wilderland Version 1.08 - 20210809
 ------------------------------------------------------
 CharSetSpectrum8x8.bin   Binary: Spectrum character set
 GameMap.png              PNG: Hobbit game map
@@ -6,16 +6,21 @@ HOBBIT.SCR               SCR: Hobbit load screen
 README.txt               TXT: help file
 Makefile                 TXT: Makefile to build @64bit using GNU toolchain
 Makefile32               TXT: Makefile to build @32bit using GNU toolchain
-MakefileX32              TXT: Makefile to crosscompile for Win32 on Linux64 using GNU toolchain
+MakefileM32              TXT: Makefile to crosscompile for Win32 on Linux64 using GNU toolchain
+MakefileO64              TXT: Makefile to crosscompile for OSX64 on Linux64 using GNU toolchain
 dict_v12.txt             TXT: list of words
 rooms_v12.txt            TXT: list of rooms
+SDL*.dll                 Dynamic library for Win32/64: SDL and deps
 WL108package.txt         TXT: package file list
-WL.ppj                   TXT: C Project files
-WLmingw32.exe            386 Binary: Win32 executable made with MinGW/MSYS2
-WLmingw64.exe            x64 Binary: Win64 executable made with MinGW/MSYS2
-WL32.exe                 386 Binary: Win32 executable made with MXE static link
+WL.ppj                   TXT: Pelles C Project files
+WL.exe                   386 Binary: Win32 executable generated with Pelles C/LCC
+WLmingw32.exe            386 Binary: Win32 executable made with MXE static link
+WLmingw64.exe            x64 Binary: Win64 executable made with MXE static link
+WL32.exe                 386 Binary: Win32 executable made with MinGW/MSYS2
+WL64.exe                 x64 Binary: Win64 executable made with MinGW/MSYS2
 WL32                     386 Binary: Linux32 executable
-WL64                     x64 Binary: Linux64 executable
+WL                       x64 Binary: Linux64 executable
+WLosx                    x64 Binary: macOS64 executable made with OSXcross
 WL.ppx                   XML: IDE/Widgets settings???
 WL.tag                   SQLite: ???
 GLOBAL_VARS.h            C header: -
@@ -45,12 +50,13 @@ output/                  386 COFF object files
 Design/Map_V6_gross.png  PNG: Hobbit map hi-definition
 Design/Map_V6_W1000.png  PNG: Hobbit map
 
-TapCon/TapCon.ppj        TXT: C Project files
+TapCon/TapCon.ppj        TXT: Pelles C Project files
 TapCon/TapCon.tag        SQLite: ???
 TapCon/TapCon.ppx        XML: IDE/Widgets settings???
-TapCon/TapCon.exe        386 Binary: Win32 executable
+TapCon/TapCon32.exe      386 Binary: Win32 executable
 TapCon/TapCon32          386 Binary: Linux32 executable
-TapCon/TapCon64          x64 Binary: Linux64 executable
+TapCon/TapCon.exe        x64 Binary: Win64 executable
+TapCon/TapCon            x64 Binary: Linux64 executable
 TapCon/TapCon.c          C source: < stdio.h,stdlib.h,string.h
                          convert HOBBIT12.TAP files to HOB_V12.bin
 

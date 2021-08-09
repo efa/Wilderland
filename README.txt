@@ -3,7 +3,8 @@
 
                              A Hobbit Environment
 
-                            (c) 2012-2019 by CH, Copyright 2019 Valerio Messina
+                            (c) 2012-2019 by CH
+                    (c) Copyright 2019-2021 Valerio Messina
 
                             wilderland AT aonDOTat
 
@@ -260,4 +261,4 @@ Attributes (each object has 8 binary attributes associated with it):
 [4] I haven't found out yet, where the spaces go missing... ;-)
 
 
-README.TXT Version 1.08 - 20191005
+README.TXT Version 1.08 - 20210809

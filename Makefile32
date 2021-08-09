@@ -1,31 +1,34 @@
-# Makefile to generate 'Wilderland' @32bit on 64bit OS using gcc+GNUtoolchain
-# Copyright 2019 Valerio Messina efa@iol.it
-# Makefile is free software: you can redistribute it and/or modify
+# Makefile32: Copyright 2019-2021 Valerio Messina efa@iol.it
+# Makefile32 is part of Wilderland - A Hobbit Environment
+# Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Makefile is distributed in the hope that it will be useful,
+# Wilderland is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Makefile. If not, see <http://www.gnu.org/licenses/>.
+# along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
 
+# Makefile to generate 'Wilderland' @32bit on 64bit OS using gcc+GNUtoolchain
+# used on: Linux64=>bin32
 # require $ sudo apt-get install libsdl2-dev:i386 libsdl2-image-dev:i386
 
 CC = gcc
 LD = $(CC)
 STRIP = strip
-CFLAGS = -m32 -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1
+CFLAGS = -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1 -m32
 SDLCFLAGS = $(shell PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig: pkg-config --cflags SDL2_image)
-LDFLAGS = -m32 $(shell PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig: pkg-config --libs SDL2_image)
+LDFLAGS = $(shell PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig: pkg-config --libs SDL2_image) -m32
 FILE = WL
 SOURCE = $(FILE)
-TARGET = $(FILE)
+TARGET = $(FILE)32
+TAPCON = TapCon/TapCon32
 
-all: TapCon/TapCon $(TARGET)
+all: $(TARGET) $(TAPCON)
 
 $(TARGET): $(SOURCE).o SDLTWE.o spectrum.o Z80.o
 	$(LD) $^ $(LDFLAGS) -o $@
@@ -42,17 +45,19 @@ spectrum.o: Spectrum.c GLOBAL_VARS.h SPECTRUM.h WL.h SDLTWE.h Z80/Z80.h
 Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
 	$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
-TapCon/TapCon: TapCon/TapCon.c
+$(TAPCON): TapCon/TapCon.c
 	$(CC) $(CFLAGS) $^ -o TapCon/TapCon
+	@chmod +x $@ # required on Linux
 
 strip:
-	$(STRIP) $(TARGET) TapCon/TapCon
+	$(STRIP) $(TARGET) $(TAPCON)
 
 cleanobj:
 	rm -f *.o
 
 cleanexe:
-	rm -f $(TARGET) TapCon/TapCon
+	rm -f $(TARGET) $(TAPCON)
 
-clean:
-	rm -f *.o && rm -f $(TARGET) TapCon/TapCon
+clean: cleanobj cleanexe
+
+bin: all cleanobj strip

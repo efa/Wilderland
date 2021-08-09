@@ -4,7 +4,7 @@
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 * Contact: wilderland@aon.at                                                 *
 *                                                                            *
 * Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
@@ -12,9 +12,9 @@
 * 8x8 character set from ZX Spectrum ROM (c) by Amstrad, PD for emulators    *
 *                                                                            *
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled  *
-*           GCC and MinGW/Msys2                                              *
+*           or GCC and MinGW/Msys2                                           *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -35,6 +35,32 @@
 /*** GLOBAL VARIABLES *******************************************************/
 #include "GLOBAL_VARS.h"
 
+#define WLVER "1.08"
+
+int HV;      //Hobbit version
+
+word DictionaryBaseAddress;
+word ObjectsIndexAddress, ObjectsAddress;
+
+SDL_Window*   winPtr;
+SDL_Renderer* renPtr;
+SDL_Surface* GameMapSfcPtr;
+
+int NoScanLines;
+int LockLevel;
+struct CharSetStruct CharSet;
+
+struct TextWindowStruct GameWin;  // dummy to draw frame
+struct TextWindowStruct LogWin;
+struct TextWindowStruct ObjWin;
+struct TextWindowStruct HelpWin;
+struct TextWindowStruct MapWin;
+
+Z80 z80;                   // my Z80 processor
+byte ZXmem[0x10000];       // Spectrum 64 kB memory
+
+Uint16 CurrentPressedKey;  // is used in InZ80()
+Uint16 CurrentPressedMod;  // used by InZ80()
 
 //extern color_t ColorTable[];    //defined in Spectrum.c
 int delay=22; // min 22 ms to avoid flickering

@@ -2,11 +2,11 @@
 *                                                                            *
 *                              WL.h                                          *
 *                                                                            *
-* The gloabal variables for the WL project.                                  *
+* Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019 Valerio Messina                        *
+* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20191005                                                          *
+* V 1.08 - 20210809                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -107,16 +107,22 @@ typedef Uint32 color_t;
 #define BORDERWIDTH   4
 
 // Log Window (the rigth and left frame overdraws game and object window)
-#define LOGWINPOSX    (2*BORDERWIDTH)
-#define LOGWINPOSY    (2*BORDERWIDTH)
+#define LOGWINPOSX    (2*BORDERWIDTH) // 8
+#define LOGWINPOSY    (2*BORDERWIDTH) // 8
 #define LOGWINWIDTH   (MAINWINWIDTH - OBJWINWIDTH - GAMEWINWIDTH - 10*BORDERWIDTH) // 280
 #define LOGWINHEIGHT  (OBJWINHEIGHT) // 512: GAMEWINHEIGHT + HELPWINHEIGHT + 4*BORDERWIDTH
 
 // Game Window
 #define GAMEWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH) // 300
-#define GAMEWINPOSY   (2*BORDERWIDTH)
+#define GAMEWINPOSY   (2*BORDERWIDTH) // 8
 #define GAMEWINWIDTH  SS_WIDTH_SPIXELS  // 512
 #define GAMEWINHEIGHT SS_HEIGHT_SPIXELS // 384
+
+// Object Window
+#define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH) // 824
+#define OBJWINPOSY    (2*BORDERWIDTH) // 8
+#define OBJWINWIDTH   (56*8) // 448: 58 column, 8 pixel/char
+#define OBJWINHEIGHT  (64*8) // 512: 64 lines, 8 pixel/char
 
 // Help Window
 #define HELPWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH)   // 300
@@ -124,16 +130,10 @@ typedef Uint32 color_t;
 #define HELPWINWIDTH  (GAMEWINWIDTH) // 512
 #define HELPWINHEIGHT (LOGWINHEIGHT - GAMEWINHEIGHT - 4*BORDERWIDTH) // 112
 
-// Object Window
-#define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH) // 824
-#define OBJWINPOSY    (2*BORDERWIDTH)
-#define OBJWINWIDTH   (56*8) // 448: 58 column, 8 pixel/char
-#define OBJWINHEIGHT  (64*8) // 512: 64 lines, 8 pixel/char
-
 // Game Map Window
 #define MAPWINPOSX    0
 #define MAPWINPOSY    (LOGWINHEIGHT + 4*BORDERWIDTH) // 528
-#define MAPWINWIDTH   MAINWINWIDTH
+#define MAPWINWIDTH   MAINWINWIDTH // 1280
 #define MAPWINHEIGHT  (MAINWINHEIGHT - LOGWINHEIGHT - 4*BORDERWIDTH) // 496
 #define INDICATOROFFSET 2
 
