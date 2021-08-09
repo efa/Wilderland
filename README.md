@@ -3,7 +3,8 @@
 
                              A Hobbit Environment
 
-                            (c) 2012-2019 by CH, Copyright 2019 Valerio Messina
+                            (c) 2012-2019 by CH
+                    (c) Copyright 2019-2021 Valerio Messina
 
                             wilderland AT aonDOTat
 
@@ -29,7 +30,7 @@ CONTENT
 (0) - Legal Info
 ================
 
-WILDERLAND is (c) 2012 by CH, Copyright 2019 Valerio Messina.
+WILDERLAND is (c) 2012 by CH, Copyright 2019-2021 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the author
    at wilderland AT aonDOTat
@@ -45,6 +46,7 @@ Z80 emulator based on Marat Fayzullin's work from 2007. Free for non-profit
 8x8 charset from ZX Spectrum ROM (c) by Amstrad; use granted for emulators.
 
 Makefiles for GCC and GNUtool-chain was written by Valerio Messina (efa@iol.it)
+Makefile to cross-compile for Win32 and macOS64 written by Valerio Messina
 Porting to SDL2.0 was made by Valerio Messina (efa@iol.it)
 
 YOU ARE NOT ALLOWED TO DISTRIBUTE 'WILDERLAND' TOGETHER WITH HOBBIT BINARIES!
@@ -260,4 +262,4 @@ Attributes (each object has 8 binary attributes associated with it):
 [4] I haven't found out yet, where the spaces go missing... ;-)
 
 
-README.TXT Version 1.08 - 20191005
+README.TXT Version 1.08 - 20210809

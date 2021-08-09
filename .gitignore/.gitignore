@@ -52,9 +52,9 @@ Mkfile.old
 dkms.conf
 
 # ROMs
-HOB_V12.bin
-HOB_OWN.bin
 HOB_V10.bin
+HOB_OWN.bin
+HOB_V12.bin
 TapCon/HOBBIT12.TAP
 TapCon/HOB_V12.bin
 
