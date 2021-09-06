@@ -12,8 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
+# Special exception/limitation to GPL: not for commercial use
 
-# Makefile to crosscompile 'Wilderland' for macOS on Linux64 using gcc+GNUtoolchain
+# Makefile to crosscompile 'Wilderland' for macOS on Linux using CLANG+GNUtoolchain
 # used on: Linux=>macOS.bin64
 # require OSX SDL_image in /opt/osxcross/target/macports/pkgs/opt/local/lib
 
@@ -23,6 +24,7 @@
 OSXROOT = /opt/osxcross
 OSX = $(OSXROOT)/target/bin
 OCROSS = x86_64-apple-darwin18-
+PATH=$(OSX):$(PATH)
 
 CC = $(OCROSS)clang
 LD = $(OCROSS)clang
@@ -36,6 +38,8 @@ FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)osx
 TAPCON = TapCon/TapConOsx
+CPU = x86_64
+OS = $(uname -o)
 
 all: $(TARGET) $(TAPCON)
 
@@ -69,19 +73,3 @@ cleanexe:
 clean: cleanobj cleanexe
 
 bin: all cleanobj strip
-
-
-# Note: use this Makefile to cross-compile from Linux to macOS
-# Note: need to be exported the env vars:
-#       $(OSX)    point to cross-compiler environment path, eg. /opt/osxcross
-#       $(OCROSS) cross-compiler tools prefix, eg. x86_64-apple-darwin18-
-#       PATH=$(OSX)/target/bin:$PATH     location of ${OCROSS}tools
-#PATH=${OSX}/target/bin:$PATH # 
-
-#LIB = $(OSX)/target/macports/pkgs/opt/local/lib
-#LDFLAGS = -L$(LIB)
-#PLATFORM=$(shell uname -s)
-#LFLAGS = -L$(OSX)/target/macports/pkgs/opt/local/lib -lzip
-#LIBFILE = lib$(APPNAME).dylib
-#LFLAGS += -lboost_locale-mt
-#DYNLIBFLAGS = $(LFLAGS) -Wl,-install_name,$(LIBFILE)

@@ -11,6 +11,7 @@
 /**     changes to this file.                               **/
 /*************************************************************/
 
+
 case RLC_B: M_RLC(R->BC.B.h);break;  case RLC_C: M_RLC(R->BC.B.l);break;
 case RLC_D: M_RLC(R->DE.B.h);break;  case RLC_E: M_RLC(R->DE.B.l);break;
 case RLC_H: M_RLC(R->HL.B.h);break;  case RLC_L: M_RLC(R->HL.B.l);break;

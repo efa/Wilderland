@@ -12,8 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
+# Special exception/limitation to GPL: not for commercial use
 
-# Makefile to generate 'Wilderland' using gcc+GNUtoolchain
+# Makefile to generate 'Wilderland' using GCC+GNUtoolchain
 # used on: Linux64=>bin64, Linux32=>bin32, Mingw64=>bin64, Mingw32=>bin32
 # require $ sudo apt-get install libsdl2-dev libsdl2-image-dev
 
@@ -30,14 +31,18 @@ FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)
 TAPCON = TapCon/TapCon
+CPU = $(uname -m)
 ifeq ($(MSYSTEM),MINGW64) # strip and rm require .exe in MSYS2/MINGW
+	CPU = x86_64
 	TARGET = $(FILE).exe
 	TAPCON = TapCon/TapCon.exe
 endif
 ifeq ($(MSYSTEM),MINGW32) # strip and rm require .exe in MSYS2/MINGW
+	CPU = i686
 	TARGET = $(FILE)32.exe
 	TAPCON = TapCon/TapCon32.exe
 endif
+OS = $(uname -o)
 
 all: $(TARGET) $(TAPCON)
 
@@ -72,3 +77,6 @@ cleanexe:
 clean: cleanobj cleanexe
 
 bin: all cleanobj strip
+
+pkg: bin
+	@WLpkg

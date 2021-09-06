@@ -4,17 +4,17 @@
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
-* Contact: wilderland@aon.at                                                 *
+* (c) 2012-2019 by CH, Contact: wilderland@aon.at                            *
+* Copyright 2019-2021 Valerio Messina efa@iol.it                             *
 *                                                                            *
 * Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
 * Z80 emulator based on Marat Fayzullin's work from 2007 (fms.komkon.org)    *
 * 8x8 character set from ZX Spectrum ROM (c) by Amstrad, PD for emulators    *
 *                                                                            *
-* Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled  *
-*           or GCC and MinGW/Msys2                                           *
+* Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
+*           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 1.08 - 20210809                                                          *
+* V 1.08 - 20210905                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -44,7 +44,7 @@ word ObjectsIndexAddress, ObjectsAddress;
 
 SDL_Window*   winPtr;
 SDL_Renderer* renPtr;
-SDL_Surface* GameMapSfcPtr;
+SDL_Surface*  GameMapSfcPtr;
 
 int NoScanLines;
 int LockLevel;
@@ -631,6 +631,7 @@ void HelpInfo(struct TextWindowStruct *TW, struct CharSetStruct *CS)
 {
     LockScreen(winPtr);
 
+#if 0
     SDLTWE_PrintString(TW, "\n                         WILDERLAND V 1.08\n\n", CS, SC_BRWHITE, SC_BRBLACK);
     ShowTextWindow (TW);
     SDLTWE_PrintString(TW, "                       A Hobbit Environment\n\n", CS, SC_BRWHITE, SC_BRBLACK);
@@ -647,6 +648,29 @@ void HelpInfo(struct TextWindowStruct *TW, struct CharSetStruct *CS)
     ShowTextWindow (TW);
     SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0).\n", CS, SC_RED, SC_BLACK);
     ShowTextWindow (TW);
+#endif
+    //                     "1234567890123456789012345678901234567890123456789012345678901234"
+    SDLTWE_PrintString(TW, "            WILDERLAND V"WLVER" - A Hobbit Environment             ", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2021 V.Messina       ", CS, SC_WHITE, SC_BLACK);
+    ShowTextWindow (TW);
+    if (HV == OWN) SDLTWE_PrintString(TW, "                  Using The Hobbit binary VOWN                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
+    if (HV == V10) SDLTWE_PrintString(TW, "                  Using The Hobbit binary V1.0                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
+    if (HV == V12) SDLTWE_PrintString(TW, "                  Using The Hobbit binary V1.2                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " INFO: ", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW,        "1L=place #=qty MO=parent Vo=volume Ma=mass St=strength   \n", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " a-z.,@0[BS] -> game         ATTRIBUTES                         ", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " S-ave   H-elp   G-o         v_isible  A_nimal  o_pen   *_light ", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " L-oad   I-nfo               b_roken   f_ull    F_luid  l_ocked ", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " Q-uit                                                          \n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0).\n", CS, SC_RED, SC_BLACK);
 
     UnLockScreen(winPtr);
 }
@@ -893,15 +917,6 @@ void PrintObjectsList(word OIA, word OA, struct TextWindowStruct *OW, struct Cha
 
 
 /****************************************************************************\
-* PrepareGameMap                                                             *
-*                                                                            *
-\****************************************************************************/
-void PrepareGameMap(void) {
-    memcpy (MapWin.framePtr, GameMapSfcPtr->pixels, MapWin.frameSize); // map as background
-}
-
-
-/****************************************************************************\
 * DisplayGameMap                                                             *
 *                                                                            *
 \****************************************************************************/
@@ -910,6 +925,15 @@ void DisplayGameMap(void)
     SDL_UpdateTexture (MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
     SDL_RenderCopy (renPtr, MapWin.texPtr, NULL, &MapWin.rect);
     //SDL_RenderPresent (renPtr);
+}
+
+
+/****************************************************************************\
+* PrepareGameMap                                                             *
+*                                                                            *
+\****************************************************************************/
+void PrepareGameMap(void) {
+    memcpy (MapWin.framePtr, GameMapSfcPtr->pixels, MapWin.frameSize); // map as background
 }
 
 
@@ -975,6 +999,7 @@ int InitGame(int hv)
             DictionaryBaseAddress = DICTIONARY_BASE_OWN;
             ObjectsIndexAddress = OBJECTS_INDEX_OWN;
             ObjectsAddress = OBJECTS_OWN;
+            printf("WL: Using The Hobbit binary vOWN\n");
             break;
         case V10:
             strcpy(GameFileName, FN_V10);
@@ -983,6 +1008,7 @@ int InitGame(int hv)
             DictionaryBaseAddress = DICTIONARY_BASE_V10;
             ObjectsIndexAddress = OBJECTS_INDEX_V10;
             ObjectsAddress = OBJECTS_V10;
+            printf("WL: Using The Hobbit binary v1.0\n");
             break;
         case V12:
             strcpy(GameFileName, FN_V12);
@@ -991,6 +1017,7 @@ int InitGame(int hv)
             DictionaryBaseAddress = DICTIONARY_BASE_V12;
             ObjectsIndexAddress = OBJECTS_INDEX_V12;
             ObjectsAddress = OBJECTS_V12;
+            printf("WL: Using The Hobbit binary v1.2\n");
             break;
         default:
             fprintf(stderr, "WL: ERROR in 'InitGame'. Unknown version %d.\n", hv);
@@ -1286,9 +1313,22 @@ SDL_Log("\n");
 
 
 /****************************************************************************\
+* Help line                                                                  *
+*                                                                            *
+\****************************************************************************/
+void helpLine () {
+    printf ("Use: WL [-V10|-OWN|-V12] [-FULLSCREEN] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]\n");
+    printf ("Use: WL [-HELP]\n");
+}
+
+
+/****************************************************************************\
 *                                   main                                     *
 *                                                                            *
 \****************************************************************************/
+#if defined(__MINGW32__) || defined(__MINGW64__) // to have stdout/err
+    #undef main // Prevent SDL from overriding the program's entry point.
+#endif
 int main(int argc, char *argv[])
 {
     SDL_Event event;
@@ -1308,39 +1348,40 @@ int main(int argc, char *argv[])
 
     HV = -1;  // Hobbit version (global variable)
 
-    // Help line
-    if (argc == 1)
-    {
-        printf("Use: WL -V10|-OWN|-V12 [-FULLSCREEN][-FIT][-MAXSPEED][-NOSCANLINES][-SEEDRND]\n");
-        exit(-1);
-    }
+    printf("Wilderland "WLVER" - A Hobbit Environment\n");
+    printf("(c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina\n");
 
     // process command line arguments
-    for (i = 1; i < argc; i++)
+    int fl=0;
+    for (i = 1; i < argc; i++, fl=0)
     {
         if (!strcmp(argv[i], "-own") || !strcmp(argv[i], "-OWN"))
-            HV = OWN;
+           { HV = OWN; fl = 1; }
         if (!strcmp(argv[i], "-v10") || !strcmp(argv[i], "-V10"))
-            HV = V10;
+           { HV = V10; fl = 1; }
         if (!strcmp(argv[i], "-v12") || !strcmp(argv[i], "-V12"))
-            HV = V12;
+           { HV = V12; fl = 1; }
         if (!strcmp(argv[i], "-fullscreen") || !strcmp(argv[i], "-FULLSCREEN"))
-            WinMode = SDL_WINDOW_FULLSCREEN;
+           { WinMode = SDL_WINDOW_FULLSCREEN; fl = 1; }
         if (!strcmp(argv[i], "-fit") || !strcmp(argv[i], "-FIT"))
-            WinMode = SDL_WINDOW_FULLSCREEN_DESKTOP;
+           { WinMode = SDL_WINDOW_FULLSCREEN_DESKTOP; fl = 1; }
         if (!strcmp(argv[i], "-maxspeed") || !strcmp(argv[i], "-MAXSPEED"))
-            MaxSpeed = 1;
+           { MaxSpeed = 1; fl = 1; }
         if (!strcmp(argv[i], "-noscanlines") || !strcmp(argv[i], "-NOSCANLINES"))
-            NoScanLines = 1;
+           { NoScanLines = 1; fl = 1; }
         if (!strcmp(argv[i], "-seedrnd") || !strcmp(argv[i], "-SEEDRND"))
-            SeedRND = 1;
+           { SeedRND = 1; fl = 1; }
+        if (!strcmp(argv[i], "-help") || !strcmp(argv[i], "-HELP")) {
+           helpLine();
+           exit (0);
+        }
+        if (fl == 0) {
+           printf ("WL: Ignoring unknown option: '%s'\n", argv[i]);
+           helpLine();
+        }
     }
 
-    if (HV == -1)
-    {
-        fprintf(stderr, "WL: ERROR Unknown game version. Program aborted.\n");
-        exit(-1);
-    }
+    if (HV == -1) HV = V12; // default to V12
 
     if (InitSpectrum())
     {

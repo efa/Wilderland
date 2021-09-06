@@ -12,8 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
+# Special exception/limitation to GPL: not for commercial use
 
-# Makefile to generate 'Wilderland' @32bit on 64bit OS using gcc+GNUtoolchain
+# Makefile to generate 'Wilderland' @32bit on 64bit OS using GCC+GNUtoolchain
 # used on: Linux64=>bin32
 # require $ sudo apt-get install libsdl2-dev:i386 libsdl2-image-dev:i386
 
@@ -27,6 +28,8 @@ FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)32
 TAPCON = TapCon/TapCon32
+CPU = i686
+OS = $(uname -o)
 
 all: $(TARGET) $(TAPCON)
 
@@ -46,7 +49,7 @@ Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.
 	$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 $(TAPCON): TapCon/TapCon.c
-	$(CC) $(CFLAGS) $^ -o TapCon/TapCon
+	$(CC) $(CFLAGS) $^ -o $@
 	@chmod +x $@ # required on Linux
 
 strip:

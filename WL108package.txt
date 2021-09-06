@@ -1,4 +1,4 @@
-Files packaged with Wilderland Version 1.08 - 20210809
+Files packaged with Wilderland Version 1.08 - 20210905
 ------------------------------------------------------
 CharSetSpectrum8x8.bin   Binary: Spectrum character set
 GameMap.png              PNG: Hobbit game map
@@ -8,6 +8,7 @@ Makefile                 TXT: Makefile to build @64bit using GNU toolchain
 Makefile32               TXT: Makefile to build @32bit using GNU toolchain
 MakefileM32              TXT: Makefile to crosscompile for Win32 on Linux64 using GNU toolchain
 MakefileO64              TXT: Makefile to crosscompile for OSX64 on Linux64 using GNU toolchain
+WLpkg                    TXT: script to generate the WL MinGW package
 dict_v12.txt             TXT: list of words
 rooms_v12.txt            TXT: list of rooms
 SDL*.dll                 Dynamic library for Win32/64: SDL and deps

@@ -9,7 +9,7 @@
 /**                                                         **/
 /** Copyright (C) Marat Fayzullin 1994-2007                 **/
 /**     You are not allowed to distribute this software     **/
-/**     commercially. Please, notify me, if you make any    **/   
+/**     commercially. Please, notify me, if you make any    **/
 /**     changes to this file.                               **/
 /**                                                         **/
 /** Adapted by CH, 2010.                                    **/

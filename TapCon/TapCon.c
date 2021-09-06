@@ -8,14 +8,15 @@
 * files into binaries readable by the emulator.                              *
 *                                                                            *
 * (c) 2012 by CH. Contact: wilderland@aon.at                                 *
+* Copyright 2019-2021 Valerio Messina efa@iol.it                             *
 *                                                                            *
 *                                                                            *
-* V 1.00 - 20121023                                                          *
+* Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
+*           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled  *
+* V 1.08 - 20210905                                                          *
 *                                                                            *
 \****************************************************************************/
-
 
 
 /*** INCLUDES ***************************************************************/
@@ -24,7 +25,7 @@
 #include <string.h>
 
 
-/*** INCLUDES ***************************************************************/
+/*** DEFINES ***************************************************************/
 #define V10_TAP_LENGTH    0xB00A
 #define V10_CODE_START    0x1C09
 #define V10_CODE_LENGTH   0x9400
@@ -32,7 +33,6 @@
 #define V12_TAP_LENGTH    0xB84A
 #define V12_CODE_START    0x1C09
 #define V12_CODE_LENGTH   0x9C40
-
 
 
 /****************************************************************************\

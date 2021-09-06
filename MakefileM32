@@ -12,8 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
+# Special exception/limitation to GPL: not for commercial use
 
-# Makefile to crosscompile 'Wilderland' for Win32 on Linux64 using gcc+GNUtoolchain
+# Makefile to crosscompile 'Wilderland' for Win32 on Linux using GCC+GNUtoolchain
 # used on: Linux=>Win.bin32
 # require MXE SDL2_image in /opt/mxe/usr/i686-w64-mingw32.static
 
@@ -23,6 +24,7 @@
 MXEROOT = /opt/mxe
 MXE = $(MXEROOT)/usr/bin
 MCROSS = i686-w64-mingw32.static-
+PATH=$(MXE):$(PATH)
 
 CC = $(MCROSS)gcc
 LD = $(MCROSS)gcc
@@ -36,6 +38,8 @@ FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)mxe32.exe
 TAPCON = TapCon/TapConMxe32.exe
+CPU = i686
+OS = $(uname -o)
 
 all: $(TARGET) $(TAPCON)
 
