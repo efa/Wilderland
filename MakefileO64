@@ -21,10 +21,10 @@
 # OSXROOT point to cross-compiler root path
 # OSX     point to cross-compiler tools path
 # OCROSS  cross-compiler tools prefix
-OCROSS = x86_64-apple-darwin18-
 OSXROOT = /opt/osxcross
 OSX = $(OSXROOT)/target/bin
 OSXPORTS=$OSXROOT/target/macports
+OCROSS = x86_64-apple-darwin18-
 PATH:=$(OSX):$(PATH)
 OSXCROSS_PKG_CONFIG_USE_NATIVE_VARIABLES=1
 PKG_CONFIG_LIBDIR=$OSXPORTS/pkgs/opt/local/lib/pkgconfig:$OSXPORTS/pkgs/opt/local/share/pkgconfig
