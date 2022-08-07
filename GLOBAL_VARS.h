@@ -2,7 +2,7 @@
 *                                                                            *
 *                              GLOBAL_VARS.h                                 *
 *                                                                            *
-* The gloabal variables for the WL project                                   *
+* The global variables for the WL project                                    *
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
 *                                                                            *
