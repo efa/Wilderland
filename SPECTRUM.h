@@ -1,12 +1,26 @@
 /****************************************************************************\
 *                                                                            *
-*                              SPECTRUM.h                                    *
+*                                 SPECTRUM.h                                 *
 *                                                                            *
 * Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20210905                                                          *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  SPECTRUM.h is part of Wilderland - A Hobbit Environment                   *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
 *                                                                            *
 \****************************************************************************/
 
@@ -14,12 +28,33 @@
 #ifndef SPECTRUM_H
 #define SPECTRUM_H
 
-#include <SDL2/SDL.h>
+#include <stdint.h>
 
-#include "Z80/Z80.h"
+// select the CPU emulator, CPUEMUL must be: eZ80 or ez80emu, see Makefile
+#define eZ80    1
+#define ez80emu 2
+
+#if CPUEMUL == eZ80
+   #include "Z80/Z80.h"
+#endif
+#if CPUEMUL == ez80emu
+   #include "z80emu/z80emu.h"
+#endif
 
 
-// My data types
+// Custom data types, use C99 as basis
+#ifndef Uint8
+#define Uint8 uint8_t
+#endif
+
+#ifndef Uint16
+#define Uint16 uint16_t
+#endif
+
+#ifndef Uint32
+#define Uint32 uint32_t
+#endif
+
 #ifndef BYTE_TYPE_DEFINED
 #define BYTE_TYPE_DEFINED
 typedef Uint8 byte;
@@ -34,8 +69,6 @@ typedef Uint16 word;
 #define COLOR_T_TYPE_DEFINED
 typedef Uint32 color_t;
 #endif /* COLOR_T_TYPE_DEFINED */
-
-#include "SDLTWE.h"
 
 
 // Clock
@@ -58,6 +91,8 @@ typedef Uint32 color_t;
 #define SL_SCREENEND       0X57FF // 22527:(SCREENSTART + WIDTH * HEIGHT / 8 - 1)
 #define SL_ATTRIBUTESTART  0x5800 // 22528:(SCREENSTART + WIDTH * HEIGHT / 8)
 #define SL_ATTRIBUTEEND    0x5AFF // 23295:(ATTRIBUTESTART + SP_COL * SP_ROW - 1)
+#define SL_RAMEND          0xFFFF // 65335
+#define SL_48K             0x10000 // 65336
 
 // Spectrum Colors in ARGB888 format
 #define SC_BLACK          0x00000000ul
@@ -79,7 +114,8 @@ typedef Uint32 color_t;
 
 
 // Hardware stuff
-#define NUMBER_OF_IN_READS   1
+//#define NUMBER_OF_IN_READS   1
+#if 0
 typedef enum SHR {
     SHR_cV = 0,       // keyboard half rows
     SHR_AG,
@@ -90,26 +126,33 @@ typedef enum SHR {
     SHR_eH,
     SHR_sB
 } SHR;
+#endif
 typedef enum SHRP {
-    SHRP_cV = 0xFE,   // keyboard half row port addresses
-    SHRP_AG = 0xFD,
-    SHRP_QT = 0xFB,
-    SHRP_15 = 0xF7,
-    SHRP_06 = 0xEF,
-    SHRP_PY = 0xDF,
-    SHRP_eH = 0xBF,
-    SHRP_sB = 0x7F
+    SHRP_cZXCV = 0xFE,   // keyboard half row port addresses
+    SHRP_ASDFG = 0xFD,
+    SHRP_QWERT = 0xFB,
+    SHRP_12345 = 0xF7,
+    SHRP_09876 = 0xEF,
+    SHRP_POIUY = 0xDF,
+    SHRP_eLKJH = 0xBF,
+    SHRP_saMNB = 0x7F
 } SHRP;
 
 // Prototypes
-void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, Uint32 color);
+//void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, Uint32 color);
 void WriteScreenByte(word address, byte v);
 void WriteAttributeByte(word address, byte v);
 byte RdZ80(word A);
 void WrZ80(word A, byte v);
+word RdwZ80(word a);
+void WrwZ80(word a, word w);
 byte InZ80(word P);
 void OutZ80(word P, byte v);
-word LoopZ80(register Z80 *R);
-void PatchZ80(register Z80 *R);
+//word LoopZ80(register Z80 *R);
+//void PatchZ80(register Z80 *R);
+void JumpZ80(word PC);
+#if CPUEMUL == ez80emu
+    void SystemCall (void* context);
+#endif
 
 #endif /* SPECTRUM_H */

@@ -1,23 +1,39 @@
 /****************************************************************************\
 *                                                                            *
-*                                SDLTWE.c                                    *
+*                                  SDLTWE.c                                  *
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20210905                                                          *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
 *                                                                            *
 \****************************************************************************/
 
 
 /*** INCLUDES ***************************************************************/
 #include <stdio.h>
-#include <SDL2/SDL.h>
 
 #include "WL.h"
 #include "SDLTWE.h"
+#include "GLOBAL_VARS.h"
 
+
+byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
 /****************************************************************************\
 * SDLTWE_DrawTextWindowFrame                                                 *
@@ -90,6 +106,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetS
 * The following control characters are processed:                            *
 *   \n \r (both used as Newline, ie CR/LF)                                   *
 *   \f    (used as CLS)                                                      *
+*   \b    (used as backspace)                                                *
 \****************************************************************************/
 void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct CharSetStruct *CS, color_t ink, color_t paper)
 {
@@ -97,6 +114,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
     int CharIndex;
     byte mask;
     Uint32 pixm;
+    byte bs=0;
 
     if (WL_DEBUG)
     {
@@ -107,7 +125,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
         }
     }
 
-    if (a == '\f')
+    if (a == '\f') // CLS
     {
         for (i = 0; i < (TW->rect.h / CS->Height); i++) { // # of char lines
             SDLTWE_VerticalScrollUpOneLine(TW, CS, paper);
@@ -121,22 +139,27 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
         return;
     }
 
-
-    if (TW->CurrentPrintPosY >= TW->rect.h)
+    if (TW->CurrentPrintPosY >= TW->rect.h) // Scroll
     {
         SDLTWE_VerticalScrollUpOneLine(TW, CS, paper);
         TW->CurrentPrintPosX = 0;
         TW->CurrentPrintPosY -= CS->Height;
     }
 
-
-    if (a == '\n' || a == '\r') // 0x0A or 0x0D
+    if (a == '\r' || a == '\n') // 0x0D or 0x0A
     {
         TW->CurrentPrintPosX = 0;
         TW->CurrentPrintPosY += CS->Height;
         return;
     }
 
+    if (a == '\b') { // Backspace
+        if (TW->CurrentPrintPosX > firstEditable*CS->Width) {
+            TW->CurrentPrintPosX -= CS->Width;
+            a=0; // will be substituted
+        } else return;
+        bs=1;
+    }
 
     // if required substitute characters not contained in the character set
     if ((a < CS->CharMin) || (a > CS->CharMax))
@@ -147,7 +170,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
             return;
     }
 
-    for (i = 0; i <= 7; i++)
+    for (i = 0; i <= 7; i++) // print char from CharSetStruct
     {
         mask = 0x80;
         CharIndex = (a - CS->CharMin) * CS->Height;
@@ -161,7 +184,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
         }
     }
 
-    TW->CurrentPrintPosX += CS->Width;
+    if (bs==0) TW->CurrentPrintPosX += CS->Width;
     if (TW->CurrentPrintPosX >= TW->rect.w)
     {
         TW->CurrentPrintPosX = 0;

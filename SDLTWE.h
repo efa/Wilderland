@@ -1,12 +1,26 @@
 /****************************************************************************\
 *                                                                            *
-*                              SDLTWE.h                                      *
+*                                  SDLTWE.h                                  *
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20210905                                                          *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  sdltwe.h is part of Wilderland - A Hobbit Environment                     *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
 *                                                                            *
 \****************************************************************************/
 
@@ -14,9 +28,7 @@
 #ifndef SDLTWE_H
 #define SDLTWE_H
 
-#include <SDL2/SDL.h>
-
-#include "GLOBAL_VARS.h"
+#include <SDL.h> // SDL2
 
 
 // input as ARGB8888, generate comma separated RGBA components for SetRenderDrawColor:
@@ -25,6 +37,7 @@
 #define compG(color) ((color>>8)&0xFF)
 #define compB(color) ((color>>0)&0xFF)
 #define components(color) compR(color),compG(color),compB(color),compA(color)
+
 
 struct TextWindowStruct {
     SDL_Texture* texPtr;
@@ -44,6 +57,8 @@ struct CharSetStruct {
     char CharMax;
     char CharSubstitute;
 };
+
+extern byte firstEditable; // column by SDLTWE_PrintCharTextWindow
 
 void SDLTWE_SetPixel(struct TextWindowStruct *TW, int x, int y, Uint32 color);
 void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t paper);

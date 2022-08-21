@@ -1,0 +1,36 @@
+2.08
+----
+- Added 'z80emu' a new Z80 emulator from Lin Ke-Fong with a free license
+  Selection of the emulator can be made at compile time, see Makefiles
+- New snapshot file format v2 to manage the Z80 emulator type
+  Note: savefiles from different Z80 emulators are incompatible
+- Added backspace management to name input in Load/Save snapshot game
+- Save/Load file now automatically add .wls WilderLandSnapshot to the name
+- Better keyboard input: " and @ are correctly read in US and IT locale
+      ALT|SHIFT+P    ==> "   is used for to talk to NPC in direct speech
+  US: SHIFT+'(")     ==> "
+  IT: SHIFT+à(°)     ==> "
+      ALT|SHIFT+2    ==> @   redo the last command
+  US: SHIFT|ALT+;(:) ==> @
+  IT: SHIFT|ALT+ò(ç) ==> @
+- Load TAP/TZX directly without 'TapCon' help conversion to binary
+- Go room function (SHIFT+G) now move carried objects too
+- Splash screen choose V1.2 for 'The Hobbit' binary v1.2
+- New license GNU GPLv2
+- Added COPYING.txt
+- Added Changelog.txt
+- Updated README.txt
+- Released binary for Linux32/x86, Linux64/x86, Win32, Win64, macOS64/x86
+- Generated macOS DMG package
+- WLpkg manage macOS: howTo files to DMG
+
+Bugfix:
+- now savefiles v1/2 should be portable from 32 and 64 bit platforms
+- Splash screen load the last char attribute too
+- Removed some unused parts/definitions
+
+Modification to 'z80emu':
+  Added JUMP/CALL/RET/RST callback Z80_JUMP() to capture game output
+  Added 16 bit address port In/Out to simulate keyboard input
+  Added Z80ResetTable() to regenerate register pointers on snapshot load
+  Added printZ80struct() to show internal register values

@@ -1,9 +1,0 @@
-1) with -FULLSCREEN the Hobbit splash is wrong
-2) Linux: -MAXSPEED flicker if not added an SDL_Delay that vanish the option
-3) some flash / transparent frame/renderer without texture
-4) putting SDL_RenderClear require redraw frame,log,map every frame
-5) use 'UnLockScreen' instead of 'ShowTextWindow' to:
-   SDL_UpdateTexture (TW->texPtr, NULL, TW->framePtr, TW->pitch);
-   SDL_RenderCopy (renPtr, TW->texPtr, NULL, &TW->rect);
-   SDL_RenderPresent (renPtr);
-   SDL_Delay (14);

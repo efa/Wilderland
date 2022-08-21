@@ -1,12 +1,26 @@
 /****************************************************************************\
 *                                                                            *
-*                              WL.h                                          *
+*                                    WL.h                                    *
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 1.08 - 20210905                                                          *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  WL.h is part of Wilderland - A Hobbit Environment                         *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
 *                                                                            *
 \****************************************************************************/
 
@@ -17,38 +31,46 @@
 #include "SPECTRUM.h"
 
 
-// My data types
-#ifndef BYTE_TYPE_DEFINED
-#define BYTE_TYPE_DEFINED
-typedef Uint8 byte;
-#endif /* BYTE_TYPE_DEFINED */
-
-#ifndef WORD_TYPE_DEFINED
-#define WORD_TYPE_DEFINED
-typedef Uint16 word;
-#endif /* WORD_TYPE_DEFINED */
-
-#ifndef COLOR_T_TYPE_DEFINED
-#define COLOR_T_TYPE_DEFINED
-typedef Uint32 color_t;
-#endif /* COLOR_T_TYPE_DEFINED */
-
-
 #define WL_DEBUG 0
+
+// tape related values
+//#define V10_CODE_SIZE     0x9400 // 37888, see CODE_LENGTH_V10
+#define V10_TAP_NAME      "HOBBIT.TAP"
+#define V10_TAP_LENGTH    0xB00A // 45066
+#define V10_TAP_START     0x1C09 // 7177
+#define V10_TZX_NAME      "The Hobbit v1.0.tzx"
+#define V10_TZX_LENGTH    0xB044 // 45124
+#define V10_TZX_START     0x1C43 // 7235
+
+//#define OWN_CODE_SIZE     0x9C40 // 40000, see CODE_LENGTH_OWN
+#define OWN_TAP_NAME      "HOBBITown.TAP"
+#define OWN_TAP_LENGTH    0xB84A // 47178
+#define OWN_TAP_START     0x1C09 // 7177
+#define OWN_TZX_NAME      "The Hobbit vown.tzx"
+#define OWN_TZX_LENGTH    0xB884 // 47236
+#define OWN_TZX_START     0x1C43 // 7235
+
+//#define V12_CODE_SIZE     0x9C40 // 40000, see CODE_LENGTH_V12
+#define V12_TAP_NAME      "HOBBIT12.TAP"
+#define V12_TAP_LENGTH    0xB84A // 47178
+#define V12_TAP_START     0x1C09 // 7177
+#define V12_TZX_NAME      "The Hobbit v1.2.tzx"
+#define V12_TZX_LENGTH    0xB884 // 47236
+#define V12_TZX_START     0x1C43 // 7235
 
 // Versions (The chronological order seems to be V10-OWN-V12)
 #define OWN 0
 #define V10 1
 #define V12 2
-#define FN_OWN          "HOB_OWN.bin"
-#define FN_V10          "HOB_V10.bin"
-#define FN_V12          "HOB_V12.bin"
+#define FN_OWN            "HOB_OWN.bin"
+#define FN_V10            "HOB_V10.bin"
+#define FN_V12            "HOB_V12.bin"
 #define STARTADR_OWN            0x6000
 #define STARTADR_V10            0x6000
 #define STARTADR_V12            0x6000
-#define LENGTH_OWN              40000
-#define LENGTH_V10              37888
-#define LENGTH_V12              40000
+#define CODE_LENGTH_OWN         0x9C40 // 40000
+#define CODE_LENGTH_V10         0x9400 // 37888
+#define CODE_LENGTH_V12         0x9C40 // 40000
 #define DICTIONARY_BASE_OWN     0x6000
 #define DICTIONARY_BASE_V10     0x6000
 #define DICTIONARY_BASE_V12     0x6000
@@ -95,8 +117,9 @@ typedef Uint32 color_t;
 #define L_YOU_OBJ_POSITION_V12  0xC12B
 
 // Spectrum Screen Pixels in PC screen pixels
-#define SS_WIDTH_SPIXELS  (SP_WIDTH*2)
-#define SS_HEIGHT_SPIXELS (SP_HEIGHT*2)
+#define SP_ZOOM 2
+#define SS_WIDTH_SPIXELS  (SP_WIDTH*SP_ZOOM)
+#define SS_HEIGHT_SPIXELS (SP_HEIGHT*SP_ZOOM)
 
 // Main Window
 #define MAINWINWIDTH  1280
@@ -121,7 +144,7 @@ typedef Uint32 color_t;
 // Object Window
 #define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH) // 824
 #define OBJWINPOSY    (2*BORDERWIDTH) // 8
-#define OBJWINWIDTH   (56*8) // 448: 58 column, 8 pixel/char
+#define OBJWINWIDTH   (56*8) // 448: 56 column, 8 pixel/char
 #define OBJWINHEIGHT  (64*8) // 512: 64 lines, 8 pixel/char
 
 // Help Window
@@ -184,11 +207,11 @@ typedef Uint32 color_t;
 #define ATTR_ANIMAL      0x40
 #define ATTR_VISIBLE     0x80
 
-struct GameKeyboardInputStruct {
+/*struct GameKeyboardInputStruct {
     int B;
     int E;
     char buffer[100];
     int length;
-};
+};*/
 
 #endif /* WL_H */

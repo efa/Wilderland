@@ -1,6 +1,6 @@
-# MakefileO64: Copyright 2019-2022 Valerio Messina efa@iol.it
+# Makefile: Copyright 2019-2022 Valerio Messina efa@iol.it
 #
-# MakefileO64 is part of Wilderland - A Hobbit Environment
+# Makefile is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
@@ -14,14 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
 
-# Makefile to cross-build 'Wilderland' for macOS on Linux using CLANG+GNUtoolchain
-# To be used on: Linux=>macOS.bin64 (OSXCROSS)
-# require OSX SDL_image in /opt/osxcross/target/macports/pkgs/opt/local/lib
+# Makefile to build 'Wilderland' for Win on Win using GCC+GNUtoolchain
+# To be used on: MinGw64=>bin64 (MinGW/MSYS2)
+# require $ pacman 
 
 # To use z80emu emulator build with: $ make CPUEMUL=ez80emu   OR   $ make
 # To use Z80    emulator build with: $ make CPUEMUL=eZ80
 
-PKG = OSX64
+PKG = MGW64
 CPU = $(shell uname -m)
 BIT = 64
 OS = $(shell uname -o)
@@ -41,46 +41,38 @@ ifeq ($(CPUEMUL),ez80emu)
    CPUOBJ=z80emu.o
 endif
 
-# OHOST   cross-compiler target
-# OCROSS  cross-toolchain prefix
-# OSXROOT point to cross-compiler root path
-# OSX     point to cross-compiler tools path
-OHOST=x86_64-apple-darwin18
-OCROSS = $(OHOST)-
-OSXROOT = /opt/osxcross
-OSX = $(OSXROOT)/target/bin
-OSXDEPS = $OSXROOT/target/macports
-PATH:=$(OSX):$(PATH)
-OSXCROSS_PKG_CONFIG_USE_NATIVE_VARIABLES = 1
-PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = $(OSXDEPS)/pkgs/opt/local/lib/pkgconfig:$(OSXDEPS)/pkgs/opt/local/share/pkgconfig
-
-CC = $(OCROSS)clang
-LD = $(OCROSS)clang
-STRIP = $(OCROSS)strip
-PKG_CONFIG = $(OCROSS)pkg-config
-CFLAGS = -std=c99 -Wall -O3 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer # -I$(OSXDEPS)/pkgs/opt/local/include
-SDLCFLAGS = $(shell OSXCROSS_PKG_CONFIG_USE_NATIVE_VARIABLES=1: PKG_CONFIG_PATH=$(PKG_CONFIG_PATH): $(OSX)/$(PKG_CONFIG) --cflags SDL2_image)
-#SDLMINGWLDFLAGS = -mconsole # on MinGW + SDL force console for debug
-LDFLAGS = $(shell OSXCROSS_PKG_CONFIG_USE_NATIVE_VARIABLES=1: PKG_CONFIG_PATH=$(PKG_CONFIG_PATH): $(OSX)/$(PKG_CONFIG) --libs SDL2_image) $(SDLMINGWLDFLAGS)
+CC = gcc
+LD = $(CC)
+STRIP = strip
+CFLAGS = -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+SDLCFLAGS = $(shell pkg-config --cflags SDL2_image)
+ifeq ($(OS),Msys) # on MINGW + SDL force console for debug
+   SDLMINGWLDFLAGS = -mconsole
+endif
+LDFLAGS = $(shell pkg-config --libs SDL2_image) $(SDLMINGWLDFLAGS)
 FILE = WL
 SOURCE = $(FILE)
-TARGET = $(FILE)osx
-TAPCON = TapCon/TapConOsx
+TARGET = $(FILE)
+TAPCON = TapCon/TapCon
+ifeq ($(MSYSTEM),MINGW64) # strip/rm require .exe in MINGW/MSYS2
+   STRIP = strip.exe
+   TARGET = $(FILE)mgw.exe
+   TAPCON = TapCon/TapConMgw.exe
+endif
 
 all: $(TARGET) $(TAPCON)
 
 $(TARGET): $(SOURCE).o SDLTWE.o spectrum.o $(CPUOBJ)
-	$(OSX)/$(LD) $^ $(LDFLAGS) -o $@
+	$(LD) $^ $(LDFLAGS) -o $@
 
 $(SOURCE).o: $(SOURCE).c WL.h GLOBAL_VARS.h MapCoordinates.h SDLTWE.h SPECTRUM.h $(CPUIF)
-	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 SDLTWE.o: SDLTWE.c WL.h SDLTWE.h
-	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 spectrum.o: Spectrum.c GLOBAL_VARS.h SPECTRUM.h WL.h SDLTWE.h $(CPUIF)
-	$(OSX)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 z80emu/tables.h: z80emu/maketables.c
 	$(CC) -Wall $< -o z80emu/maketables
@@ -91,14 +83,15 @@ z80emu.o: z80emu/z80emu.c z80emu/z80emu.h z80emu/z80config.h z80emu/z80user.h \
 	z80emu/instructions.h z80emu/macros.h z80emu/tables.h SPECTRUM.h
 	$(CC) -I. $(CFLAGS) -c $<
 
-Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
-	$(OSX)/$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
+Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h \
+	Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
+	$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 $(TAPCON): TapCon/TapCon.c WL.h
-	$(OSX)/$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 
 strip:
-	$(OSX)/$(STRIP) $(TARGET) $(TAPCON)
+	$(STRIP) $(TARGET) $(TAPCON)
 
 cleanobj:
 	rm -f *.o

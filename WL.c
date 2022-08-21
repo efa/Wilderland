@@ -1,20 +1,35 @@
 /****************************************************************************\
 *                                                                            *
-*                                   WL.c                                     *
+*                                    WL.c                                    *
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
 * (c) 2012-2019 by CH, Contact: wilderland@aon.at                            *
-* Copyright 2019-2021 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2022 Valerio Messina efa@iol.it                             *
 *                                                                            *
 * Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
 * Z80 emulator based on Marat Fayzullin's work from 2007 (fms.komkon.org)    *
+* z80emu based on Lin Ke-Fong work from 2017 (github.com/anotherlin/z80emu)  *
 * 8x8 character set from ZX Spectrum ROM (c) by Amstrad, PD for emulators    *
 *                                                                            *
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 1.08 - 20210905                                                          *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  WL.c is part of Wilderland - A Hobbit Environment                         *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
 *                                                                            *
 \****************************************************************************/
 
@@ -23,19 +38,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h> // SDL2
+#include <SDL_image.h>
 
 #include "WL.h"
 #include "SDLTWE.h"
 #include "SPECTRUM.h"
-#include "Z80/Z80.h"
 #include "MapCoordinates.h"
 
 /*** GLOBAL VARIABLES *******************************************************/
 #include "GLOBAL_VARS.h"
 
-#define WLVER "1.08"
+#define WLVER "2.08"
+#define MAXNAMELEN 100
 
 int HV;      //Hobbit version
 
@@ -50,20 +65,33 @@ int NoScanLines;
 int LockLevel;
 struct CharSetStruct CharSet;
 
-struct TextWindowStruct GameWin;  // dummy to draw frame
-struct TextWindowStruct LogWin;
-struct TextWindowStruct ObjWin;
-struct TextWindowStruct HelpWin;
-struct TextWindowStruct MapWin;
+struct TextWindowStruct GameWin;  // game frame dummy
+struct TextWindowStruct LogWin;   // left frame
+struct TextWindowStruct ObjWin;   // right frame with attribute
+struct TextWindowStruct HelpWin;  // center frame with commands
+struct TextWindowStruct MapWin;   // lower frame with map
 
-Z80 z80;                   // my Z80 processor
-byte ZXmem[0x10000];       // Spectrum 64 kB memory
+// select the CPU emulator, CPUEMUL must be: eZ80 or ez80emu
+#if CPUEMUL == eZ80
+   Z80 z80;                      // my Z80 processor
+#endif
+#if CPUEMUL == ez80emu
+   Z80_STATE z80;                // my Z80 processor
+   int context;
+#endif
+size_t SizeOfZ80 = sizeof(z80);
+size_t FileOfZ80; // fixed size vars(bye,word,char,short,int), skip void/register pointers and 32/64 bit padding
+byte ZXmem[SL_48K];          // Spectrum 64 kB memory
+//unsigned char ZXmem[1 << 16]; // Spectrum 64 kB memory for z80emu
+uint8_t bit = 8*sizeof(void*); // 32 or 64 bit
 
-Uint16 CurrentPressedKey;  // is used in InZ80()
-Uint16 CurrentPressedMod;  // used by InZ80()
+//SDL_Scancode CurrentPressedCod;
+SDL_Keycode CurrentPressedKey;  // used by InZ80()
+Uint16      CurrentPressedMod;  // used by InZ80()
 
 //extern color_t ColorTable[];    //defined in Spectrum.c
 int delay=22; // min 22 ms to avoid flickering
+int ld=0;
 
 
 /****************************************************************************\
@@ -162,7 +190,7 @@ void DrawLineRelative(Uint32* framePtr, int x, int y, int dx, int dy, int rx, in
 
 
 /****************************************************************************\
-* PrintChar                                                                  *
+* PrintChar on map                                                           *
 *                                                                            *
 \****************************************************************************/
 void PrintChar(Uint32* framePtr, struct CharSetStruct *cs, char a, int x, int y, color_t ink, color_t paper)
@@ -201,7 +229,7 @@ void PrintChar(Uint32* framePtr, struct CharSetStruct *cs, char a, int x, int y,
 
 
 /****************************************************************************\
-* PrintString                                                                *
+* PrintString on map                                                         *
 *                                                                            *
 \****************************************************************************/
 void PrintString(Uint32* framePtr, struct CharSetStruct *cs, char *ps, int x, int y, color_t ink, color_t paper)
@@ -215,7 +243,7 @@ void PrintString(Uint32* framePtr, struct CharSetStruct *cs, char *ps, int x, in
 
 
 /****************************************************************************\
-* SearchByteWordTable                                                        *
+* SearchByteWordTable for map and ?                                          *
 *                                                                            *
 * Returns pointer value or 0 if not found.                                   *
 \****************************************************************************/
@@ -233,7 +261,7 @@ word SearchByteWordTable(byte a, word address)
 
 
 /****************************************************************************\
-* GetObjectAttributePointer                                                  *
+* GetObjectAttributePointer for map and ?                                    *
 *                                                                            *
 * Returns pointer value or 0 if not found.                                   *
 \****************************************************************************/
@@ -250,7 +278,7 @@ word GetObjectAttributePointer(byte a, byte attributeoffset)
 
 
 /****************************************************************************\
-* DrawAnimalPositon                                                          *
+* DrawAnimalPositon on map                                                   *
 *                                                                            *
 \****************************************************************************/
 void DrawAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte animalnr, word x, word y, byte objectoffset)
@@ -270,7 +298,7 @@ void DrawAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte animaln
 
 
 /****************************************************************************\
-* PrepareOneAnimalPositon                                                    *
+* PrepareOneAnimalPositon on map                                             *
 *                                                                            *
 \****************************************************************************/
 void PrepareOneAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte AnimalNr, byte *objectsperroom)
@@ -295,7 +323,7 @@ void PrepareOneAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte A
 
 
 /****************************************************************************\
-* PrepareAnimalPositions                                                     *
+* PrepareAnimalPositions on map                                              *
 *                                                                            *
 \****************************************************************************/
 void PrepareAnimalPositions(Uint32* framePtr, struct CharSetStruct *cs, byte *objectsperroom)
@@ -382,18 +410,149 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
 
 
 /****************************************************************************\
+* printZ80struct                                                             *
+*                                                                            *
+\****************************************************************************/
+void printZ80struct () {
+   uintptr_t p;
+   uintptr_t z = (uintptr_t)&z80;
+   uintptr_t fo=96; // file offset, was 64 on filever1
+   printf("z80 size:%zu\n", SizeOfZ80);
+   printf("z80 file:%zu\n", FileOfZ80);
+   printf("z80 addr:0x%p\n", &z80);
+#if CPUEMUL == eZ80
+   printf(                             "fil ind address_____________ reg_______ value_____________\n");
+   p=(uintptr_t)&z80.AF.B.l;     printf("%03tu %03tu @:0x%16tX F         :0x%02X\n",  p-z+fo, p-z, p, z80.AF.B.l);
+   p=(uintptr_t)&z80.AF.B.h;     printf("%03tu %03tu @:0x%16tX A         :0x%02X\n",  p-z+fo, p-z, p, z80.AF.B.h);
+   p=(uintptr_t)&z80.BC.B.l;     printf("%03tu %03tu @:0x%16tX C         :0x%02X\n",  p-z+fo, p-z, p, z80.BC.B.l);
+   p=(uintptr_t)&z80.BC.B.h;     printf("%03tu %03tu @:0x%16tX B         :0x%02X\n",  p-z+fo, p-z, p, z80.BC.B.h);
+   p=(uintptr_t)&z80.DE.B.l;     printf("%03tu %03tu @:0x%16tX E         :0x%02X\n",  p-z+fo, p-z, p, z80.DE.B.l);
+   p=(uintptr_t)&z80.DE.B.h;     printf("%03tu %03tu @:0x%16tX D         :0x%02X\n",  p-z+fo, p-z, p, z80.DE.B.h);
+   p=(uintptr_t)&z80.HL.B.l;     printf("%03tu %03tu @:0x%16tX L         :0x%02X\n",  p-z+fo, p-z, p, z80.HL.B.l);
+   p=(uintptr_t)&z80.HL.B.h;     printf("%03tu %03tu @:0x%16tX H         :0x%02X\n",  p-z+fo, p-z, p, z80.HL.B.h);
+   p=(uintptr_t)&z80.IX.B.l;     printf("%03tu %03tu @:0x%16tX IXl       :0x%02X\n",  p-z+fo, p-z, p, z80.IX.B.l);
+   p=(uintptr_t)&z80.IX.B.h;     printf("%03tu %03tu @:0x%16tX IXh       :0x%02X\n",  p-z+fo, p-z, p, z80.IX.B.h);
+   p=(uintptr_t)&z80.IY.B.l;     printf("%03tu %03tu @:0x%16tX IYl       :0x%02X\n",  p-z+fo, p-z, p, z80.IY.B.l);
+   p=(uintptr_t)&z80.IY.B.h;     printf("%03tu %03tu @:0x%16tX IYh       :0x%02X\n",  p-z+fo, p-z, p, z80.IY.B.h);
+   p=(uintptr_t)&z80.PC.B.l;     printf("%03tu %03tu @:0x%16tX PCl       :0x%02X\n",  p-z+fo, p-z, p, z80.PC.B.l);
+   p=(uintptr_t)&z80.PC.B.h;     printf("%03tu %03tu @:0x%16tX PCh       :0x%02X\n",  p-z+fo, p-z, p, z80.PC.B.h);
+   p=(uintptr_t)&z80.SP.B.l;     printf("%03tu %03tu @:0x%16tX SPl       :0x%02X\n",  p-z+fo, p-z, p, z80.SP.B.l),
+   p=(uintptr_t)&z80.SP.B.h;     printf("%03tu %03tu @:0x%16tX SPh       :0x%02X\n",  p-z+fo, p-z, p, z80.SP.B.h),
+
+   p=(uintptr_t)&z80.AF.W;       printf("%03tu %03tu @:0x%16tX AF        :0x%02X\n",  p-z+fo, p-z, p, z80.AF.W);
+   p=(uintptr_t)&z80.BC.W;       printf("%03tu %03tu @:0x%16tX BC        :0x%02X\n",  p-z+fo, p-z, p, z80.BC.W);
+   p=(uintptr_t)&z80.DE.W;       printf("%03tu %03tu @:0x%16tX DE        :0x%02X\n",  p-z+fo, p-z, p, z80.DE.W);
+   p=(uintptr_t)&z80.HL.W;       printf("%03tu %03tu @:0x%16tX HL        :0x%02X\n",  p-z+fo, p-z, p, z80.HL.W);
+   p=(uintptr_t)&z80.IX.W;       printf("%03tu %03tu @:0x%16tX IX        :0x%02X\n",  p-z+fo, p-z, p, z80.IX.W);
+   p=(uintptr_t)&z80.IY.W;       printf("%03tu %03tu @:0x%16tX IY        :0x%02X\n",  p-z+fo, p-z, p, z80.IY.W);
+   p=(uintptr_t)&z80.PC.W;       printf("%03tu %03tu @:0x%16tX PC        :0x%02X\n",  p-z+fo, p-z, p, z80.PC.W);
+   p=(uintptr_t)&z80.SP.W;       printf("%03tu %03tu @:0x%16tX SP        :0x%02X\n",  p-z+fo, p-z, p, z80.SP.W);
+
+   p=(uintptr_t)&z80.AF1.W;      printf("%03tu %03tu @:0x%16tX AF'       :0x%02X\n",  p-z+fo, p-z, p, z80.AF1.W);
+   p=(uintptr_t)&z80.BC1.W;      printf("%03tu %03tu @:0x%16tX BC'       :0x%02X\n",  p-z+fo, p-z, p, z80.BC1.W);
+   p=(uintptr_t)&z80.DE1.W;      printf("%03tu %03tu @:0x%16tX DE'       :0x%02X\n",  p-z+fo, p-z, p, z80.DE1.W);
+   p=(uintptr_t)&z80.HL1.W;      printf("%03tu %03tu @:0x%16tX HL'       :0x%02X\n",  p-z+fo, p-z, p, z80.HL1.W);
+
+   p=(uintptr_t)&z80.IFF;        printf("%03tu %03tu @:0x%16tX IFF       :0x%02X\n",  p-z+fo, p-z, p, z80.IFF);
+   p=(uintptr_t)&z80.I;          printf("%03tu %03tu @:0x%16tX I         :0x%02X\n",  p-z+fo, p-z, p, z80.I);
+   p=(uintptr_t)&z80.R;          printf("%03tu %03tu @:0x%16tX R         :0x%02X\n",  p-z+fo, p-z, p, z80.R);
+
+   p=(uintptr_t)&z80.IPeriod;    printf("%03tu %03tu @:0x%16tX IPeriod   :0x%08X\n",  p-z+fo, p-z, p, z80.IPeriod);
+   p=(uintptr_t)&z80.ICount;     printf("%03tu %03tu @:0x%16tX ICount    :0x%08X\n",  p-z+fo, p-z, p, z80.ICount);
+   p=(uintptr_t)&z80.IBackup;    printf("%03tu %03tu @:0x%16tX IBackup   :0x%08X\n",  p-z+fo, p-z, p, z80.IBackup);
+   p=(uintptr_t)&z80.IRequest;   printf("%03tu %03tu @:0x%16tX IRequest  :0x%02X\n",  p-z+fo, p-z, p, z80.IRequest);
+   p=(uintptr_t)&z80.IAutoReset; printf("%03tu %03tu @:0x%16tX IAutoReset:0x%02X\n",  p-z+fo, p-z, p, z80.IAutoReset);
+   p=(uintptr_t)&z80.TrapBadOps; printf("%03tu %03tu @:0x%16tX TrapBadOps:0x%02X\n",  p-z+fo, p-z, p, z80.TrapBadOps);
+   p=(uintptr_t)&z80.Trap;       printf("%03tu %03tu @:0x%16tX Trap      :0x%02X\n",  p-z+fo, p-z, p, z80.Trap);
+   p=(uintptr_t)&z80.Trace;      printf("%03tu %03tu @:0x%16tX Trace     :0x%02X\n",  p-z+fo, p-z, p, z80.Trace);
+   p=(uintptr_t)&z80.User;       printf("%03tu %03tu @:0x%16tX &User     :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.User);
+#endif
+#if CPUEMUL == ez80emu
+   printf(                                     "fil ind address_____________ reg_ value_____________\n");
+   p=(uintptr_t)&z80.status;             printf("%03tu %03tu @:0x%16tX stat:0x%08X\n",  p-z+fo, p-z, p, z80.status);
+   p=(uintptr_t)&z80.registers.byte[0];  printf("%03tu %03tu @:0x%16tX C   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[0]);
+   p=(uintptr_t)&z80.registers.byte[1];  printf("%03tu %03tu @:0x%16tX B   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[1]);
+   p=(uintptr_t)&z80.registers.byte[2];  printf("%03tu %03tu @:0x%16tX E   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[2]);
+   p=(uintptr_t)&z80.registers.byte[3];  printf("%03tu %03tu @:0x%16tX D   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[3]);
+   p=(uintptr_t)&z80.registers.byte[4];  printf("%03tu %03tu @:0x%16tX L   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[4]);
+   p=(uintptr_t)&z80.registers.byte[5];  printf("%03tu %03tu @:0x%16tX H   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[5]);
+   p=(uintptr_t)&z80.registers.byte[6];  printf("%03tu %03tu @:0x%16tX F   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[6]);
+   p=(uintptr_t)&z80.registers.byte[7];  printf("%03tu %03tu @:0x%16tX A   :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[7]);
+   p=(uintptr_t)&z80.registers.byte[8];  printf("%03tu %03tu @:0x%16tX IXl :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[8]);
+   p=(uintptr_t)&z80.registers.byte[9];  printf("%03tu %03tu @:0x%16tX IXh :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[9]);
+   p=(uintptr_t)&z80.registers.byte[10]; printf("%03tu %03tu @:0x%16tX IYl :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[10]);
+   p=(uintptr_t)&z80.registers.byte[11]; printf("%03tu %03tu @:0x%16tX IYh :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[11]);
+   p=(uintptr_t)&z80.registers.byte[12]; printf("%03tu %03tu @:0x%16tX Pl  :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[12]);
+   p=(uintptr_t)&z80.registers.byte[13]; printf("%03tu %03tu @:0x%16tX Sh  :0x%02X\n",  p-z+fo, p-z, p, z80.registers.byte[13]);
+
+   p=(uintptr_t)&z80.registers.word[0];  printf("%03tu %03tu @:0x%16tX BC  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[0]);
+   p=(uintptr_t)&z80.registers.word[1];  printf("%03tu %03tu @:0x%16tX DE  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[1]);
+   p=(uintptr_t)&z80.registers.word[2];  printf("%03tu %03tu @:0x%16tX HL  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[2]);
+   p=(uintptr_t)&z80.registers.word[3];  printf("%03tu %03tu @:0x%16tX AF  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[3]);
+   p=(uintptr_t)&z80.registers.word[4];  printf("%03tu %03tu @:0x%16tX IX  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[4]);
+   p=(uintptr_t)&z80.registers.word[5];  printf("%03tu %03tu @:0x%16tX IY  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[5]);
+   p=(uintptr_t)&z80.registers.word[6];  printf("%03tu %03tu @:0x%16tX SP  :0x%04X\n",  p-z+fo, p-z, p, z80.registers.word[6]);
+
+   p=(uintptr_t)&z80.alternates[0];      printf("%03tu %03tu @:0x%16tX BC' :0x%04X\n",  p-z+fo, p-z, p, z80.alternates[0]);
+   p=(uintptr_t)&z80.alternates[1];      printf("%03tu %03tu @:0x%16tX DE' :0x%04X\n",  p-z+fo, p-z, p, z80.alternates[1]);
+   p=(uintptr_t)&z80.alternates[2];      printf("%03tu %03tu @:0x%16tX HL' :0x%04X\n",  p-z+fo, p-z, p, z80.alternates[2]);
+   p=(uintptr_t)&z80.alternates[3];      printf("%03tu %03tu @:0x%16tX AF' :0x%04X\n",  p-z+fo, p-z, p, z80.alternates[3]);
+
+   p=(uintptr_t)&z80.i;                  printf("%03tu %03tu @:0x%16tX I   :0x%08X\n",  p-z+fo, p-z, p, z80.i);
+   p=(uintptr_t)&z80.r;                  printf("%03tu %03tu @:0x%16tX R   :0x%08X\n",  p-z+fo, p-z, p, z80.r);
+   p=(uintptr_t)&z80.pc;                 printf("%03tu %03tu @:0x%16tX PC  :0x%08X\n",  p-z+fo, p-z, p, z80.pc);
+   p=(uintptr_t)&z80.iff1;               printf("%03tu %03tu @:0x%16tX IFF1:0x%08X\n",  p-z+fo, p-z, p, z80.iff1);
+   p=(uintptr_t)&z80.iff2;               printf("%03tu %03tu @:0x%16tX IFF2:0x%08X\n",  p-z+fo, p-z, p, z80.iff2);
+   p=(uintptr_t)&z80.im;                 printf("%03tu %03tu @:0x%16tX IM  :0x%08X\n",  p-z+fo, p-z, p, z80.im);
+
+   p=(uintptr_t)&z80.register_table[0];  printf("%03tu %03tu @:0x%16tX &B  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[0]);
+   p=(uintptr_t)&z80.register_table[1];  printf("%03tu %03tu @:0x%16tX &C  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[1]);
+   p=(uintptr_t)&z80.register_table[2];  printf("%03tu %03tu @:0x%16tX &D  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[2]);
+   p=(uintptr_t)&z80.register_table[3];  printf("%03tu %03tu @:0x%16tX &E  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[3]);
+   p=(uintptr_t)&z80.register_table[4];  printf("%03tu %03tu @:0x%16tX &H  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[4]);
+   p=(uintptr_t)&z80.register_table[5];  printf("%03tu %03tu @:0x%16tX &L  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[5]);
+   p=(uintptr_t)&z80.register_table[6];  printf("%03tu %03tu @:0x%16tX &HL :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[6]);
+   p=(uintptr_t)&z80.register_table[7];  printf("%03tu %03tu @:0x%16tX &A  :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[7]);
+   p=(uintptr_t)&z80.register_table[8];  printf("%03tu %03tu @:0x%16tX &BC :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[8]);
+   p=(uintptr_t)&z80.register_table[9];  printf("%03tu %03tu @:0x%16tX &DE :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[9]);
+   p=(uintptr_t)&z80.register_table[10]; printf("%03tu %03tu @:0x%16tX &HL :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[10]);
+   p=(uintptr_t)&z80.register_table[11]; printf("%03tu %03tu @:0x%16tX &SP :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[11]);
+   p=(uintptr_t)&z80.register_table[12]; printf("%03tu %03tu @:0x%16tX &BC :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[12]);
+   p=(uintptr_t)&z80.register_table[13]; printf("%03tu %03tu @:0x%16tX &DE :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[13]);
+   p=(uintptr_t)&z80.register_table[14]; printf("%03tu %03tu @:0x%16tX &HL :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[14]);
+   p=(uintptr_t)&z80.register_table[15]; printf("%03tu %03tu @:0x%16tX &AF :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[15]);
+#endif
+}
+
+
+/****************************************************************************\
+* printZ80                                                                   *
+*                                                                            *
+\****************************************************************************/
+void printZ80 () {
+   unsigned int i;
+   byte mem;
+   printf("z80 size:%zu\n", SizeOfZ80);
+   printf("z80 file:%zu\n", FileOfZ80);
+   printf("z80 addr:0x%p\n", &z80);
+   for (i=0; i<SizeOfZ80; i++) {
+      mem = *( ((byte*)&z80) + i);
+      //printf("z80[%03u]='%c'=0x%02X=%03u\n", i, mem, mem, mem );
+      printf("z80[%03u]=0x%02X\n", i, mem );
+   }
+}
+
+
+/****************************************************************************\
 * GetFileName                                                                *
 *                                                                            *
 \****************************************************************************/
 void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t ink, color_t paper)
 {
-    Uint16 a;
+    SDL_Keycode a;
+    char* f = fnstr;
     SDL_Event event;
-
-    LockScreen(winPtr);
-    SDLTWE_PrintString(TW, "\n\nFilename: ", CS, ink, paper);
-    ShowTextWindow (TW);
-    UnLockScreen(winPtr);
+    char c;
 
     while (1)
     {
@@ -411,10 +570,25 @@ void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct 
                         SDLTWE_PrintCharTextWindow(TW, a, CS, ink, paper);
                         ShowTextWindow (TW);
                         UnLockScreen(winPtr);
+                        if (fnstr-f >= MAXNAMELEN) {
+                           *fnstr = 0;
+                           return;
+                        }
                         break;
                     }
-                    if (a == SDLK_BACKSPACE)
+                    if (a == SDLK_BACKSPACE) {
+                        //printf("backspace\n");
+                        if (f!=fnstr) { // not of first editable
+                            c=8;
+                            *fnstr = c;
+                            fnstr--;
+                            LockScreen(winPtr);
+                            SDLTWE_PrintCharTextWindow(TW, c, CS, ink, paper);
+                            ShowTextWindow (TW);
+                            UnLockScreen(winPtr);
+                        }
                         break;
+                    }
                     if (a == SDLK_RETURN)
                     {
                         *fnstr = 0;
@@ -428,44 +602,62 @@ void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct 
     }
 }
 
-
 /****************************************************************************\
 * SaveGame                                                                   *
 *                                                                            *
 \****************************************************************************/
 void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper)
 {
-    char fn[100];
+    char fn[MAXNAMELEN+4];
     FILE *f;
     int i;
 
+    LockScreen(winPtr);
+    SDLTWE_PrintString(TW, "\n\nSave Filename: ", CS, ink, paper);
+    ShowTextWindow (TW);
+    UnLockScreen(winPtr);
+    firstEditable = 15; // "Save Filename: "
     GetFileName(fn, TW, CS, ink, paper);
+    firstEditable = 0;
+    if (fn[0] != '\0') strcat(fn, ".wls");
 
     f = fopen(fn, "wb");
-    if (!f)
-    {
+    if (!f) {
         fprintf(stderr, "WL: ERROR - Can't open file '%s' for saving game.\n", fn);
+        LockScreen(winPtr);
+        SDLTWE_PrintString(TW, "Can't open file for saving\n", CS, ink, paper);
+        ShowTextWindow (TW);
+        UnLockScreen(winPtr);
         return;
     }
 
     fprintf(f, "GAMEVERSION=%i\r\n", hv);
-    fprintf(f, "FILEVERSION=1\r\n");
-    fprintf(f, "SIZE(Z80)=%02zX\r\n", sizeof(z80));
-    fprintf(f, "PC=%04X\r\n", z80.PC.W);
-
+    fprintf(f, "FILEVERSION=2\r\n");
+    fprintf(f, "Z80VERSION=%i\r\n", CPUEMUL); // new in fileversion 2
+    fprintf(f, "SIZE(Z80)=0x%03zX\r\n", SizeOfZ80);
+    fprintf(f, "FILE(Z80)=0x%02zX\r\n", FileOfZ80);
+    #if CPUEMUL == eZ80
+        fprintf(f, "PC=0x%04X\r\n", z80.PC.W);
+    #endif
+    #if CPUEMUL == ez80emu
+        fprintf(f, "PC=0x%04X\r\n", (word)z80.pc);
+    #endif
     fprintf(f, "***Z80***\n");
-    for (i = 0; i < sizeof(z80); i++)
-        fprintf(f, "%c", *((byte *) & z80 + i));
-
+    for (i = 0; i < FileOfZ80; i++) { // filever 2 save z80 partially
+        byte b = *( ((byte*)&z80) + i);
+        //if (i<=183) printf("i:%03i b:0x%02X\n", i, b);
+        fprintf(f, "%c", b);
+    }
     fprintf(f, "\n");
+
     fprintf(f, "***MEMORY***\n");
-    for (i = 0; i <= 0xFFFF; i++)
+    for (i = 0; i <= SL_RAMEND; i++)
         fprintf(f, "%c", ZXmem[i]);
 
     fclose(f);
 
     LockScreen(winPtr);
-    SDLTWE_PrintString(TW, " saved.\n\n", CS, ink, paper);
+    SDLTWE_PrintString(TW, ".wls saved.\n\n", CS, ink, paper);
     ShowTextWindow (TW);
     UnLockScreen(winPtr);
 }
@@ -477,297 +669,240 @@ void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 \****************************************************************************/
 void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper)
 {
-    char fn[100];
+    char fn[MAXNAMELEN+4];
     FILE *f;
-    int i, gameversion, fileversion, SizeOfZ80;
+    int ret;
+    size_t num;
+    int i, gameversion;
+    int fileversion, z80version;
+    size_t sizeOfZ80, fileOfZ80;
     char* temp;
 
+    LockScreen(winPtr);
+    SDLTWE_PrintString(TW, "\n\nLoad Filename: ", CS, ink, paper);
+    ShowTextWindow (TW);
+    UnLockScreen(winPtr);
+    firstEditable = 15; // "Load Filename: "
     GetFileName(fn, TW, CS, ink, paper);
+    firstEditable = 0;
+    strcat(fn, ".wls");
 
     f = fopen(fn, "rb");
-    if (!f)
-    {
+    if (!f) {
         fprintf(stderr, "WL: ERROR - Can't open file '%s' for loading game.\n", fn);
         LockScreen(winPtr);
-        SDLTWE_PrintString(TW, " not found!\n\n", CS, ink, paper);
+        SDLTWE_PrintString(TW, ".wls not found!\n\n", CS, ink, paper);
         ShowTextWindow (TW);
         UnLockScreen(winPtr);
         return;
     }
 
-    if (fscanf(f, "GAMEVERSION=%i\r\n", &gameversion) != 1)
-    {
+    ret = fscanf(f, "GAMEVERSION=%i\r\n", &gameversion);
+    //printf("ret:%d gamever:%d\n", ret, gameversion);
+    if (ret != 1) {
+        printf("ret:%d gamever:%d\n", ret, gameversion);
         LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nError. Data does not match format.\n\n", CS, ink, paper);
+        SDLTWE_PrintString(TW, "\nError: GAMEVERSION not found.\n\n", CS, ink, paper);
         ShowTextWindow (TW);
         UnLockScreen(winPtr);
         return;
     }
-
-    if (gameversion != hv)
-    {
+    if (gameversion != hv) {
         LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nWrong game version.\n\n", CS, ink, paper);
+        SDLTWE_PrintString(TW, "\nError: Wrong game version.\n\n", CS, ink, paper);
         ShowTextWindow (TW);
         UnLockScreen(winPtr);
         return;
     }
 
-    if (fscanf(f, "FILEVERSION=%i\r\n", &fileversion) != 1)
-    {
+    ret=fscanf(f, "FILEVERSION=%i\r\n", &fileversion);
+    //printf("ret:%d filever:%d\n", ret, fileversion);
+    if (ret != 1) {
+        printf("ERROR: FILEVERSION not found.\n");
         LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nError. File version does not match format.\n\n", CS, ink, paper);
+        SDLTWE_PrintString(TW, "\nError: FILEVERSION not found.\n\n", CS, ink, paper);
         ShowTextWindow (TW);
         UnLockScreen(winPtr);
         return;
     }
-
-    if (fscanf(f, "SIZE(Z80)=%02X\r\n", &SizeOfZ80) != 1)
-    {
+    if (fileversion < 1 || fileversion > 2) {
+        printf("ret:%d filever:%d\n", ret, fileversion);
         LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nError. SIZE(Z80) does not match format.\n\n", CS, ink, paper);
+        SDLTWE_PrintString(TW, "\nError: Unsupported Fileversion.\n\n", CS, ink, paper);
         ShowTextWindow (TW);
         UnLockScreen(winPtr);
         return;
     }
 
-    if (SizeOfZ80 != sizeof(z80))
-    {
-        LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nZ80-structure sizes do not match.\n\n", CS, ink, paper);
-        ShowTextWindow (TW);
-        UnLockScreen(winPtr);
-        return;
-    }
-
-    if (fileversion == 1)
-    {
-        if (fscanf(f, "PC=%04hX\r\n", &z80.PC.W) != 1)
-        {
-           LockScreen(winPtr);
-           SDLTWE_PrintString(TW, "\nError. Fileversion does not match format.\n\n", CS, ink, paper);
-           ShowTextWindow (TW);
-           UnLockScreen(winPtr);
-           return;
-        }
-        if (fscanf(f, "%ms\n", &temp) != 1) // should be "***Z80***"
-        {
-           LockScreen(winPtr);
-           SDLTWE_PrintString(TW, "\nError. ***Z80*** does not match format.\n\n", CS, ink, paper);
-           ShowTextWindow (TW);
-           UnLockScreen(winPtr);
-           return;
-        }
-        //printf ("'%s'\n", temp);
-        if (strcmp (temp, "***Z80***") != 0) {
-           LockScreen(winPtr);
-           SDLTWE_PrintString(TW, "\nError. ***Z80*** missing\n\n", CS, ink, paper);
-           ShowTextWindow (TW);
-           UnLockScreen(winPtr);
-           return;
-        }
-        free (temp);
-        for (i = 0; i < sizeof(z80); i++)
-            if (fscanf(f, "%c", ((byte *) & z80 + i)) != 1)
-            {
-               LockScreen(winPtr);
-               SDLTWE_PrintString(TW, "\nError. %%c does not match format.\n\n", CS, ink, paper);
-               ShowTextWindow (TW);
-               UnLockScreen(winPtr);
-               return;
-            }
-        if (fscanf(f, "%ms\n", &temp) != 1) // should be "***MEMORY***"
-        {
-           LockScreen(winPtr);
-           SDLTWE_PrintString(TW, "\nError. ***MEMORY*** does not match format.\n\n", CS, ink, paper);
-           ShowTextWindow (TW);
-           UnLockScreen(winPtr);
-           return;
-        }
-        //printf ("'%s'\n", temp);
-        if (strcmp (temp, "***MEMORY***") != 0) {
-           LockScreen(winPtr);
-           SDLTWE_PrintString(TW, "\nError. ***MEMORY*** missing\n\n", CS, ink, paper);
-           ShowTextWindow (TW);
-           UnLockScreen(winPtr);
-           return;
-        }
-        free (temp);
-        for (i = 0; i <= 0xFFFF; i++)
-            if (fscanf(f, "%c", ZXmem + i) != 1)
-            {
-               LockScreen(winPtr);
-               SDLTWE_PrintString(TW, "\nError. %%c does not match format.\n\n", CS, ink, paper);
-               ShowTextWindow (TW);
-               UnLockScreen(winPtr);
-               return;
-            }
-        fclose(f);
-    }
-    else
-    {
-        LockScreen(winPtr);
-        SDLTWE_PrintString(TW, "\nThis game file version is not supported!\n\n", CS, ink, paper);
-        ShowTextWindow (TW);
-        UnLockScreen(winPtr);
-        return;
-    }
-
-    LockScreen(winPtr);
-    SDLTWE_PrintString(TW, " loaded.\n\n", CS, ink, paper);
-    ShowTextWindow (TW);
-    UnLockScreen(winPtr);
-
-    for (i = SL_SCREENSTART; i <= SL_ATTRIBUTEEND; i++)
-        WrZ80(i, ZXmem[i]);
-}
-
-
-/****************************************************************************\
-* HelpInfo                                                                   *
-*                                                                            *
-\****************************************************************************/
-void HelpInfo(struct TextWindowStruct *TW, struct CharSetStruct *CS)
-{
-    LockScreen(winPtr);
-
-#if 0
-    SDLTWE_PrintString(TW, "\n                         WILDERLAND V 1.08\n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "                       A Hobbit Environment\n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "                  (c) 2012-2019 by CH, Copyright 2019 V.Messina\n\n\n", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " a-z.,@0[BS] -> play         ATTRIBUTES\n", CS, SC_BRMAGENTA, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " S-ave   H-elp   G-o         v_isible  A_nimal  o_pen   *_light\n", CS, SC_BRCYAN, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " L-oad   I-nfo               b_roken   f_ull    F_luid  l_ocked\n", CS, SC_BRCYAN, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " Q-uit\n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0).\n", CS, SC_RED, SC_BLACK);
-    ShowTextWindow (TW);
-#endif
-    //                     "1234567890123456789012345678901234567890123456789012345678901234"
-    SDLTWE_PrintString(TW, "            WILDERLAND V"WLVER" - A Hobbit Environment             ", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2021 V.Messina       ", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-    if (HV == OWN) SDLTWE_PrintString(TW, "                  Using The Hobbit binary VOWN                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    if (HV == V10) SDLTWE_PrintString(TW, "                  Using The Hobbit binary V1.0                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    if (HV == V12) SDLTWE_PrintString(TW, "                  Using The Hobbit binary V1.2                  \n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " INFO: ", CS, SC_BRMAGENTA, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW,        "1L=place #=qty MO=parent Vo=volume Ma=mass St=strength   \n", CS, SC_BRCYAN, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " a-z.,@0[BS] -> game         ATTRIBUTES                         ", CS, SC_BRMAGENTA, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " S-ave   H-elp   G-o         v_isible  A_nimal  o_pen   *_light ", CS, SC_BRCYAN, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " L-oad   I-nfo               b_roken   f_ull    F_luid  l_ocked ", CS, SC_BRCYAN, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " Q-uit                                                          \n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0).\n", CS, SC_RED, SC_BLACK);
-
-    UnLockScreen(winPtr);
-}
-
-
-/****************************************************************************\
-* Info                                                                       *
-*                                                                            *
-\****************************************************************************/
-void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS)
-{
-    LockScreen(winPtr);
-
-    SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2019 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "\"The Hobbit\" (c) Melbourne House, 1982. Written by Philip\n", CS, SC_BRMAGENTA, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "Mitchell and Veronika Megler.\n\n", CS, SC_BRMAGENTA, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org\n", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "Z80 emulator based on Marat Fayzullin's work (fms.komkon.org)\n", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "8x8 charset from ZX Spectrum ROM (c) by Amstrad,PD for emulators\n\n", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "You are not allowed to distribute 'WILDERLAND' with Hobbit\nbinaries included!\n\n", CS, SC_BRWHITE, SC_BRBLACK);
-    ShowTextWindow (TW);
-    SDLTWE_PrintString(TW, "Contact: wilderland@aon.at\n", CS, SC_WHITE, SC_BLACK);
-    ShowTextWindow (TW);
-
-    UnLockScreen(winPtr);
-}
-
-
-/****************************************************************************\
-* Go                                                                         *
-*                                                                            *
-\****************************************************************************/
-void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper)
-{
-    byte rn;
-
-    LockScreen(winPtr);
-    SDLTWE_PrintString(TW, "\n\nEnter room number 0x", CS, ink, paper);
-    ShowTextWindow (TW);
-    UnLockScreen(winPtr);
-
-    GetHexByte(&rn, TW, CS, ink, paper);
-
-    if (rn < 1 || rn > ROOMS_NR_MAX)
-    {
-        LockScreen(winPtr);
-        SDLTWE_PrintString(TW, ". ERROR, invalid room number.\n", CS, ink, paper);
-        ShowTextWindow (TW);
-        UnLockScreen(winPtr);
-        return;
-    }
-
-    switch (hv)
-    {
-        case OWN:
-            ZXmem[L_YOU_OBJ_POSITION_OWN] = rn;
-            break;
-        case V10:
-            ZXmem[L_YOU_OBJ_POSITION_V10] = rn;
-            break;
-        case V12:
-            ZXmem[L_YOU_OBJ_POSITION_V12] = rn;
-            break;
-        default:
-            fprintf(stderr, "ERROR in WL/Go: unknown game version.\n");
+    if (fileversion == 2) { // compare z80 emulator
+        if (fscanf(f, "Z80VERSION=%i\r\n", &z80version) != 1) {
+            printf("ERROR: Z80VERSION not found.\n");
+            LockScreen(winPtr);
+            SDLTWE_PrintString(TW, "\nError: Z80VERSION not found.\n\n", CS, ink, paper);
+            ShowTextWindow (TW);
+            UnLockScreen(winPtr);
             return;
+        }
+        //printf("z80ver:%d\n", z80version);
+        if (z80version != CPUEMUL) {
+            LockScreen(winPtr);
+            SDLTWE_PrintString(TW, "\nError: Wrong z80 emulator version.\n\n", CS, ink, paper);
+            ShowTextWindow (TW);
+            UnLockScreen(winPtr);
+            return;
+        }
     }
+
+    if (fscanf(f, "SIZE(Z80)=%05zX\r\n", &sizeOfZ80) != 1) {
+        LockScreen(winPtr);
+        SDLTWE_PrintString(TW, "\nError: SIZE(Z80) not found.\n\n", CS, ink, paper);
+        ShowTextWindow (TW);
+        UnLockScreen(winPtr);
+        return;
+    }
+    //printf("size z80:%d\n", sizeOfZ80);
+    //printf("z80size file:%zu mem:%zu FileOfZ80:%zu\n", sizeOfZ80, SizeOfZ80, FileOfZ80);
+    if (sizeOfZ80 != SizeOfZ80) {
+        printf("WARN: z80size file:%zu mem:%zu FileOfZ80:%zu '%s'\n", sizeOfZ80, SizeOfZ80, FileOfZ80, fn);
+        if (fileversion == 1) {
+            if (bit==32 && SizeOfZ80==52 && sizeOfZ80==56) { // 56 on 64bit and 52 on 32bit
+                goto bitDiffer;
+            }
+            if (bit==64 && SizeOfZ80==56 && sizeOfZ80==52) { // 56 on 64bit and 52 on 32bit
+                goto bitDiffer;
+            }
+            LockScreen(winPtr);
+            SDLTWE_PrintString(TW, "\nError: Z80-structure sizes do not match.\n\n", CS, ink, paper);
+            ShowTextWindow (TW);
+            UnLockScreen(winPtr);
+            return;
+        } else // on filever=2 will use and check FileOfZ80
+            bitDiffer:
+            printf("CONTINUE: savefile generated on different 32/64 bit architecture\n");
+    }
+
+    //num = SizeOfZ80; // Z80:56 on 64bit, 52 on 32bit, z80emu:440 on 64bit, 244 on 32bit
+    num = FileOfZ80; // read z80 partially Z80:47 on 64/32bit, z80emu:52 on 64/32bit
+    if (fileversion == 2) { // new in filever 2: read FILE(Z80)
+        if (fscanf(f, "FILE(Z80)=%04zX\r\n", &fileOfZ80) != 1) {
+            LockScreen(winPtr);
+            SDLTWE_PrintString(TW, "\nError: FILE(Z80) not found.\n\n", CS, ink, paper);
+            ShowTextWindow (TW);
+            UnLockScreen(winPtr);
+            return;
+        }
+        //printf("file z80:%d\n", fileOfZ80);
+        if (fileOfZ80 != FileOfZ80) {
+            printf("ERROR: z80file:%zu mem:%zu\n", fileOfZ80, FileOfZ80);
+            LockScreen(winPtr);
+            SDLTWE_PrintString(TW, "\nError: Z80-structure File sizes do not match.\n\n", CS, ink, paper);
+            ShowTextWindow (TW);
+            UnLockScreen(winPtr);
+            return;
+        }
+    }
+
+#if 0 // not needed
+    #if CPUEMUL == eZ80
+       ResetZ80(&z80);
+    #endif
+    #if CPUEMUL == ez80emu
+       Z80Reset (&z80);
+    #endif
+#endif
+
+    // from here overwrite Z80 structure
+    #if CPUEMUL == eZ80
+        if (fscanf(f, "PC=%06hX\r\n", &z80.PC.W) != 1) {
+    #endif
+    #if CPUEMUL == ez80emu
+        word pc;
+        ret=fscanf(f, "PC=%06hX\r\n", &pc);
+        z80.pc=pc;
+        if (ret != 1) {
+    #endif
+       LockScreen(winPtr);
+       SDLTWE_PrintString(TW, "\nError: PC address not found.\n\n", CS, ink, paper);
+       ShowTextWindow (TW);
+       UnLockScreen(winPtr);
+       return;
+    }
+
+    if (fscanf(f, "%ms\n", &temp) != 1) { // should be "***Z80***"
+       LockScreen(winPtr);
+       SDLTWE_PrintString(TW, "\nError: ***Z80*** does not match format.\n\n", CS, ink, paper);
+       ShowTextWindow (TW);
+       UnLockScreen(winPtr);
+       return;
+    }
+    //printf ("'%s'\n", temp);
+    if (strcmp (temp, "***Z80***") != 0) {
+       LockScreen(winPtr);
+       SDLTWE_PrintString(TW, "\nError: ***Z80*** missing\n\n", CS, ink, paper);
+       ShowTextWindow (TW);
+       UnLockScreen(winPtr);
+       return;
+    }
+    free (temp);
+
+    // SizeOfZ80: Z80:56 on 64bit, 52 on 32bit, z80emu:440 on 64bit, 244 on 32bit
+    // FileOfZ80: Z80:47 on 64/32bit, z80emu:52 on 64/32bit
+    for (i = 0; i < FileOfZ80; i++) // read z80 partially
+        if (fscanf(f, "%c", ( ((byte*)&z80) + i) ) != 1) {
+           LockScreen(winPtr);
+           SDLTWE_PrintString(TW, "\nError: Z80struct:%%c does not match format.\n\n", CS, ink, paper);
+           ShowTextWindow (TW);
+           UnLockScreen(winPtr);
+           return;
+        }
+
+    if (fileversion == 1) { // on filever=1 there are pointer bytes to skip
+        num = sizeOfZ80-FileOfZ80; // bytes to discard
+        //    56/52    - 47
+        printf("skipping num:%zu bytes of pointers+padding\n", num);
+        for (int i=1; i<=num; i++) { // Z80: 56 on 64bit,52 on 32bit, skip bytes
+           ret=fscanf(f, "%*c");
+        }
+    }
+
+    if (fscanf(f, "%ms\n", &temp) != 1) { // should be "***MEMORY***"
+       LockScreen(winPtr);
+       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** does not match format.\n\n", CS, ink, paper);
+       ShowTextWindow (TW);
+       UnLockScreen(winPtr);
+       return;
+    }
+    //printf ("'%s'\n", temp);
+    if (strcmp (temp, "***MEMORY***") != 0) {
+       LockScreen(winPtr);
+       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** missing\n\n", CS, ink, paper);
+       ShowTextWindow (TW);
+       UnLockScreen(winPtr);
+       return;
+    }
+    free (temp);
+
+    for (i = 0; i <= SL_RAMEND; i++)
+        if (fscanf(f, "%c", ZXmem + i) != 1) {
+           LockScreen(winPtr);
+           SDLTWE_PrintString(TW, "\nError: MEMORY:%%c does not match format.\n\n", CS, ink, paper);
+           ShowTextWindow (TW);
+           UnLockScreen(winPtr);
+           return;
+        }
+    fclose(f);
 
     LockScreen(winPtr);
-    SDLTWE_PrintString(TW, ". OK, you are now in this room.\n", CS, ink, paper);
+    SDLTWE_PrintString(TW, ".wls loaded.\n\n", CS, ink, paper);
     ShowTextWindow (TW);
     UnLockScreen(winPtr);
-}
 
+    for (i = SL_SCREENSTART; i <= SL_ATTRIBUTEEND; i++) // display buffer
+        WrZ80(i, ZXmem[i]); // force call to WriteScreenByte+WriteAttributeByte
 
-/****************************************************************************\
-* sbinprintf                                                                 *
-*                                                                            *
-\****************************************************************************/
-void sbinprintf(char *buf, byte b)
-{
-    int i;
-    byte mask = 0x80;
-
-    for (i = 0; i < 8; i++, mask >>= 1)
-    {
-        *buf++ = '0' + ((b & mask) != 0);
-        if (i == 3)
-            *buf++ = '.';
-    }
-    *buf = 0;
+    #if CPUEMUL == ez80emu
+        Z80ResetTable (&z80); // regenerate the register pointers to new address
+    #endif
 }
 
 
@@ -830,6 +965,177 @@ void GetObjectFullName(word oa, char *OFN)
         strcat(OFN, StringBuffer);
     }
 
+}
+
+
+/****************************************************************************\
+* Go                                                                         *
+*                                                                            *
+\****************************************************************************/
+void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper)
+{
+    byte rn;
+
+    LockScreen(winPtr);
+    SDLTWE_PrintString(TW, "\n\nEnter room number 0x", CS, ink, paper);
+    ShowTextWindow (TW);
+    UnLockScreen(winPtr);
+
+    GetHexByte(&rn, TW, CS, ink, paper);
+
+    if (rn < 1 || rn > ROOMS_NR_MAX)
+    {
+        LockScreen(winPtr);
+        SDLTWE_PrintString(TW, ". ERROR, invalid room number.\n", CS, ink, paper);
+        ShowTextWindow (TW);
+        UnLockScreen(winPtr);
+        return;
+    }
+
+    switch (hv)
+    {
+        case OWN:
+            ZXmem[L_YOU_OBJ_POSITION_OWN] = rn;
+            break;
+        case V10:
+            ZXmem[L_YOU_OBJ_POSITION_V10] = rn;
+            break;
+        case V12:
+            ZXmem[L_YOU_OBJ_POSITION_V12] = rn;
+            break;
+        default:
+            fprintf(stderr, "ERROR in WL/Go: unknown game version.\n");
+            return;
+    }
+
+    // move carried object too
+    word ai;
+    word oa;
+    //word room;
+    //byte ObjectNumber;
+    char ObjectStringBuffer[100];
+    for (ai=ObjectsIndexAddress+1; ZXmem[ai-1] != 0xFF; ai+=3) {
+       //ObjectNumber = ZXmem[ai-1];
+       oa = ZXmem[ai] + 0x100 * ZXmem[ai + 1];
+       *ObjectStringBuffer = 0;
+       GetObjectFullName(oa, ObjectStringBuffer);
+       strcat(ObjectStringBuffer, "                              ");
+       ObjectStringBuffer[21] = 0;
+       //room = ZXmem[oa + FIRST_OCCURRENCE];
+       //printf("ai:%u objnum:0x%02X obj:'%s' own/oa:%05u room:0x%02X\n", ai, ObjectNumber, ObjectStringBuffer, oa, room);
+       if (ZXmem[oa + MO_OFF] == 0) { // by Bilbo
+          //printf("moving   objnum:0x%02X obj:'%s' to        rn/room:0x%02X\n", ObjectNumber, ObjectStringBuffer, rn);
+          ZXmem[oa + FIRST_OCCURRENCE] = rn;
+       }
+    }
+
+    LockScreen(winPtr);
+    SDLTWE_PrintString(TW, ". OK, you are now in this room.\n", CS, ink, paper);
+    ShowTextWindow (TW);
+    UnLockScreen(winPtr);
+}
+
+
+/****************************************************************************\
+* Help                                                                       *
+*                                                                            *
+\****************************************************************************/
+void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS)
+{
+    char bitStr[20];
+    char str[65]="         WILDERLAND - A Hobbit Environment v"WLVER" "; // 45+WLVER(4)=49
+
+    sprintf(bitStr, "%u bit         ", bit); // 15
+    if (strlen(str)+strlen(bitStr) <= 64) strcat(str, bitStr); // 64
+    LockScreen(winPtr);
+
+    //                     "0000000001111111111222222222233333333334444444444555555555566666"
+    //                     "1234567890123456789012345678901234567890123456789012345678901234"
+  //SDLTWE_PrintString(TW, "            WILDERLAND - A Hobbit Environment v"WLVER"             ", CS, SC_BRWHITE, SC_BRBLACK);
+    SDLTWE_PrintString(TW, str, CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2022 V.Messina       ", CS, SC_WHITE, SC_BLACK);
+    ShowTextWindow (TW);
+    #if CPUEMUL == eZ80
+    SDLTWE_PrintString(TW, "           Using Z80 emulator: Z80 by Marat Fayzullin            ", CS, SC_BRWHITE, SC_BRBLACK);
+    #endif
+    #if CPUEMUL == ez80emu
+    SDLTWE_PrintString(TW, "           Using Z80 emulator: z80emu by Lin Ke-Fong             ", CS, SC_BRWHITE, SC_BRBLACK);
+    #endif
+    ShowTextWindow (TW);
+    if (HV == OWN) SDLTWE_PrintString(TW, "                 Using 'The Hobbit' binary VOWN                 \n", CS, SC_BRWHITE, SC_BRBLACK);
+    if (HV == V10) SDLTWE_PrintString(TW, "                 Using 'The Hobbit' binary V1.0                 \n", CS, SC_BRWHITE, SC_BRBLACK);
+    if (HV == V12) SDLTWE_PrintString(TW, "                 Using 'The Hobbit' binary V1.2                 \n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " INFO: ", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW,        "1L=place #=qty MO=parent Vo=volume Ma=mass St=strength   \n", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " a-z.,\"@0[BS] -> game        ATTRIBUTES                         ", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " S-ave   H-elp   G-o         v_isible  A_nimal  o_pen   *_light ", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " L-oad   I-nfo               b_roken   f_ull    F_luid  l_ocked ", CS, SC_BRCYAN, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " Q-uit                                                          \n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0) \n", CS, SC_RED, SC_BLACK);
+    ShowTextWindow (TW);
+
+    UnLockScreen(winPtr);
+}
+
+
+/****************************************************************************\
+* Info                                                                       *
+*                                                                            *
+\****************************************************************************/
+void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS)
+{
+    LockScreen(winPtr);
+
+    SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2022 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "\"The Hobbit\" (c) Melbourne House, 1982. Written by Philip\n", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "Mitchell and Veronika Megler.\n\n", CS, SC_BRMAGENTA, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "Simple Direct Media Layer library (SDL 2.0) from www.libsdl.org\n", CS, SC_WHITE, SC_BLACK);
+    ShowTextWindow (TW);
+    #if CPUEMUL == eZ80
+        SDLTWE_PrintString(TW, "Z80 emulator based on Marat Fayzullin's work (fms.komkon.org)\n", CS, SC_WHITE, SC_BLACK);
+    #endif
+    #if CPUEMUL == ez80emu
+        SDLTWE_PrintString(TW, "z80emu based on Lin Ke-Fong work (github.com/anotherlin/z80emu)\n", CS, SC_WHITE, SC_BLACK);
+    #endif
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "8x8 charset from ZX Spectrum ROM (c) by Amstrad,PD for emulators\n\n", CS, SC_WHITE, SC_BLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "You are not allowed to distribute 'WILDERLAND' with Hobbit\nbinaries included!\n\n", CS, SC_BRWHITE, SC_BRBLACK);
+    ShowTextWindow (TW);
+    SDLTWE_PrintString(TW, "Contact: wilderland@aon.at, efa@iol.it\n", CS, SC_WHITE, SC_BLACK);
+    ShowTextWindow (TW);
+
+    UnLockScreen(winPtr);
+}
+
+
+/****************************************************************************\
+* sbinprintf                                                                 *
+*                                                                            *
+\****************************************************************************/
+void sbinprintf(char *buf, byte b)
+{
+    int i;
+    byte mask = 0x80;
+
+    for (i = 0; i < 8; i++, mask >>= 1)
+    {
+        *buf++ = '0' + ((b & mask) != 0);
+        if (i == 3)
+            *buf++ = '.';
+    }
+    *buf = 0;
 }
 
 
@@ -948,8 +1254,8 @@ int InitSpectrum(void)
     long int FileLength;
     size_t BytesRead;
 
-    for (i = 0; i < 16384; i++)
-        ZXmem[i] = 0xC9;  /* = RET, just in case... */
+    for (i = 0; i < SL_SCREENSTART; i++)
+        ZXmem[i] = 0xC9;  /* = RET in ROM, just in case... */
 
     // we need the character set for the lower window
     fp = fopen(SDLTWE_CHARSETFILEPATH, "rb");
@@ -986,69 +1292,129 @@ int InitSpectrum(void)
 int InitGame(int hv)
 {
     char GameFileName[100];
+    char TapFileName[100], TzxFileName[100];
     word GameStartAddress, GameLength;
+    word TapLength, TzxLength;
+    word TapStart, TzxStart;
     FILE *fp;
     word FileLength, BytesRead;
 
     switch (hv)
     {
         case OWN:
+            printf("WL: Using 'The Hobbit' binary version OWN\n");
             strcpy(GameFileName, FN_OWN);
+            strcpy(TapFileName, OWN_TAP_NAME);
+            strcpy(TzxFileName, OWN_TZX_NAME);
             GameStartAddress = STARTADR_OWN;
-            GameLength = LENGTH_OWN;
+            GameLength = CODE_LENGTH_OWN;
+            TapLength = OWN_TAP_LENGTH;
+            TzxLength = OWN_TZX_LENGTH;
+            TapStart = OWN_TAP_START;
+            TzxStart = OWN_TZX_START;
             DictionaryBaseAddress = DICTIONARY_BASE_OWN;
             ObjectsIndexAddress = OBJECTS_INDEX_OWN;
             ObjectsAddress = OBJECTS_OWN;
-            printf("WL: Using The Hobbit binary vOWN\n");
             break;
         case V10:
+            printf("WL: Using 'The Hobbit' binary version 1.0\n");
             strcpy(GameFileName, FN_V10);
+            strcpy(TapFileName, V10_TAP_NAME);
+            strcpy(TzxFileName, V10_TZX_NAME);
             GameStartAddress = STARTADR_V10;
-            GameLength = LENGTH_V10;
+            GameLength = CODE_LENGTH_V10;
+            TapLength = V10_TAP_LENGTH;
+            TzxLength = V10_TZX_LENGTH;
+            TapStart = V10_TAP_START;
+            TzxStart = V10_TZX_START;
             DictionaryBaseAddress = DICTIONARY_BASE_V10;
             ObjectsIndexAddress = OBJECTS_INDEX_V10;
             ObjectsAddress = OBJECTS_V10;
-            printf("WL: Using The Hobbit binary v1.0\n");
             break;
         case V12:
+            printf("WL: Using 'The Hobbit' binary version 1.2\n");
             strcpy(GameFileName, FN_V12);
+            strcpy(TapFileName, V12_TAP_NAME);
+            strcpy(TzxFileName, V12_TZX_NAME);
             GameStartAddress = STARTADR_V12;
-            GameLength = LENGTH_V12;
+            GameLength = CODE_LENGTH_V12;
+            TapLength = V12_TAP_LENGTH;
+            TzxLength = V12_TZX_LENGTH;
+            TapStart = V12_TAP_START;
+            TzxStart = V12_TZX_START;
             DictionaryBaseAddress = DICTIONARY_BASE_V12;
             ObjectsIndexAddress = OBJECTS_INDEX_V12;
             ObjectsAddress = OBJECTS_V12;
-            printf("WL: Using The Hobbit binary v1.2\n");
             break;
         default:
-            fprintf(stderr, "WL: ERROR in 'InitGame'. Unknown version %d.\n", hv);
-            return (-1);
+            fprintf(stderr, "WL: ERROR 'InitGame': Unknown version %d.\n", hv);
+            return -1;
     }
 
+    // try to open .bin file
+    //printf("try to open BIN file\n");
     fp = fopen(GameFileName, "rb");
-    if (!fp)
-    {
-        fprintf(stderr, "WL: ERROR in 'InitGame'. Can't open game file '%s'\n", GameFileName);
-        return (-1);
+    if (!fp) {
+        fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", GameFileName);
+        // try to open .tap file
+        //printf("try to open TAP file\n");
+        fp = fopen(TapFileName, "rb");
+        if (!fp) {
+            fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", TapFileName);
+            // try to open .tzx file
+            //printf("try to open TZX file\n");
+            fp = fopen(TzxFileName, "rb");
+            if (!fp) {
+                fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", TzxFileName);
+                return (-1);
+            }
+            //printf("load TZX file\n");
+            fseek(fp, 0, SEEK_END);
+            FileLength = ftell(fp);
+            if  (FileLength == TzxLength) {
+                //printf("right size, loading TZX file\n");
+                fseek(fp, TzxStart, SEEK_SET);
+                BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
+                fclose(fp);
+                if (BytesRead == GameLength) {
+                    printf("WL: Tape file:'%s' read successfully\n", TzxFileName);
+                    return 0;
+                } else {
+                    printf("Read length error in '%s'\n", TzxFileName);
+                    return -1;
+                }
+            }
+        }
+        //printf("load TAP file\n");
+        fseek(fp, 0, SEEK_END);
+        FileLength = ftell(fp);
+        if  (FileLength == TapLength) {
+            //printf("right size, loading TAP file\n");
+            fseek(fp, TapStart, SEEK_SET);
+            BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
+            fclose(fp);
+            if (BytesRead == GameLength) {
+                printf("WL: Tape file:'%s' read successfully\n", TapFileName);
+                return 0;
+            } else {
+                printf("Read length error in '%s'\n", TapFileName);
+                return -1;
+            }
+        }
+        return -1;
     }
-
+    //printf("load BIN file\n");
     fseek(fp, 0, SEEK_END);
     FileLength = ftell(fp);
     fseek(fp, 0, SEEK_SET);
-
-    if (WL_DEBUG)
-    {
-        printf("WL: Reading game file '%s' with %i byte ... \n", GameFileName, FileLength);
-    }
-
+    if (WL_DEBUG) printf("WL: Reading game file '%s' with %i byte ... \n", GameFileName, FileLength);
     BytesRead = fread(ZXmem + GameStartAddress, 1, FileLength, fp);
     fclose(fp);
-
-    if (BytesRead != GameLength)
-    {
-        fprintf(stderr, "WL: ERROR in 'InitGame'. Number of bytes read doesn't match filelength.\n");
-        return (-1);
+    if (BytesRead != GameLength) {
+        fprintf(stderr, "WL: ERROR 'InitGame': Number of bytes read doesn't match filelength.\n");
+        return -1;
     }
-
+    printf("WL: Code file:'%s' read successfully\n", GameFileName);
     return 0;
 }
 
@@ -1348,8 +1714,8 @@ int main(int argc, char *argv[])
 
     HV = -1;  // Hobbit version (global variable)
 
-    printf("Wilderland "WLVER" - A Hobbit Environment\n");
-    printf("(c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina\n");
+    printf("Wilderland - A Hobbit Environment v"WLVER" %ubit\n", bit);
+    printf("(c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina\n");
 
     // process command line arguments
     int fl=0;
@@ -1388,6 +1754,18 @@ int main(int argc, char *argv[])
         fprintf(stderr, "WL: ERROR initializing spectrum. Program aborted.\n");
         exit(-1);
     }
+    #if CPUEMUL == eZ80
+        printf("WL: Using CPU emulator: 'Z80' by Marat Fayzullin\n");
+        FileOfZ80 = sizeof(z80) - sizeof(void*) - ( ((void*)&(z80.User))-((void*)&(z80.Trace))-sizeof(z80.Trace) );
+        // 48: fixed size vars(bye,word,int), skip void pointer and 32/64 bit padding
+    #endif
+    #if CPUEMUL == ez80emu
+        printf("WL: Using CPU emulator: 'z80emu' by Lin Ke-Fong\n");
+        FileOfZ80 = sizeof(z80) - 3*16*sizeof(void*) - ( ((void*)&(z80.register_table[0]))-((void*)&(z80.im))-sizeof(z80.im) );
+        // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
+    #endif
+    //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
+    //printZ80struct();
 
     if (InitGame(HV))
     {
@@ -1411,54 +1789,6 @@ int main(int argc, char *argv[])
     SDLTWE_DrawTextWindowFrame(&HelpWin, 4, BORDERGRAY);
     SDLTWE_DrawTextWindowFrame(&ObjWin , 4, BORDERGRAY);
 
-/*** start to drawn on the empty textures ***/
-#if 0
-for (int i=0; i<LOGWINHEIGHT; i++) {
-   int x=i;
-   int y=i;
-   if (i>=LOGWINWIDTH) x=LOGWINWIDTH-1;
-   SDLTWE_SetPixel(&LogWin, x, y, SC_RED); // White drawing
-}
-SDL_UpdateTexture (LogWin.texPtr, NULL, LogWin.framePtr, LogWin.pitch); // copy Frame to Texture
-SDL_RenderCopy (renPtr, LogWin.texPtr, NULL, &LogWin.rect); // LOGWIN texture to all Renderer
-
-for (int i=0; i<GAMEWINWIDTH; i++) {
-   int x=i;
-   int y=i;
-   if (i>=GAMEWINHEIGHT) y=GAMEWINHEIGHT-1;
-   SDLTWE_SetPixel(&GameWin, x, y, SC_GREEN); // White drawing
-}
-SDL_UpdateTexture (GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
-SDL_RenderCopy (renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
-
-for (int i=0; i<HELPWINWIDTH; i++) {
-   int x=i;
-   int y=i;
-   if (i>=HELPWINHEIGHT) y=HELPWINHEIGHT-1;
-   SDLTWE_SetPixel(&HelpWin, x, y, SC_BLUE); // White drawing
-}
-SDL_UpdateTexture (HelpWin.texPtr, NULL, HelpWin.framePtr, HelpWin.pitch); // copy Frame to Texture
-SDL_RenderCopy (renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
-
-for (int i=0; i<OBJWINHEIGHT; i++) {
-   int x=i;
-   int y=i;
-   if (i>=OBJWINWIDTH) x=OBJWINWIDTH-1;
-   SDLTWE_SetPixel(&ObjWin, x, y, SC_MAGENTA); // White drawing
-}
-SDL_UpdateTexture (ObjWin.texPtr, NULL, ObjWin.framePtr, ObjWin.pitch); // copy Frame to Texture
-SDL_RenderCopy (renPtr, ObjWin.texPtr, NULL, &ObjWin.rect); // OBJWIN texture to all Renderer
-
-for (int i=0; i<MAPWINWIDTH; i++) {
-   int x=i;
-   int y=i;
-   if (i>=MAPWINHEIGHT) y=MAPWINHEIGHT-1;
-   SDLTWE_SetPixel(&MapWin, x, y, SC_YELLOW); // White drawing
-}
-SDL_UpdateTexture (MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
-SDL_RenderCopy (renPtr, MapWin.texPtr, NULL, &MapWin.rect); // MAPWIN texture to all Renderer
-#endif
-
 //SDL_Delay (1000); // ms
 //Uint32 start, stop;
 //start = SDL_GetTicks();
@@ -1466,63 +1796,90 @@ SDL_RenderCopy (renPtr, MapWin.texPtr, NULL, &MapWin.rect); // MAPWIN texture to
 //stop = SDL_GetTicks();
 //printf("Ticks:%u ms\n", stop-start);
 //SDL_Delay (1000); // ms
-//exit (1);
 
     //SDL_RenderPresent(renPtr);
     //SDL_Delay (delay); // ms
 
     // Game title screen
-    f = fopen("HOBBIT.SCR", "rb");
-    if (!f)
-    {
-        fprintf(stderr, "WL: ERROR - Can't open title screen file 'HOBBIT.SCR'\n");
-        exit(-1);
-    }
-    else
-    {
-        for (i = SL_SCREENSTART; i < SL_ATTRIBUTEEND; i++)
-        //for (i = SL_SCREENSTART; i < 0x4000+512; i++)
-        {
-            if (fscanf(f, "%c", &b) != 1)
-            {
-               fprintf(stderr, "WL: Error - %%c does not match format\n");
-               fclose(f);
-               exit(-1);
-            }
-            WrZ80(i, b);
+    if (HV == V12) {
+        f = fopen("HOBBIT12.SCR", "rb");
+        if (!f) {
+            fprintf(stderr, "WL: ERROR - Can't open title screen file 'HOBBIT12.SCR'\n");
+            exit(-1);
         }
-        fclose(f);
+    } else {
+        f = fopen("HOBBIT.SCR", "rb");
+        if (!f) {
+            fprintf(stderr, "WL: ERROR - Can't open title screen file 'HOBBIT.SCR'\n");
+            exit(-1);
+        }
     }
+    for (i = SL_SCREENSTART; i <= SL_ATTRIBUTEEND; i++)
+    {
+        if (fscanf(f, "%c", &b) != 1)
+        {
+           fprintf(stderr, "WL: Error - %%c does not match format\n");
+           fclose(f);
+           exit(-1);
+        }
+        WrZ80(i, b);
+    }
+    fclose(f);
+
     SDL_UpdateTexture (GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
     SDL_RenderCopy (renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
 //SDL_RenderPresent(renPtr);
 //SDL_Delay (delay); // ms
 
-    HelpInfo(&HelpWin, &CharSet);
+    Help(&HelpWin, &CharSet);
     SDL_UpdateTexture (HelpWin.texPtr, NULL, HelpWin.framePtr, HelpWin.pitch); // copy Frame to Texture
     SDL_RenderCopy (renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
 
     UnLockScreen(winPtr);
 
-    ResetZ80(&z80);
-    switch (HV)
-    {
-        case OWN:
-            z80.PC.W = L_START_OWN;
-            break;
-        case V10:
-            z80.PC.W = L_START_V10;
-            break;
-        case V12:
-            z80.PC.W = L_START_V12;
-            break;
-        default:
-            exit(-1);
-    }
-    if (SeedRND)
-        z80.R = (byte) SDL_GetTicks();
+    #if CPUEMUL == eZ80
+       ResetZ80(&z80);
+       switch (HV)
+       {
+           case OWN:
+               z80.PC.W = L_START_OWN;
+               break;
+           case V10:
+               z80.PC.W = L_START_V10;
+               break;
+           case V12:
+               z80.PC.W = L_START_V12;
+               break;
+           default:
+               exit(-1);
+       }
+       if (SeedRND)
+           z80.R = (byte) SDL_GetTicks();
+    #endif
+    #if CPUEMUL == ez80emu
+       Z80Reset (&z80);
+       switch (HV)
+       {
+           case OWN:
+               z80.pc = L_START_OWN;
+               break;
+           case V10:
+               z80.pc = L_START_V10;
+               break;
+           case V12:
+               z80.pc = L_START_V12;
+               break;
+           default:
+               exit(-1);
+       }
+       if (SeedRND)
+           z80.r = (byte) SDL_GetTicks();
+    #endif
 
     //SDL_EnableUNICODE(1);
+    //CurrentPressedCod = SDL_GetScancodeFromKey(SDLK_QUOTEDBL);
+    //printf("Double quote key:0x%02X has scancode:0x%02X\n", SDLK_QUOTEDBL, CurrentPressedCod);
+
     RunMainLoop = 1;
 SDL_Delay (25); // ms
 
@@ -1543,7 +1900,12 @@ SDL_Delay (25); // ms
         LockScreen(winPtr);
 //SDL_RenderClear (renPtr); // clear renderer: require redraw border,log,map
 
-        ExecZ80(&z80, TSTATES_PER_LOOP); // execute for about 140 kperiods
+        #if CPUEMUL == eZ80
+           ExecZ80 (&z80, TSTATES_PER_LOOP); // execute for about 140 kperiods
+        #endif
+        #if CPUEMUL == ez80emu
+           Z80Emulate (&z80, TSTATES_PER_LOOP, &context); // execute for about 140 kperiods
+        #endif
         SDL_UpdateTexture (LogWin.texPtr, NULL, LogWin.framePtr, LogWin.pitch); // copy Frame to Texture
         SDL_RenderCopy (renPtr, LogWin.texPtr, NULL, &LogWin.rect); // Texture to renderer
         SDL_UpdateTexture (GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
@@ -1577,44 +1939,48 @@ SDL_Delay (25); // ms
                     //SDL_Log("SDL_QUIT");
                     break;
                 case SDL_KEYDOWN:
+                    //CurrentPressedCod = event.key.keysym.scancode;
                     CurrentPressedKey = event.key.keysym.sym;
                     CurrentPressedMod = event.key.keysym.mod;
 #if 0
+                    //printf("key down, cod:0x%02X\n", CurrentPressedCod);
+                    //printf("key down, key:0x%02X='%s'\n", CurrentPressedKey, SDL_GetKeyName(CurrentPressedKey));
                     SDL_Log("SDL_KEYDOWN key:%u='%c'", CurrentPressedKey, CurrentPressedKey);
                     SDL_Log("SDL_KEYDOWN mod:%u", event.key.keysym.mod);
-                    //SDL_Log("'q':%d=%c 'Q':%d=%c SDLK_q:%d=%c", 'q', 'q', 'Q', 'Q', SDLK_q, SDLK_q);
+                    //SDL_Log("q:%d='%c' Q:%d='%c' SDLK_q:%d=%c", 'q', 'q', 'Q', 'Q', SDLK_q, SDLK_q);
                     //SDL_Log("KMOD_LSHIFT:%d=%c KMOD_RSHIFT:%d=%c", KMOD_LSHIFT, KMOD_LSHIFT, KMOD_RSHIFT, KMOD_RSHIFT);
-                    //SDL_Log("KMOD_SHIFT:%d=%c KMOD_CAPS:%d=%c", KMOD_SHIFT, KMOD_SHIFT, KMOD_CAPS, KMOD_CAPS);
-                    SDL_Log("\n");
+                    //SDL_Log("KMOD_SHIFT :%d=%c KMOD_CAPS:%d=%c", KMOD_SHIFT, KMOD_SHIFT, KMOD_CAPS, KMOD_CAPS);
+                    SDL_Log("---\n");
 #endif
                     if (CurrentPressedKey == SDLK_BACKSPACE)
                         CurrentPressedKey = SDLK_0; // '0' used as backspace
                     if (CurrentPressedMod&KMOD_CAPS || CurrentPressedMod&KMOD_SHIFT) { // capital
-                       if (CurrentPressedKey == SDLK_q)
+                       if (CurrentPressedKey == SDLK_q) // 'Q' quit
                            RunMainLoop = 0;
-                       if (CurrentPressedKey == SDLK_s) { // 'S'
+                       if (CurrentPressedKey == SDLK_s) { // 'S' save
                            SaveGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
                            CurrentPressedKey = 0;
                        }
-                       if (CurrentPressedKey == SDLK_l) { // 'L'
+                       if (CurrentPressedKey == SDLK_l) { // 'L' load
                            LoadGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
                            CurrentPressedKey = 0;
                        }
-                       if (CurrentPressedKey == SDLK_h) { // 'H'
-                           HelpInfo(&HelpWin, &CharSet);
+                       if (CurrentPressedKey == SDLK_h) { // 'H' helo
+                           Help(&HelpWin, &CharSet);
                            CurrentPressedKey = 0;
                        }
-                       if (CurrentPressedKey == SDLK_i) { // 'I'
+                       if (CurrentPressedKey == SDLK_i) { // 'I' info
                            Info(&HelpWin, &CharSet);
                            CurrentPressedKey = 0;
                        }
-                       if (CurrentPressedKey == SDLK_g) { // 'G'
+                       if (CurrentPressedKey == SDLK_g) { // 'G' goRoom
                            Go(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
                            CurrentPressedKey = 0;
                        }
                     }
                     break;
                 case SDL_KEYUP:
+                    //printf("key up\n");
                     CurrentPressedKey = 0;
                     break;
             }

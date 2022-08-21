@@ -1,9 +1,9 @@
 #!/bin/bash
-# WLpkg: Copyright 2019-2021 Valerio Messina efa@iol.it
+# WLpkg: Copyright 2019-2022 Valerio Messina efa@iol.it
 # WLpkg is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
 #
 # Wilderland is distributed in the hope that it will be useful,
@@ -15,16 +15,16 @@
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
 # Special exception/limitation to GPL: not for commercial use
 
-# Script to generate a Mingw package of 'Wilderland'
-# used on: Mingw64=>bin64, Mingw32=>bin32
+# Script to generate a Mingw/MXE/OSX package of 'Wilderland'
+# used on: MinGw64=>bin64, MinGw32=>bin32, MXE64=>bin64, MXE32=>bin32, Linux=>macOS64
 
-SRCPATH64="../SDL2_64" # path of DLLs needed to generate the Mingw64 package
-SRCPATH32="../SDL2_32" # path of DLLs needed to generate the Mingw32 package
-DSTPATH=".." # path where create the Mingw package directory
+DEPSPATHMGW64="/mingw64/bin" # path of DLLs needed to generate the Mingw64 package
+DEPSPATHMGW32="/mingw32/bin" # path of DLLs needed to generate the Mingw32 package
+DEPSLISTMGW="libdeflate.dll libjbig-0.dll libjpeg-8.dll libjxl.dll libpng16-16.dll libtiff-5.dll libwebp-7.dll SDL2.dll SDL2_image.dll zlib1.dll libgcc_s_seh-1.dll libwinpthread-1.dll libstdc++-6.dll libbrotlidec.dll libbrotlienc.dll libLerc.dll liblzma-5.dll libzstd.dll libbrotlicommon.dll"
 
-DEPS="libjpeg-8.dll libpng15-15.dll libtiff-5.dll libwebp-2.dll SDL.dll SDL_image.dll zlib1.dll"
+DSTPATH=".." # path where create the Mingw/MXE package directory
 
-echo "WLpkg: create a MinGW package of Wilderland"
+echo "WLpkg: create a MinGW|MXE|OSX package for just built Wilderland"
 
 # check for external dependency compliance
 flag=0
@@ -35,64 +35,140 @@ for extCmd in 7z sed uname which ; do
       flag=1
    fi
 done
-if (test "$flag" = 1) then
+if [[ "$flag" = 1 ]]; then
    echo "ERROR: Install the required packages and retry. Exit"
    exit
 fi
 
-CPU=`uname -m` # i686 or x86_64
-OS=`uname -o`
-VER=`ls WL???package.txt | sed 's/package.txt//'`
-if (! test "$OS" = "Msys") then
-   echo "ERROR: work on MinGW only"
+if [[ "$1" = "" || "$1" != "MGW32" && "$1" != "MGW64" && "$1" != "MXE32" && "$1" != "MXE64" && "$1" != "OSX64" ]]; then
+   echo "ERROR: miss package type"
+   echo "Syntax: $ WLpkg MXE32|MXE64|MGW32|MGW64|OSX64"
    exit
 fi
+
+PKG="$1" # tested with: MGW32,MGW64,MXE32,MXE64,OSX64
+CPU=`uname -m` # i686 or x86_64
 BIT=64
-if (test "$MSYSTEM" = "MINGW32") then
+if [[ "$PKG" = "MGW32" || "$PKG" = "MXE32" ]]; then
    BIT=32
 fi
+OS=`uname -o`  # Msys or GNU/Linux
+VER=`ls WL????package.txt | sed 's/WL//' | sed 's/package.txt//'` # M.mm
+SRC=`pwd`
+TGT=Mxe
+if [[ "$OS" = "Msys" ]]; then
+   TGT=Mgw
+   if [[ "$BIT" = "64" ]]; then
+      DEPSRC=$DEPSPATHMGW64
+   fi
+   if [[ "$BIT" = "32" ]]; then
+      DEPSRC=$DEPSPATHMGW32
+   fi
+fi
+DST="WL${VER}_Win$TGT$BIT"
+if [[ "$PKG" = "OSX64" ]]; then
+   TGT=
+   DST="WL${VER}_Osx$BIT"
+fi
 
+if [[ "$OS" != "Msys" && "$OS" != "GNU/Linux" ]]; then
+   echo "ERROR: work in MinGW|MXE only"
+   exit
+fi
+if [[ "$OS" = "Msys" && "$PKG" != "MGW32" && "$PKG" != "MGW64" ]]; then
+   echo "ERROR WLpkg: Unsupported target package:$PKG on MinGW/MSYS2"
+   exit
+fi
+
+if [[ "$OS" = "GNU/Linux" && "$PKG" != "MXE32" && "$PKG" != "MXE64" && "$PKG" != "OSX64" ]]; then
+   echo "ERROR WLpkg: Unsupported target package:$PKG on Linux"
+   exit
+fi
+
+echo "PKG: $PKG"
 echo "CPU: $CPU"
+echo "BIT: $BIT"
 echo "OS : $OS"
 echo "VER: $VER"
-echo "BIT: $BIT"
-if (test "$BIT" = "64") then
-   echo "SRC: $SRCPATH64"
-fi
-if (test "$BIT" = "32") then
-   echo "SRC: $SRCPATH32"
-fi
-echo "DST: $DSTPATH"
-echo "Creating Wilderland $VER package for MinGW$BIT ..."
-mkdir -p $DSTPATH/"$VER"_Win$BIT
-mkdir -p $DSTPATH/"$VER"_Win$BIT/TapCon
-mkdir -p $DSTPATH/"$VER"_Win$BIT/Z80
-cp *c *.h $DSTPATH/"$VER"_Win$BIT
-cp TapCon/TapCon.c $DSTPATH/"$VER"_Win$BIT/TapCon
-cp Z80/* $DSTPATH/"$VER"_Win$BIT/Z80
-cp Makefile* $DSTPATH/"$VER"_Win$BIT
-cp *.txt $DSTPATH/"$VER"_Win$BIT
-cp CharSetSpectrum8x8.bin GameMap.png HOBBIT.SCR $DSTPATH/"$VER"_Win$BIT
-cp WLpkg $DSTPATH/"$VER"_Win$BIT
-if (test "$BIT" = "64") then
-   cp WL.exe $DSTPATH/"$VER"_Win$BIT
-   cp TapCon/TapCon.exe $DSTPATH/"$VER"_Win$BIT/TapCon
-   for DLL in $DEPS ; do
-      cp $SRCPATH64/$DLL $DSTPATH/"$VER"_Win$BIT
-   done
-fi
-if (test "$BIT" = "32") then
-   cp WL32.exe $DSTPATH/"$VER"_Win$BIT
-   cp TapCon/TapCon32.exe $DSTPATH/"$VER"_Win$BIT/TapCon
-   for DLL in $DEPS ; do
-      cp $SRCPATH32/$DLL $DSTPATH/"$VER"_Win$BIT
-   done
-fi
+echo "SRC: `pwd`"
+echo "TGT: $TGT"
+echo "DEP: $DEPSRC"
+echo "DST: $DSTPATH/$DST"
+read -p "Proceed? A key to continue"
 echo ""
-echo -n "Compressing with 7zip ..."
-cd $DSTPATH
-if (test -f "$VER"_Win$BIT.7z) then
-   rm "$VER"_Win$BIT.7z
+
+echo "Creating Wilderland $VER package for MinGW/MXE/OSX$BIT ..."
+if [[ "$PKG" = "OSX64" ]]; then
+   echo "cp WLosxPkg_findobj/liblzma.5.dylib WLosxPkg_findobj/libzstd.1.dylib DiskImage/Wilderland.app/Contents/MacOS"
+   echo "cp Changelog.txt COPYING.txt dict_v12.txt README.txt rooms_v12.txt WL2.08package.txt DiskImage/Wilderland.app/Contents/MacOS"
+   echo "cp CharSetSpectrum8x8.bin GameMap.png HOBBIT.SCR HOBBIT12.SCR DiskImage/Wilderland.app/Contents/MacOS"
+   echo "osxcross-dmg WLosx Wilderland $VER"
+   exit
 fi
-7z a -m0=lzma -mx=9 -r "$VER"_Win$BIT.7z "$VER"_Win$BIT
+if [[ -d $DSTPATH/$DST ]]; then
+   rm -r $DSTPATH/$DST
+fi
+mkdir -p $DSTPATH/$DST
+mkdir -p $DSTPATH/$DST/TapCon
+mkdir -p $DSTPATH/$DST/z80emu
+mkdir -p $DSTPATH/$DST/Z80
+echo "Copying sources ..."
+cp *c *.h $DSTPATH/$DST
+cp TapCon/TapCon.c $DSTPATH/$DST/TapCon
+cp z80emu/* $DSTPATH/$DST/z80emu 2> /dev/null
+cp Z80/* $DSTPATH/$DST/Z80
+cp Makefile* $DSTPATH/$DST
+cp WLpkg $DSTPATH/$DST
+echo "Copying docs ..."
+cp Changelog.txt $DSTPATH/$DST
+cp COPYING.txt $DSTPATH/$DST
+cp dict_v12.txt $DSTPATH/$DST
+cp README.txt $DSTPATH/$DST
+cp rooms_v12.txt $DSTPATH/$DST
+cp WL2.08package.txt $DSTPATH/$DST
+echo "Copying assets ..."
+cp CharSetSpectrum8x8.bin GameMap.png HOBBIT.SCR HOBBIT12.SCR $DSTPATH/$DST
+echo "Copying binary ..."
+if [[ "$PKG" = "MGW64" ]]; then
+   cp WLmgw.exe $DSTPATH/$DST
+   cp TapCon/TapConMgw.exe $DSTPATH/$DST/TapCon
+   echo "Copying deps ..."
+   for DLL in $DEPSLISTMGW ; do
+      cp $DEPSPATHMGW64/$DLL $DSTPATH/$DST
+   done
+fi
+if [[ "$PKG" = "MGW32" ]]; then
+   cp WLmgw32.exe $DSTPATH/$DST
+   cp TapCon/TapConMgw32.exe $DSTPATH/$DST/TapCon
+   echo "Copying deps ..."
+   for DLL in $DEPSLISTMGW ; do
+      if [[ "$DLL" = "libgcc_s_seh-1.dll" ]]; then continue ; fi
+      cp $DEPSPATHMGW32/$DLL $DSTPATH/$DST
+   done
+   cp $DEPSPATHMGW32/libgcc_s_dw2-1.dll $DSTPATH/$DST
+fi
+if [[ "$PKG" = "MXE64" ]]; then
+   cp WLmxe.exe $DSTPATH/$DST
+   cp TapCon/TapConMxe.exe $DSTPATH/$DST/TapCon
+fi
+if [[ "$PKG" = "MXE32" ]]; then
+   cp WLmxe32.exe $DSTPATH/$DST
+   cp TapCon/TapConMxe32.exe $DSTPATH/$DST/TapCon
+fi
+#echo ""
+
+echo "Compressing with 7zip ..."
+cd $DSTPATH
+#echo `pwd`
+if [[ -f $DST.7z ]]; then
+   rm $DST.7z
+fi
+if [[ "$OS" = "Msys" ]]; then
+   #echo "7z a -mx=9 -r $DST.7z $DST"
+   7z a -mx=9 -r $DST.7z $DST > /dev/null
+fi
+if [[ "$OS" = "GNU/Linux" ]]; then
+   #echo "7z a -m0=lzma -mx=9 -r $DST.7z $DST"
+   7z a -m0=lzma -mx=9 -r $DST.7z $DST > /dev/null
+fi
 echo Done

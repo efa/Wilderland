@@ -4,17 +4,29 @@
 *                                                                            *
 * TAP/TZX format converter                                                   *
 *                                                                            *
-* This program is part of the 'Wilderland' package. It converts the TAP/TZX  *
-* game files into binaries readable by the emulator.                         *
-*                                                                            *
 * (c) 2012 by CH. Contact: wilderland@aon.at                                 *
-* Copyright 2019-2021 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2022 Valerio Messina efa@iol.it                             *
 *                                                                            *
+* V 2.08 - 20220820                                                          *
+*                                                                            *
+*  TapCon.c is part of Wilderland - A Hobbit Environment                     *
+*  Wilderland is free software: you can redistribute it and/or modify        *
+*  it under the terms of the GNU General Public License as published by      *
+*  the Free Software Foundation, either version 2 of the License, or         *
+*  (at your option) any later version.                                       *
+*                                                                            *
+*  Wilderland is distributed in the hope that it will be useful,             *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+*  GNU General Public License for more details.                              *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with Wilderland. If not, see <http://www.gnu.org/licenses/>.        *
+*                                                                            *
+* TapCon converts TAP/TZX game files into binaries readable by the emulator  *
 *                                                                            *
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
-*                                                                            *
-* V 1.08 - 20211128                                                          *
 *                                                                            *
 \****************************************************************************/
 
@@ -24,23 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-/*** DEFINES ***************************************************************/
-#define V10_CODE_SIZE     0x9400 // 37888
-#define V10_TAP_NAME      "HOBBIT.TAP"
-#define V10_TAP_LENGTH    0xB00A // 45066
-#define V10_TAP_START     0x1C09 // 7177
-#define V10_TZX_NAME      "The Hobbit v1.0.tzx"
-#define V10_TZX_LENGTH    0xB044 // 45124
-#define V10_TZX_START     0x1C43 // 7235
-
-#define V12_CODE_SIZE     0x9C40 // 40000
-#define V12_TAP_NAME      "HOBBIT12.TAP"
-#define V12_TAP_LENGTH    0xB84A // 47178
-#define V12_TAP_START     0x1C09 // 7177
-#define V12_TZX_NAME      "The Hobbit v1.2.tzx"
-#define V12_TZX_LENGTH    0xB884 // 47236
-#define V12_TZX_START     0x1C43 // 7235
+#include "../WL.h"
 
 
 /****************************************************************************\
@@ -52,14 +48,13 @@ int main(int argc, char *argv[])
     FILE *fr, *fw;
     long int FileLength;
     size_t BytesRead;
-    unsigned char conversion_buffer[0xC000];
+    unsigned char conversion_buffer[0xC000]; // 49152
 
     printf ("Wilderland - A Hobbit Environment\n");
-    printf ("(c) 2012-2019 by CH, Copyright 2019-2021 Valerio Messina\n");
+    printf ("(c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina\n");
     printf ("TAP/TZX game files converter into binaries readable by the emulator\n");
 
     // V 1.0 conversion
-
     fr = fopen(V10_TAP_NAME, "rb");
     if (fr)
     {
@@ -67,15 +62,15 @@ int main(int argc, char *argv[])
     FileLength = ftell(fr);
         if (FileLength == V10_TAP_LENGTH)
         {
-            fw = fopen("HOB_V10.bin", "wb");
+            fw = fopen(FN_V10, "wb");
             if (fw)
             {
                 fseek(fr, V10_TAP_START, SEEK_SET);
-                BytesRead = fread(conversion_buffer, 1, V10_CODE_SIZE, fr);
-                if (BytesRead == V10_CODE_SIZE)
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_V10, fr);
+                if (BytesRead == CODE_LENGTH_V10)
                 {
-                    fwrite(conversion_buffer, 1, V10_CODE_SIZE, fw);
-                    fprintf(stderr, "\nHOB_V10.bin successfully built from '%s'.\n", V10_TAP_NAME);
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_V10, fw);
+                    fprintf(stderr, "\n"FN_V10" successfully built from '%s'.\n", V10_TAP_NAME);
                 }
                 else
                 {
@@ -86,7 +81,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-            fprintf(stderr, "Can't open 'HOB_V10.bin' for write; no conversion possible.\n");
+            fprintf(stderr, "Can't open '"FN_V10"' for write; no conversion possible.\n");
             fclose(fr);
             }
         }
@@ -108,15 +103,15 @@ int main(int argc, char *argv[])
     FileLength = ftell(fr);
         if (FileLength == V10_TZX_LENGTH)
         {
-            fw = fopen("HOB_V10.bin", "wb");
+            fw = fopen(FN_V10, "wb");
             if (fw)
             {
                 fseek(fr, V10_TZX_START, SEEK_SET);
-                BytesRead = fread(conversion_buffer, 1, V10_CODE_SIZE, fr);
-                if (BytesRead == V10_CODE_SIZE)
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_V10, fr);
+                if (BytesRead == CODE_LENGTH_V10)
                 {
-                    fwrite(conversion_buffer, 1, V10_CODE_SIZE, fw);
-                    fprintf(stderr, "\nHOB_V10.bin successfully built from '%s'.\n", V10_TZX_NAME);
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_V10, fw);
+                    fprintf(stderr, "\n"FN_V10" successfully built from '%s'.\n", V10_TZX_NAME);
                 }
                 else
                 {
@@ -127,7 +122,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-            fprintf(stderr, "Can't open 'HOB_V10.bin' for write; no conversion possible.\n");
+            fprintf(stderr, "Can't open '"FN_V10"' for write; no conversion possible.\n");
             fclose(fr);
             }
         }
@@ -142,9 +137,90 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Can't open '%s' (V 1.0) for read; no conversion possible.\n", V10_TZX_NAME);
     }
 
+    // V OWN conversion
+    fr = fopen(OWN_TAP_NAME, "rb");
+    if (fr)
+    {
+    fseek(fr, 0, SEEK_END);
+    FileLength = ftell(fr);
+        if (FileLength == OWN_TAP_LENGTH)
+        {
+            fw = fopen(FN_OWN, "wb");
+            if (fw)
+            {
+                fseek(fr, OWN_TAP_START, SEEK_SET);
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_OWN, fr);
+                if (BytesRead == CODE_LENGTH_OWN)
+                {
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_OWN, fw);
+                    fprintf(stderr, "\n"FN_OWN" successfully built from '%s'.\n", OWN_TAP_NAME);
+                }
+                else
+                {
+                    fprintf(stderr, "Read length error in '%s'; no conversion possible.\n", OWN_TAP_NAME);
+                }
+                fclose(fw);
+                fclose(fr);
+            }
+            else
+            {
+            fprintf(stderr, "Can't open '"FN_OWN"' for write; no conversion possible.\n");
+            fclose(fr);
+            }
+        }
+        else
+        {
+            fprintf(stderr, "%s has wrong length; no conversion possible.\n", OWN_TAP_NAME);
+            fclose(fr);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Can't open '%s' (V OWN) for read; no conversion possible.\n", OWN_TAP_NAME);
+    }
+
+    fr = fopen(OWN_TZX_NAME, "rb");
+    if (fr)
+    {
+    fseek(fr, 0, SEEK_END);
+    FileLength = ftell(fr);
+        if (FileLength == OWN_TZX_LENGTH)
+        {
+            fw = fopen(FN_OWN, "wb");
+            if (fw)
+            {
+                fseek(fr, OWN_TZX_START, SEEK_SET);
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_OWN, fr);
+                if (BytesRead == CODE_LENGTH_OWN)
+                {
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_OWN, fw);
+                    fprintf(stderr, "\n"FN_OWN" successfully built from '%s'.\n", OWN_TZX_NAME);
+                }
+                else
+                {
+                    fprintf(stderr, "Read length error in '%s'; no conversion possible.\n", OWN_TZX_NAME);
+                }
+                fclose(fw);
+                fclose(fr);
+            }
+            else
+            {
+            fprintf(stderr, "Can't open '"FN_OWN"' for write; no conversion possible.\n");
+            fclose(fr);
+            }
+        }
+        else
+        {
+            fprintf(stderr, "%s has wrong length; no conversion possible.\n", OWN_TZX_NAME);
+            fclose(fr);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Can't open '%s' (V OWN) for read; no conversion possible.\n", OWN_TZX_NAME);
+    }
 
     // V 1.2 conversion
-
     fr = fopen(V12_TAP_NAME, "rb");
     if (fr)
     {
@@ -152,15 +228,15 @@ int main(int argc, char *argv[])
     FileLength = ftell(fr);
         if (FileLength == V12_TAP_LENGTH)
         {
-            fw = fopen("HOB_V12.bin", "wb");
+            fw = fopen(FN_V12, "wb");
             if (fw)
             {
                 fseek(fr, V12_TAP_START, SEEK_SET);
-                BytesRead = fread(conversion_buffer, 1, V12_CODE_SIZE, fr);
-                if (BytesRead == V12_CODE_SIZE)
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_V12, fr);
+                if (BytesRead == CODE_LENGTH_V12)
                 {
-                    fwrite(conversion_buffer, 1, V12_CODE_SIZE, fw);
-                    fprintf(stderr, "\nHOB_V12.bin successfully built from '%s'.\n", V12_TAP_NAME);
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_V12, fw);
+                    fprintf(stderr, "\n"FN_V12" successfully built from '%s'.\n", V12_TAP_NAME);
                 }
                 else
                 {
@@ -171,7 +247,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-            fprintf(stderr, "Can't open 'HOB_V12.bin' for write; no conversion possible.\n");
+            fprintf(stderr, "Can't open '"FN_V12"' for write; no conversion possible.\n");
             fclose(fr);
             }
         }
@@ -193,15 +269,15 @@ int main(int argc, char *argv[])
     FileLength = ftell(fr);
         if (FileLength == V12_TZX_LENGTH)
         {
-            fw = fopen("HOB_V12.bin", "wb");
+            fw = fopen(FN_V12, "wb");
             if (fw)
             {
                 fseek(fr, V12_TZX_START, SEEK_SET);
-                BytesRead = fread(conversion_buffer, 1, V12_CODE_SIZE, fr);
-                if (BytesRead == V12_CODE_SIZE)
+                BytesRead = fread(conversion_buffer, 1, CODE_LENGTH_V12, fr);
+                if (BytesRead == CODE_LENGTH_V12)
                 {
-                    fwrite(conversion_buffer, 1, V12_CODE_SIZE, fw);
-                    fprintf(stderr, "\nHOB_V12.bin successfully built from '%s'.\n", V12_TZX_NAME);
+                    fwrite(conversion_buffer, 1, CODE_LENGTH_V12, fw);
+                    fprintf(stderr, "\n"FN_V12" successfully built from '%s'.\n", V12_TZX_NAME);
                 }
                 else
                 {
@@ -212,7 +288,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-            fprintf(stderr, "Can't open 'HOB_V12.bin' for write; no conversion possible.\n");
+            fprintf(stderr, "Can't open '"FN_V12"' for write; no conversion possible.\n");
             fclose(fr);
             }
         }
