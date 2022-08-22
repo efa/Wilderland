@@ -314,4 +314,4 @@ Attributes, each object has 8 binary attributes associated with it:
 [7] I haven't found out yet, where the spaces go missing... ;-)
 
 
-README.txt Version 2.08 - 20220820
+README.txt Version 2.08 - 20220822
