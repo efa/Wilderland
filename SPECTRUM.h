@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220820                                                          *
+* V 2.08 - 20220822                                                          *
 *                                                                            *
 *  SPECTRUM.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -91,6 +91,7 @@ typedef Uint32 color_t;
 #define SL_SCREENEND       0X57FF // 22527:(SCREENSTART + WIDTH * HEIGHT / 8 - 1)
 #define SL_ATTRIBUTESTART  0x5800 // 22528:(SCREENSTART + WIDTH * HEIGHT / 8)
 #define SL_ATTRIBUTEEND    0x5AFF // 23295:(ATTRIBUTESTART + SP_COL * SP_ROW - 1)
+#define SL_RAMSTART        0x5B00 // 23296
 #define SL_RAMEND          0xFFFF // 65335
 #define SL_48K             0x10000 // 65336
 

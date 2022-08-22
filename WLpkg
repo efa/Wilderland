@@ -15,16 +15,17 @@
 # along with Wilderland. If not, see <http://www.gnu.org/licenses/>.
 # Special exception/limitation to GPL: not for commercial use
 
-# Script to generate a Mingw/MXE/OSX package of 'Wilderland'
-# used on: MinGw64=>bin64, MinGw32=>bin32, MXE64=>bin64, MXE32=>bin32, Linux=>macOS64
+# Script to generate a Linux|Mingw|MXE|OSX package of 'Wilderland'
+# used on: Linux=>bin64, Linux=>bin32, Linux=>macOS64
+#          MinGw64=>bin64, MinGw32=>bin32, MXE64=>bin64, MXE32=>bin32
 
 DEPSPATHMGW64="/mingw64/bin" # path of DLLs needed to generate the Mingw64 package
 DEPSPATHMGW32="/mingw32/bin" # path of DLLs needed to generate the Mingw32 package
 DEPSLISTMGW="libdeflate.dll libjbig-0.dll libjpeg-8.dll libjxl.dll libpng16-16.dll libtiff-5.dll libwebp-7.dll SDL2.dll SDL2_image.dll zlib1.dll libgcc_s_seh-1.dll libwinpthread-1.dll libstdc++-6.dll libbrotlidec.dll libbrotlienc.dll libLerc.dll liblzma-5.dll libzstd.dll libbrotlicommon.dll"
 
-DSTPATH=".." # path where create the Mingw/MXE package directory
+DSTPATH=".." # path where create the Linux|Mingw/MXE|OSX package directory
 
-echo "WLpkg: create a MinGW|MXE|OSX package for just built Wilderland"
+echo "WLpkg: create a Linux|MinGW|MXE|OSX package for just built Wilderland"
 
 # check for external dependency compliance
 flag=0
@@ -40,24 +41,24 @@ if [[ "$flag" = 1 ]]; then
    exit
 fi
 
-if [[ "$1" = "" || "$1" != "MGW32" && "$1" != "MGW64" && "$1" != "MXE32" && "$1" != "MXE64" && "$1" != "OSX64" ]]; then
-   echo "ERROR: miss package type"
-   echo "Syntax: $ WLpkg MXE32|MXE64|MGW32|MGW64|OSX64"
+if [[ "$1" = "" || "$1" != "LIN32" && "$1" != "LIN64" && "$1" != "MGW32" && "$1" != "MGW64" && "$1" != "MXE32" && "$1" != "MXE64" && "$1" != "OSX64" ]]; then
+   echo "ERROR: miss/unsupported package type"
+   echo "Syntax: $ WLpkg LIN32|LIN64|MGW32|MGW64|MXE32|MXE64|OSX64"
    exit
 fi
 
-PKG="$1" # tested with: MGW32,MGW64,MXE32,MXE64,OSX64
+PKG="$1"
 CPU=`uname -m` # i686 or x86_64
 BIT=64
-if [[ "$PKG" = "MGW32" || "$PKG" = "MXE32" ]]; then
+if [[ "$PKG" = "LIN32" || "$PKG" = "MGW32" || "$PKG" = "MXE32" ]]; then
    BIT=32
 fi
 OS=`uname -o`  # Msys or GNU/Linux
 VER=`ls WL????package.txt | sed 's/WL//' | sed 's/package.txt//'` # M.mm
 SRC=`pwd`
-TGT=Mxe
+TGT=WinMxe
 if [[ "$OS" = "Msys" ]]; then
-   TGT=Mgw
+   TGT=WinMgw
    if [[ "$BIT" = "64" ]]; then
       DEPSRC=$DEPSPATHMGW64
    fi
@@ -65,14 +66,16 @@ if [[ "$OS" = "Msys" ]]; then
       DEPSRC=$DEPSPATHMGW32
    fi
 fi
-DST="WL${VER}_Win$TGT$BIT"
-if [[ "$PKG" = "OSX64" ]]; then
-   TGT=
-   DST="WL${VER}_Osx$BIT"
+if [[ "$PKG" = "LIN32" || "$PKG" = "LIN64" ]]; then
+   TGT=Lin
 fi
+if [[ "$PKG" = "OSX64" ]]; then
+   TGT=Osx
+fi
+DST="WL${VER}_$TGT$BIT"
 
 if [[ "$OS" != "Msys" && "$OS" != "GNU/Linux" ]]; then
-   echo "ERROR: work in MinGW|MXE only"
+   echo "ERROR: work in MinGW|MXE(Linux) only"
    exit
 fi
 if [[ "$OS" = "Msys" && "$PKG" != "MGW32" && "$PKG" != "MGW64" ]]; then
@@ -80,7 +83,7 @@ if [[ "$OS" = "Msys" && "$PKG" != "MGW32" && "$PKG" != "MGW64" ]]; then
    exit
 fi
 
-if [[ "$OS" = "GNU/Linux" && "$PKG" != "MXE32" && "$PKG" != "MXE64" && "$PKG" != "OSX64" ]]; then
+if [[ "$OS" = "GNU/Linux" && "$PKG" != "LIN32" && "$PKG" != "LIN64" && "$PKG" != "MXE32" && "$PKG" != "MXE64" && "$PKG" != "OSX64" ]]; then
    echo "ERROR WLpkg: Unsupported target package:$PKG on Linux"
    exit
 fi
@@ -90,14 +93,14 @@ echo "CPU: $CPU"
 echo "BIT: $BIT"
 echo "OS : $OS"
 echo "VER: $VER"
-echo "SRC: `pwd`"
+echo "SRC: $SRC"
 echo "TGT: $TGT"
 echo "DEP: $DEPSRC"
 echo "DST: $DSTPATH/$DST"
 read -p "Proceed? A key to continue"
 echo ""
 
-echo "Creating Wilderland $VER package for MinGW/MXE/OSX$BIT ..."
+echo "Creating Wilderland $VER package for $TGT$BIT ..."
 if [[ "$PKG" = "OSX64" ]]; then
    echo "cp WLosxPkg_findobj/liblzma.5.dylib WLosxPkg_findobj/libzstd.1.dylib DiskImage/Wilderland.app/Contents/MacOS"
    echo "cp Changelog.txt COPYING.txt dict_v12.txt README.txt rooms_v12.txt WL2.08package.txt DiskImage/Wilderland.app/Contents/MacOS"
@@ -105,13 +108,13 @@ if [[ "$PKG" = "OSX64" ]]; then
    echo "osxcross-dmg WLosx Wilderland $VER"
    exit
 fi
-if [[ -d $DSTPATH/$DST ]]; then
-   rm -r $DSTPATH/$DST
+if [[ -d "$DSTPATH/$DST" ]]; then
+   rm -r "$DSTPATH/$DST"
 fi
-mkdir -p $DSTPATH/$DST
-mkdir -p $DSTPATH/$DST/TapCon
-mkdir -p $DSTPATH/$DST/z80emu
-mkdir -p $DSTPATH/$DST/Z80
+mkdir -p "$DSTPATH/$DST"
+mkdir -p "$DSTPATH/$DST/TapCon"
+mkdir -p "$DSTPATH/$DST/z80emu"
+mkdir -p "$DSTPATH/$DST/Z80"
 echo "Copying sources ..."
 cp *c *.h $DSTPATH/$DST
 cp TapCon/TapCon.c $DSTPATH/$DST/TapCon
@@ -129,6 +132,14 @@ cp WL2.08package.txt $DSTPATH/$DST
 echo "Copying assets ..."
 cp CharSetSpectrum8x8.bin GameMap.png HOBBIT.SCR HOBBIT12.SCR $DSTPATH/$DST
 echo "Copying binary ..."
+if [[ "$PKG" = "LIN64" ]]; then
+   cp WL $DSTPATH/$DST
+   cp TapCon/TapCon $DSTPATH/$DST/TapCon
+fi
+if [[ "$PKG" = "LIN32" ]]; then
+   cp WL32 $DSTPATH/$DST
+   cp TapCon/TapCon32 $DSTPATH/$DST/TapCon
+fi
 if [[ "$PKG" = "MGW64" ]]; then
    cp WLmgw.exe $DSTPATH/$DST
    cp TapCon/TapConMgw.exe $DSTPATH/$DST/TapCon
@@ -155,19 +166,21 @@ if [[ "$PKG" = "MXE32" ]]; then
    cp WLmxe32.exe $DSTPATH/$DST
    cp TapCon/TapConMxe32.exe $DSTPATH/$DST/TapCon
 fi
-#echo ""
-
-echo "Compressing with 7zip ..."
+echo "Compressing package ..."
 cd $DSTPATH
 #echo `pwd`
 if [[ -f $DST.7z ]]; then
    rm $DST.7z
 fi
+if [[ "$PKG" = "LIN64" || "$PKG" = "LIN32" ]]; then
+   #echo "tar cvaf $DST.tgz $DST"
+   tar cvaf $DST.tgz $DST > /dev/null
+fi
 if [[ "$OS" = "Msys" ]]; then
    #echo "7z a -mx=9 -r $DST.7z $DST"
    7z a -mx=9 -r $DST.7z $DST > /dev/null
 fi
-if [[ "$OS" = "GNU/Linux" ]]; then
+if [[ "$PKG" = "MXE64" || "$PKG" = "MXE32" ]]; then
    #echo "7z a -m0=lzma -mx=9 -r $DST.7z $DST"
    7z a -m0=lzma -mx=9 -r $DST.7z $DST > /dev/null
 fi

@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220820                                                          *
+* V 2.08 - 20220822                                                          *
 *                                                                            *
 *  GLOBAL_VARS.h is part of Wilderland - A Hobbit Environment                *
 *  Wilderland is free software: you can redistribute it and/or modify        *

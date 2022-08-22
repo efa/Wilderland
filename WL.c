@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.08 - 20220820                                                          *
+* V 2.08 - 20220822                                                          *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -416,7 +416,7 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
 void printZ80struct () {
    uintptr_t p;
    uintptr_t z = (uintptr_t)&z80;
-   uintptr_t fo=96; // file offset, was 64 on filever1
+   uintptr_t fo=98; // file offset, was 64 on filever1
    printf("z80 size:%zu\n", SizeOfZ80);
    printf("z80 file:%zu\n", FileOfZ80);
    printf("z80 addr:0x%p\n", &z80);
@@ -676,7 +676,6 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
     int i, gameversion;
     int fileversion, z80version;
     size_t sizeOfZ80, fileOfZ80;
-    char* temp;
 
     LockScreen(winPtr);
     SDLTWE_PrintString(TW, "\n\nLoad Filename: ", CS, ink, paper);
@@ -765,10 +764,16 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
     if (sizeOfZ80 != SizeOfZ80) {
         printf("WARN: z80size file:%zu mem:%zu FileOfZ80:%zu '%s'\n", sizeOfZ80, SizeOfZ80, FileOfZ80, fn);
         if (fileversion == 1) {
-            if (bit==32 && SizeOfZ80==52 && sizeOfZ80==56) { // 56 on 64bit and 52 on 32bit
+            if (bit==32 && sizeOfZ80==56 && SizeOfZ80==52) { // 56 on 64bit and 52 on 32bit
                 goto bitDiffer;
             }
-            if (bit==64 && SizeOfZ80==56 && sizeOfZ80==52) { // 56 on 64bit and 52 on 32bit
+            if (bit==32 && sizeOfZ80==440 && SizeOfZ80==244) { // 440 on 64bit and 244 on 32bit
+                goto bitDiffer;
+            }
+            if (bit==64 && sizeOfZ80==52 && SizeOfZ80==56) { // 56 on 64bit and 52 on 32bit
+                goto bitDiffer;
+            }
+            if (bit==64 && sizeOfZ80==244 && SizeOfZ80==440) { // 440 on 64bit and 244 on 32bit
                 goto bitDiffer;
             }
             LockScreen(winPtr);
@@ -782,7 +787,7 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
     }
 
     //num = SizeOfZ80; // Z80:56 on 64bit, 52 on 32bit, z80emu:440 on 64bit, 244 on 32bit
-    num = FileOfZ80; // read z80 partially Z80:47 on 64/32bit, z80emu:52 on 64/32bit
+    //num = FileOfZ80; // read z80 partially Z80:47 on 64/32bit, z80emu:52 on 64/32bit
     if (fileversion == 2) { // new in filever 2: read FILE(Z80)
         if (fscanf(f, "FILE(Z80)=%04zX\r\n", &fileOfZ80) != 1) {
             LockScreen(winPtr);
@@ -802,15 +807,6 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
         }
     }
 
-#if 0 // not needed
-    #if CPUEMUL == eZ80
-       ResetZ80(&z80);
-    #endif
-    #if CPUEMUL == ez80emu
-       Z80Reset (&z80);
-    #endif
-#endif
-
     // from here overwrite Z80 structure
     #if CPUEMUL == eZ80
         if (fscanf(f, "PC=%06hX\r\n", &z80.PC.W) != 1) {
@@ -828,26 +824,19 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
        return;
     }
 
-    if (fscanf(f, "%ms\n", &temp) != 1) { // should be "***Z80***"
+    ret = fscanf(f, "***Z80***\n"); // should be "***Z80***", so ret = 0 conversions
+    //printf("ret Z80:%d\n", ret);
+    if (ret != 0) { // so is EOF=-1
        LockScreen(winPtr);
-       SDLTWE_PrintString(TW, "\nError: ***Z80*** does not match format.\n\n", CS, ink, paper);
+       SDLTWE_PrintString(TW, "\nError: ***Z80*** not found.\n\n", CS, ink, paper);
        ShowTextWindow (TW);
        UnLockScreen(winPtr);
        return;
     }
-    //printf ("'%s'\n", temp);
-    if (strcmp (temp, "***Z80***") != 0) {
-       LockScreen(winPtr);
-       SDLTWE_PrintString(TW, "\nError: ***Z80*** missing\n\n", CS, ink, paper);
-       ShowTextWindow (TW);
-       UnLockScreen(winPtr);
-       return;
-    }
-    free (temp);
 
     // SizeOfZ80: Z80:56 on 64bit, 52 on 32bit, z80emu:440 on 64bit, 244 on 32bit
     // FileOfZ80: Z80:47 on 64/32bit, z80emu:52 on 64/32bit
-    for (i = 0; i < FileOfZ80; i++) // read z80 partially
+    for (i = 0; i < FileOfZ80; i++) { // read z80 partially
         if (fscanf(f, "%c", ( ((byte*)&z80) + i) ) != 1) {
            LockScreen(winPtr);
            SDLTWE_PrintString(TW, "\nError: Z80struct:%%c does not match format.\n\n", CS, ink, paper);
@@ -855,6 +844,8 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
            UnLockScreen(winPtr);
            return;
         }
+        //if (i>FileOfZ80-30) printf ("i:%d val:0x%X\n", i, *(((byte*)&z80) + i) );
+    }
 
     if (fileversion == 1) { // on filever=1 there are pointer bytes to skip
         num = sizeOfZ80-FileOfZ80; // bytes to discard
@@ -865,22 +856,17 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
         }
     }
 
-    if (fscanf(f, "%ms\n", &temp) != 1) { // should be "***MEMORY***"
+    ret = fscanf(f, "\n");
+
+    ret = fscanf(f, "***MEMORY***\n"); // should be "***MEMORY***", so ret = 0 conversions
+    //printf("ret MEM:%d\n", ret);
+    if (ret != 0) { // so is EOF=-1
        LockScreen(winPtr);
-       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** does not match format.\n\n", CS, ink, paper);
+       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** not found.\n\n", CS, ink, paper);
        ShowTextWindow (TW);
        UnLockScreen(winPtr);
        return;
     }
-    //printf ("'%s'\n", temp);
-    if (strcmp (temp, "***MEMORY***") != 0) {
-       LockScreen(winPtr);
-       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** missing\n\n", CS, ink, paper);
-       ShowTextWindow (TW);
-       UnLockScreen(winPtr);
-       return;
-    }
-    free (temp);
 
     for (i = 0; i <= SL_RAMEND; i++)
         if (fscanf(f, "%c", ZXmem + i) != 1) {
@@ -1302,7 +1288,7 @@ int InitGame(int hv)
     switch (hv)
     {
         case OWN:
-            printf("WL: Using 'The Hobbit' binary version OWN\n");
+            printf("WL: Selected 'The Hobbit' binary version OWN\n");
             strcpy(GameFileName, FN_OWN);
             strcpy(TapFileName, OWN_TAP_NAME);
             strcpy(TzxFileName, OWN_TZX_NAME);
@@ -1317,7 +1303,7 @@ int InitGame(int hv)
             ObjectsAddress = OBJECTS_OWN;
             break;
         case V10:
-            printf("WL: Using 'The Hobbit' binary version 1.0\n");
+            printf("WL: Selected 'The Hobbit' binary version 1.0\n");
             strcpy(GameFileName, FN_V10);
             strcpy(TapFileName, V10_TAP_NAME);
             strcpy(TzxFileName, V10_TZX_NAME);
@@ -1332,7 +1318,7 @@ int InitGame(int hv)
             ObjectsAddress = OBJECTS_V10;
             break;
         case V12:
-            printf("WL: Using 'The Hobbit' binary version 1.2\n");
+            printf("WL: Selected 'The Hobbit' binary version 1.2\n");
             strcpy(GameFileName, FN_V12);
             strcpy(TapFileName, V12_TAP_NAME);
             strcpy(TzxFileName, V12_TZX_NAME);
@@ -1765,6 +1751,44 @@ int main(int argc, char *argv[])
         // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
     #endif
     //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
+    #if CPUEMUL == eZ80
+       ResetZ80(&z80);
+       switch (HV)
+       {
+           case OWN:
+               z80.PC.W = L_START_OWN;
+               break;
+           case V10:
+               z80.PC.W = L_START_V10;
+               break;
+           case V12:
+               z80.PC.W = L_START_V12;
+               break;
+           default:
+               exit(-1);
+       }
+       if (SeedRND)
+           z80.R = (byte) SDL_GetTicks();
+    #endif
+    #if CPUEMUL == ez80emu
+       Z80Reset (&z80);
+       switch (HV)
+       {
+           case OWN:
+               z80.pc = L_START_OWN;
+               break;
+           case V10:
+               z80.pc = L_START_V10;
+               break;
+           case V12:
+               z80.pc = L_START_V12;
+               break;
+           default:
+               exit(-1);
+       }
+       if (SeedRND)
+           z80.r = (byte) SDL_GetTicks();
+    #endif
     //printZ80struct();
 
     if (InitGame(HV))
@@ -1836,45 +1860,6 @@ int main(int argc, char *argv[])
     SDL_RenderCopy (renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
 
     UnLockScreen(winPtr);
-
-    #if CPUEMUL == eZ80
-       ResetZ80(&z80);
-       switch (HV)
-       {
-           case OWN:
-               z80.PC.W = L_START_OWN;
-               break;
-           case V10:
-               z80.PC.W = L_START_V10;
-               break;
-           case V12:
-               z80.PC.W = L_START_V12;
-               break;
-           default:
-               exit(-1);
-       }
-       if (SeedRND)
-           z80.R = (byte) SDL_GetTicks();
-    #endif
-    #if CPUEMUL == ez80emu
-       Z80Reset (&z80);
-       switch (HV)
-       {
-           case OWN:
-               z80.pc = L_START_OWN;
-               break;
-           case V10:
-               z80.pc = L_START_V10;
-               break;
-           case V12:
-               z80.pc = L_START_V12;
-               break;
-           default:
-               exit(-1);
-       }
-       if (SeedRND)
-           z80.r = (byte) SDL_GetTicks();
-    #endif
 
     //SDL_EnableUNICODE(1);
     //CurrentPressedCod = SDL_GetScancodeFromKey(SDLK_QUOTEDBL);

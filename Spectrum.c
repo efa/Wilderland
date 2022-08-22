@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220820                                                          *
+* V 2.08 - 20220822                                                          *
 *                                                                            *
 *  Spectrum.c is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -227,14 +227,15 @@ byte InZ80(word P)
         if (CurrentPressedKey)
         {
             // happen on: no-key, ENTER=13, CURSORS<53-56>, 101=e, 110=n, 115=s, 119=w,
-            // 1073742049=SDLK_LSHIFT, 1073742053=SDLK_RSHIFT
-            // other values: 50=2, 97=a, 100=d, 103=g, 105=i, 108=l, 112=p, 113=q, 116=t, 117=u
+            // 1073742049=SDLK_LSHIFT, 1073742053=SDLK_RSHIFT, 1073741881=SDLK_CAPSLOCK
+            // other values: 49=1, 50=2, 97=a, 100=d, 103=g, 105=i, 108=l, 109=m, 112=p, 113=q, 116=t, 117=u, 242=
             if (CurrentPressedKey != 13 && (CurrentPressedKey<53 || CurrentPressedKey>56) && \
-                CurrentPressedKey!=SDLK_LSHIFT && CurrentPressedKey!=SDLK_RSHIFT && \
+                CurrentPressedKey!=SDLK_LSHIFT && CurrentPressedKey!=SDLK_RSHIFT && CurrentPressedKey!=SDLK_CAPSLOCK && \
                 CurrentPressedKey!=SDLK_e && CurrentPressedKey!=SDLK_n && CurrentPressedKey!=SDLK_s && CurrentPressedKey!=SDLK_w && \
-                CurrentPressedKey!=SDLK_2 && CurrentPressedKey!=SDLK_a && CurrentPressedKey!=SDLK_d && CurrentPressedKey!=SDLK_g && \
-                CurrentPressedKey!=SDLK_i && CurrentPressedKey!=SDLK_l && CurrentPressedKey!=SDLK_p && CurrentPressedKey!=SDLK_q && \
-                CurrentPressedKey!=SDLK_t && CurrentPressedKey!=SDLK_u) \
+                CurrentPressedKey!=SDLK_1 && CurrentPressedKey!=SDLK_2 && CurrentPressedKey!=SDLK_a && CurrentPressedKey!=SDLK_d && \
+                CurrentPressedKey!=SDLK_g && CurrentPressedKey!=SDLK_i && CurrentPressedKey!=SDLK_l && CurrentPressedKey!=SDLK_m && \
+                CurrentPressedKey!=SDLK_p && CurrentPressedKey!=SDLK_q && CurrentPressedKey!=SDLK_t && CurrentPressedKey!=SDLK_u && \
+                CurrentPressedKey!=242) \
                    printf("P==0x00FE CurrentPressedKey:%d\n", CurrentPressedKey);
             switch (CurrentPressedKey)
             {

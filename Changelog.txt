@@ -1,5 +1,5 @@
-2.08
-----
+2.08 - 20220822
+---------------
 - Added 'z80emu' a new Z80 emulator from Lin Ke-Fong with a free license
   Selection of the emulator can be made at compile time, see Makefiles
 - New snapshot file format v2 to manage the Z80 emulator type

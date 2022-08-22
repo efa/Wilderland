@@ -33,7 +33,7 @@ CONTENT
 WILDERLAND is (c) 2012 by CH, Copyright 2019-2022 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the authors
-   at wilderland AT aonDOTat, efa@iol.it
+   at wilderland AT aonDOTat, efa AT iol DOT it
 
 "The Hobbit" is (c) Melbourne House, 1982. Written by Veronika Megler and
    Philip Mitchell.
@@ -47,10 +47,10 @@ Z80 emulator based on Marat Fayzullin's work from 2007. Free for non-profit
 
 8x8 charset from ZX Spectrum ROM (c) by Amstrad; use granted for emulators.
 
-Makefiles for GCC and GNUtool-chain was written by Valerio Messina (efa@iol.it)
-Makefile to cross-compile for Win32 and macOS64 written by Valerio Messina
-Porting to SDL2.0 was made by Valerio Messina (efa@iol.it)
-Support for selectable Z80 emulator by Valerio Messina (efa@iol.it)
+Makefiles for GCC and GNUtool-chain was written by Valerio Messina
+Makefile to cross-compile for Win32/64 and macOS64 written by Valerio Messina
+Porting to SDL2.0 was made by Valerio Messina (efa AT iol DOT it)
+Support for selectable Z80 emulator by Valerio Messina (efa AT iol DOT it)
 
 YOU ARE NOT ALLOWED TO DISTRIBUTE 'WILDERLAND' TOGETHER WITH HOBBIT BINARIES!
 
@@ -108,9 +108,9 @@ based on Marat Fayzullin's work from 2007 (fms.komkon.org) under Windows XP.
 
 (3.2) - Linux/macOS
 
-In 2019 Valerio Messina (efa@iol.it) from Italy ported WL to Linux. The files
-are available on the Wilderland homepage, too.  A binary for macOS 64 bit is
-also available. The package includes source files and compiled versions of WL:
+In 2019 Valerio Messina (efa AT iol DOT it) from Italy ported WL to Linux.
+The files are available on the Wilderland homepage, too. A binary for macOS 64
+bit is also available. The package includes source files and compiled versions:
 'WL'          Linux64 binary built with GCC 10.2.1 on Linux64
 'WL32'        Linux32 binary built with GCC 10.2.1 on Linux64
 'WLmgw.exe'   Win64 binary built with MinGW/MSYS2 [3] on Win64
@@ -121,7 +121,7 @@ also available. The package includes source files and compiled versions of WL:
 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
 can be installed opening it and dragging to Applications. In case the app won't
-start from the GUI, open terminal to /Applications/Wilderland.app/Contents/MacOS
+start from the GUI, open terminal @ /Applications/Wilderland.app/Contents/MacOS
 and start 'WLosx'
 
 The sources was ported to SDLv2.0, added the support for a free Z80 emulator:
@@ -166,8 +166,8 @@ Step-by-Step-Instruction:
    Optionally you can generate the binary file stripping the tape headers:
    (4.5) Unzip the 'HOBBIT12.TAP', 'HOBBIT.TAP', 'The Hobbit v1.2.tzx' or
          'The Hobbit v1.0.tzx' file into the 'TapCon' directory.
-   (4.6) Run 'TapCon.exe' to extract the game binaries.
-   (4.7) Copy 'HOB_V12.bin', 'HOB_V10.bin') to the WL directory.
+   (4.6) Run 'TapCon' or 'TapCon.exe' to extract the game binaries.
+   (4.7) Copy 'HOB_V12.bin' or 'HOB_V10.bin' to the WL directory.
 
 
 
@@ -240,7 +240,8 @@ a-z ............... these letters appear in the game's input line
 0 and BACKSPACE ... are the DELETE keys for the game
 @ ................. is the 'do-the-last-command-again' key
 
-The cursor keys can be used for walking like N,S,E,W, while Shift-0 for clearing the whole input line is not supported.
+The cursor keys can be used for walking like N,S,E,W, while Shift-0 for
+clearing the whole input line is not supported.
 
 
 (6.2) - Environment Control
@@ -313,4 +314,4 @@ Attributes, each object has 8 binary attributes associated with it:
 [7] I haven't found out yet, where the spaces go missing... ;-)
 
 
-README.txt Version 2.08 - 20220815
+README.txt Version 2.08 - 20220820
