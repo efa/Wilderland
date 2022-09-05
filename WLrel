@@ -1,0 +1,28 @@
+#!/bin/bash
+# create the Build release for all target platforms
+
+echo "Build release for Linux64 ..."
+make rel
+echo ""
+echo "Build release for Linux32 ..."
+make -f Makefile32 rel
+echo ""
+
+echo "Cross-Build release for Win64 ..."
+make -f MakefileM64 rel
+echo ""
+echo "Cross-Build release for Win32 ..."
+make -f MakefileM32 rel
+echo ""
+
+echo "Cross-Build release for macOS64 ..."
+make -f MakefileO64 rel
+echo ""
+
+echo "Build natively on MinGw/MSYS2/Win with:"
+echo "Build release for Win64 ..."
+make -f MakefileG64 rel
+echo ""
+echo "Build release for Win32 ..."
+make -f MakefileG32 rel
+echo ""

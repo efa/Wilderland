@@ -1,0 +1,97 @@
+Files packaged with Wilderland Version 2.09 - 20220904
+------------------------------------------------------
+CharSetSpectrum8x8.bin        Binary: Spectrum character set
+Changelog.txt                 TXT: Versions history
+COPYING.txt                   TXT: License GNU GPL
+GameMap.png                   PNG: Hobbit game map
+HOBBIT.SCR                    SCR: Hobbit load screen
+HOBBIT12.SCR                  SCR: Hobbit 1.2 load screen
+README.txt                    TXT: help file
+Makefile                      TXT: Makefile to build for Linux64bit on Linux using GNU toolchain
+Makefile32                    TXT: Makefile to build for Linux32bit on Linux using GNU toolchain
+MakefileG64                   TXT: Makefile to build for Win64 on Win using GNU toolchain (MinGw/MSYS2)
+MakefileG32                   TXT: Makefile to build for Win32 on Win using GNU toolchain (MinGw/MSYS2)
+MakefileM64                   TXT: Makefile to cross-build for Win64 on Linux using GNU toolchain (MXE)
+MakefileM32                   TXT: Makefile to cross-build for Win32 on Linux using GNU toolchain (MXE)
+MakefileO64                   TXT: Makefile to cross-build for macOS64 on Linux using CLang/LLVM (OSXCROSS)
+WLpkg                         TXT: script to generate the WL MinGW/MXE package
+dict_v12.txt                  TXT: list of words
+rooms_v12.txt                 TXT: list of rooms
+SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps
+WL2.08package.txt             TXT: package file list
+WL.ppj                        TXT: Pelles C Project files
+WL                            x64 Binary: Linux64 executable built with GCC
+WL32                          686 Binary: Linux32 executable built with GCC
+WLmgw.exe                     x64 Binary: Win64 executable built with MinGW/MSYS2
+WLmgw32.exe                   686 Binary: Win32 executable built with MinGW/MSYS2
+WLmxe.exe                     x64 Binary: Win64 executable cross-built with MXE static link
+WLmxe32.exe                   686 Binary: Win32 executable cross-built with MXE static link
+WLpc.exe                      386 Binary: Win32 executable built with Pelles C/LCC on Win32
+SDL.dll                       386 Binary: Win32 dynamic library for SDLv1.2
+WLosx                         x64 Binary: macOS64 executable cross-built with OSXcross
+WL.ppx                        XML: IDE/Widgets settings???
+WL.tag                        SQLite: ???
+Wilderland.ico                ICO: 128x128x16 icon file for Windows
+Wilderland.icns               ICNS: 32x32-1024x1024x32bit icon file for macOS
+GLOBAL_VARS.h                 C header: -
+MapCoordinates.h              C header: -
+SDLTWE.h                      C header: < SDL/SDL.h
+SPECTRUM.h                    C header: < SDL/SDL.h, Z80/Z80.h
+WL.h                          C header: -
+SDLTWE.c                      C source: < stdio.h,SDL/SDL.h,WL.h,SDLTWE.h
+Spectrum.c                    C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,SPECTRUM.h,WL.h,SDLTWE.h,Z80/Z80.h,GLOBAL_VARS.h
+WL.c                          C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,WL.h,SDLTWE.h,SPECTRUM.h,Z80/Z80.h,MapCoordinates.h,GLOBAL_VARS.h
+
+z80emu/macros.h               C header: 
+z80emu/instructions.h         C header: 
+z80emu/z80config.h            C header: 
+z80emu/z80emu.h               C header: 
+z80emu/tables.h               C header: 
+z80emu/z80user.h              C header: 
+z80emu/zextest.h              C header: 
+z80emu/maketables.c           C source: 
+z80emu/zextest.c              C source: 
+z80emu/z80emu.c               C source: 
+z80emu/Makefile.nmake         TXT: Makefile
+z80emu/INSTALL                TXT: INSTALL
+z80emu/README.txt             TXT: README
+z80emu/Makefile               TXT: Makefile
+z80emu/maketables             Bin
+z80emu/testfiles/zexall.com   Z80 Binary: test
+z80emu/testfiles/zexall.z80   Assembler source: test
+z80emu/testfiles/zexdoc.com   Z80 Binary: test
+z80emu/testfiles/zexdoc.z80   Assembler source: test
+
+Z80/AY8910.h                  C header: missing
+Z80/Codes.h                   C header: -
+Z80/CodesCB.h                 C header: -
+Z80/CodesED.h                 C header: -
+Z80/CodesXCB.h                C header: -
+Z80/CodesXX.h                 C header: -
+Z80/Console.h                 C header: missing
+Z80/Tables.h                  C header: -
+Z80/Z80.h                     C header: -
+Z80/ConDebug.c                C source: < stdlib.h,Console.h,Debug.c,Z80.h
+Z80/Debug.c                   C source: < stdio.h,ctype.h,string.h,Z80.h,AY8910.h
+Z80/Z80.c                     C source: < stdio.h,Codes.h,CodesCB.h,CodesED.h,CodesXCB.h,CodesXX.h,Tables.h,Z80.h,GLOBAL_VARS.h,SPECTRUM.h
+
+TapCon/TapCon.ppj             TXT: Pelles C Project files
+TapCon/TapCon.tag             SQLite: ???
+TapCon/TapCon.ppx             XML: IDE/Widgets settings???
+TapCon/TapCon                 x64 Binary: Linux64 executable
+TapCon/TapCon32               686 Binary: Linux32 executable
+TapCon/TapConMxe.exe          x64 Binary: Win64 executable built with MXE static link
+TapCon/TapConMxe32.exe        686 Binary: Win32 executable built with MXE static link
+TapCon/TapConMgw.exe          x64 Binary: Win64 executable built with MinGW/MSYS2
+TapCon/TapConMgw32.exe        686 Binary: Win32 executable built with MinGW/MSYS2
+TapCon/TapConPC.exe           386 Binary: Win32 executable built with Pelles C/LCC on Win32
+TapCon/TapCon.c               C source: < stdio.h,stdlib.h,string.h WL.h
+                              convert HOBBIT12.TAP files to HOB_V12.bin
+                              convert HOBBIT12.TZX files to HOB_V12.bin
+
+Design/Map_V6_gross.png       PNG: Hobbit map hi-definition
+Design/Map_V6_W1000.png       PNG: Hobbit map
+
+output/                       386 COFF object files
+
+TapCon/output/                386 COFF object files
