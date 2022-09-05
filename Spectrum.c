@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220822                                                          *
+* V 2.09 - 20220904                                                          *
 *                                                                            *
 *  Spectrum.c is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -43,7 +43,7 @@ color_t ColorTable[] =
 };
 
 // Spectrum half row port addresses
-//SHRP shrp[] = { SHRP_cZXCV, SHRP_ASDFG, SHRP_QWERT, SHRP_12345, SHRP_09876, SHRP_POIUY, SHRP_eLKJH, SHRP_saMNB };
+//SHRP shrp[] = { SHRP_VCXZc, SHRP_GFDSA, SHRP_TREWQ, SHRP_54321, SHRP_67890, SHRP_YUIOP, SHRP_HJKLe, SHRP_BNMas };
 
 
 /****************************************************************************\
@@ -54,25 +54,22 @@ void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, color_t color)
 {
     Uint32 *pixmem32;
 
-                      // TW->framePtr[y*(TW->rect.w) + x] = color;
     pixmem32 = (Uint32 *)TW->framePtr + 2 * (y * TW->rect.w) + 2 * x;
     *pixmem32++ = color;
     *pixmem32 = color;
 
-    if (NoScanLines)
-    {
+    if (NoScanLines) {
         pixmem32 += TW->rect.w; //pitch / BYTESPERPIXEL : below 1 pixel line
         *pixmem32-- = color;
         *pixmem32 = color;
     }
-//#if 0
-    SDLTWE_SetPixel(TW, 2*x, 2*y, color);
+
+    SDLTWE_SetPixel(TW, 2*x  , 2*y, color);
     SDLTWE_SetPixel(TW, 2*x+1, 2*y, color);
     if (NoScanLines) {
-       SDLTWE_SetPixel(TW, 2*x, 2*y+1, color);
+       SDLTWE_SetPixel(TW, 2*x  , 2*y+1, color);
        SDLTWE_SetPixel(TW, 2*x+1, 2*y+1, color);
     }
-//#endif
 }
 
 
@@ -131,7 +128,7 @@ void WriteAttributeByte(word address, byte v)
 * PrintObjNrActingAnimal                                                     *
 *                                                                            *
 \****************************************************************************/
-void PrintObjNrActingAnimal (byte onaa)
+void PrintObjNrActingAnimal(byte onaa)
 {
     char aa[20];
 
@@ -154,7 +151,7 @@ byte RdZ80(word A)
 
 
 /****************************************************************************\
-* RdwZ80                                                                      *
+* RdwZ80                                                                     *
 *                                                                            *
 \****************************************************************************/
 word RdwZ80(word a)
@@ -189,7 +186,7 @@ void WrZ80(word A, byte v)
 
 
 /****************************************************************************\
-* WrwZ80                                                                      *
+* WrwZ80                                                                     *
 *                                                                            *
 \****************************************************************************/
 void WrwZ80(word a, word w)
@@ -226,16 +223,18 @@ byte InZ80(word P)
     {
         if (CurrentPressedKey)
         {
-            // happen on: no-key, ENTER=13, CURSORS<53-56>, 101=e, 110=n, 115=s, 119=w,
-            // 1073742049=SDLK_LSHIFT, 1073742053=SDLK_RSHIFT, 1073741881=SDLK_CAPSLOCK
-            // other values: 49=1, 50=2, 97=a, 100=d, 103=g, 105=i, 108=l, 109=m, 112=p, 113=q, 116=t, 117=u, 242=
-            if (CurrentPressedKey != 13 && (CurrentPressedKey<53 || CurrentPressedKey>56) && \
-                CurrentPressedKey!=SDLK_LSHIFT && CurrentPressedKey!=SDLK_RSHIFT && CurrentPressedKey!=SDLK_CAPSLOCK && \
-                CurrentPressedKey!=SDLK_e && CurrentPressedKey!=SDLK_n && CurrentPressedKey!=SDLK_s && CurrentPressedKey!=SDLK_w && \
-                CurrentPressedKey!=SDLK_1 && CurrentPressedKey!=SDLK_2 && CurrentPressedKey!=SDLK_a && CurrentPressedKey!=SDLK_d && \
-                CurrentPressedKey!=SDLK_g && CurrentPressedKey!=SDLK_i && CurrentPressedKey!=SDLK_l && CurrentPressedKey!=SDLK_m && \
-                CurrentPressedKey!=SDLK_p && CurrentPressedKey!=SDLK_q && CurrentPressedKey!=SDLK_t && CurrentPressedKey!=SDLK_u && \
-                CurrentPressedKey!=242) \
+            // happen on: no-key, ENTER=13, 32=' ',
+            // 48=0, ..., 57=9, CURSORS<53-56>,
+            // 97=a, ..., 122=z,
+            // 232=, 242=, 249=
+            // 1073742049=SDLK_LSHIFT, 1073742053=SDLK_RSHIFT, 1073741881=SDLK_CAPSLOCK, 1073742050=SDLK_LALT
+            if (CurrentPressedKey!=SDLK_RETURN && CurrentPressedKey!=SDLK_SPACE && \
+                (CurrentPressedKey<SDLK_0 || CurrentPressedKey>SDLK_9) && \
+                (CurrentPressedKey<SDLK_a || CurrentPressedKey>SDLK_z) && \
+                CurrentPressedKey!=SDLK_LSHIFT && CurrentPressedKey!=SDLK_RSHIFT && \
+                CurrentPressedKey!=SDLK_LALT   && CurrentPressedKey!=SDLK_RALT   && \
+                CurrentPressedKey!=SDLK_CAPSLOCK && \
+                CurrentPressedKey!=232 && CurrentPressedKey!=242 && CurrentPressedKey!=249) \
                    printf("P==0x00FE CurrentPressedKey:%d\n", CurrentPressedKey);
             switch (CurrentPressedKey)
             {
@@ -246,6 +245,7 @@ byte InZ80(word P)
                 case 'p':
                 case SDLK_RETURN:
                 case ' ':
+                    CurrentPressedKey=0;
                     return (0xFF - 0x01);
                 case 'z':
                 case 's':
@@ -254,6 +254,7 @@ byte InZ80(word P)
                 case '9':
                 case 'o':
                 case 'l':
+                    CurrentPressedKey=0;
                     return (0xFF - 0x02);
                 case 'x':
                 case 'd':
@@ -263,6 +264,7 @@ byte InZ80(word P)
                 case 'i':
                 case 'k':
                 case 'm':
+                    CurrentPressedKey=0;
                     return (0xFF - 0x04);
                 case 'c':
                 case 'f':
@@ -272,6 +274,7 @@ byte InZ80(word P)
                 case 'u':
                 case 'j':
                 case 'n':
+                    CurrentPressedKey=0;
                     return (0xFF - 0x08);
                 case 'v':
                 case 'g':
@@ -281,9 +284,10 @@ byte InZ80(word P)
                 case 'y':
                 case 'h':
                 case 'b':
+                    CurrentPressedKey=0;
                     return (0xFF - 0x10);
-
                 default:
+                    CurrentPressedKey=0;
                     return (0xFF);
             }
         }
@@ -301,228 +305,241 @@ byte InZ80(word P)
     {
         // CAPS SHIFT is ignored
         case 'z':
-            if (P == SHRP_cZXCV)
+            if (P == SHRP_VCXZc)
                 return (0xFF - 0x02);
             break;
         case 'x':
-            if (P == SHRP_cZXCV)
+            if (P == SHRP_VCXZc)
                 return (0xFF - 0x04);
             break;
         case 'c':
-            if (P == SHRP_cZXCV)
+            if (P == SHRP_VCXZc)
                 return (0xFF - 0x08);
             break;
         case 'v':
-            if (P == SHRP_cZXCV)
+            if (P == SHRP_VCXZc)
                 return (0xFF - 0x10);
             break;
 
         case 'a':
-            if (P == SHRP_ASDFG)
+            if (P == SHRP_GFDSA)
                 return (0xFF - 0x01);
             break;
         case 's':
-            if (P == SHRP_ASDFG)
+            if (P == SHRP_GFDSA)
                 return (0xFF - 0x02);
             break;
         case 'd':
-            if (P == SHRP_ASDFG)
+            if (P == SHRP_GFDSA)
                 return (0xFF - 0x04);
             break;
         case 'f':
-            if (P == SHRP_ASDFG)
+            if (P == SHRP_GFDSA)
                 return (0xFF - 0x08);
             break;
         case 'g':
-            if (P == SHRP_ASDFG)
+            if (P == SHRP_GFDSA)
                 return (0xFF - 0x10);
             break;
 
         case 'q':
-            if (P == SHRP_QWERT)
+            if (P == SHRP_TREWQ)
                 return (0xFF - 0x01);
             break;
         case 'w':
-            if (P == SHRP_QWERT)
+            if (P == SHRP_TREWQ)
                 return (0xFF - 0x02);
             break;
         case 'e':
-            if (P == SHRP_QWERT)
+            if (P == SHRP_TREWQ)
                 return (0xFF - 0x04);
             break;
         case 'r':
-            if (P == SHRP_QWERT)
+            if (P == SHRP_TREWQ)
                 return (0xFF - 0x08);
             break;
         case 't':
-            if (P == SHRP_QWERT)
+            if (P == SHRP_TREWQ)
                 return (0xFF - 0x10);
             break;
 
         case '1':
-            if (P == SHRP_12345)
+            if (P == SHRP_54321)
                 return (0xFF - 0x01);
             break;
         case '2':   // ALT|SHIFT+2 = US:'@' or IT:'"' ==>
             //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
-            if (CurrentPressedMod == KMOD_LALT || CurrentPressedMod == KMOD_RALT || \
-                CurrentPressedMod == KMOD_LSHIFT || CurrentPressedMod == KMOD_RSHIFT) {
+            if (CurrentPressedMod & (KMOD_LALT|KMOD_RALT|KMOD_LSHIFT|KMOD_RSHIFT)) {
                 //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
-                if (P == SHRP_saMNB) {
+                if (P == SHRP_BNMas) {
                     //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // Symbol Shift (+ 2) ==> '@'
                 }
-                if (P == SHRP_12345) {
+                if (P == SHRP_54321) {
                     //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // (Symbol Shift +) 2 ==> '@'
                 }
             }
-            if (P == SHRP_12345)
-                   return (0xFF - 0x02);
+            if (P == SHRP_54321)
+                return (0xFF - 0x02);  // simple 2
             break;
         case 242:   // US: SHIFT+;=: or IT: SHIFT+o'=c ==>
             //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
-            if (CurrentPressedMod == KMOD_LALT || CurrentPressedMod == KMOD_RALT || \
-                CurrentPressedMod == KMOD_LSHIFT || CurrentPressedMod == KMOD_RSHIFT) {
+            if (CurrentPressedMod & (KMOD_LALT|KMOD_RALT|KMOD_LSHIFT|KMOD_RSHIFT)) {
                 //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
-                if (P == SHRP_saMNB) {
+                if (P == SHRP_BNMas) {
                     //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // Symbol Shift (+ 2) ==> '@'
                 }
-                if (P == SHRP_12345) {
+                if (P == SHRP_54321) {
                     //printf("port:0x%X Mod:%u Key:%u out='@'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // (Symbol Shift +) 2 ==> '@'
                 }
             }
             break;
         case '3':
-            if (P == SHRP_12345)
+            if (P == SHRP_54321)
                 return (0xFF - 0x04);
             break;
         case '4':
-            if (P == SHRP_12345)
+            if (P == SHRP_54321)
                 return (0xFF - 0x08);
             break;
         case '5':
-            if (P == SHRP_12345)
+            if (P == SHRP_54321)
                 return (0xFF - 0x10);
             break;
 
-        case '0':
-            if (P == SHRP_09876)
-                return (0xFF - 0x01);
+        case '0':   // SHIFT+0 ==>
+            //printf("port:0x%X Mod:%u Key:%u out='0'\n", P, CurrentPressedMod, CurrentPressedKey);
+            if (CurrentPressedMod & (KMOD_LSHIFT|KMOD_RSHIFT)) {
+                //printf("port:0x%X Mod:%u Key:%u out='SHIFT+0'\n", P, CurrentPressedMod, CurrentPressedKey);
+                if (P == SHRP_VCXZc) {
+                    //printf("port:0x%X Mod:%u Key:%u out='SHIFT+0'\n", P, CurrentPressedMod, CurrentPressedKey);
+                    return (0xFF - 0x01); // Caps Shift (+ 0) ==> 'SHIFT+0'
+                }
+                if (P == SHRP_67890) {
+                    //printf("port:0x%X Mod:%u Key:%u out='SHIFT+0'\n", P, CurrentPressedMod, CurrentPressedKey);
+                    return (0xFF - 0x01); // (Caps Shift +) 0 ==> 'SHIFT+0'
+                }
+            }
+            if (P == SHRP_67890) {
+                //printf("port:0x%X Mod:%u Key:%u out='0'\n", P, CurrentPressedMod, CurrentPressedKey);
+                return (0xFF - 0x01); // simple 0
+            }
             break;
         case '9':
-            if (P == SHRP_09876)
+            if (P == SHRP_67890)
                 return (0xFF - 0x02);
             break;
         case '8':
-            if (P == SHRP_09876)
+            if (P == SHRP_67890)
                 return (0xFF - 0x04);
             break;
         case '7':
-            if (P == SHRP_09876)
+            if (P == SHRP_67890)
                 return (0xFF - 0x08);
             break;
         case '6':
-            if (P == SHRP_09876)
+            if (P == SHRP_67890)
                 return (0xFF - 0x10);
             break;
 
         case 'p':   // ALT|SHIFT+p ==>
             //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
-            if (CurrentPressedMod == KMOD_LALT || CurrentPressedMod == KMOD_RALT || \
-                CurrentPressedMod == KMOD_LSHIFT || CurrentPressedMod == KMOD_RSHIFT) {
+            if (CurrentPressedMod & (KMOD_LALT|KMOD_RALT|KMOD_LSHIFT|KMOD_RSHIFT)) {
                 //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
-                if (P == SHRP_saMNB) {
+                if (P == SHRP_BNMas) {
                     //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // Symbol Shift (+ p) ==> '"'
                 }
-                if (P == SHRP_POIUY) {
+                if (P == SHRP_YUIOP) {
                     //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x01); // (Symbol Shift +) p ==> '"'
                 }
             }
-            if (P == SHRP_POIUY)
-                return (0xFF - 0x01);
+            if (P == SHRP_YUIOP)
+                return (0xFF - 0x01); // simple p
             break;
         case 224:   // US: SHIFT+'=" or IT: SHIFT+a'=� ==>
             //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
-            if (CurrentPressedMod == KMOD_LSHIFT || CurrentPressedMod == KMOD_RSHIFT) {
+            if (CurrentPressedMod & (KMOD_LSHIFT|KMOD_RSHIFT)) {
                 //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
-                if (P == SHRP_saMNB) {
+                if (P == SHRP_BNMas) {
                     //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x02); // Symbol Shift (+ p) ==> '"'
                 }
-                if (P == SHRP_POIUY) {
+                if (P == SHRP_YUIOP) {
                     //printf("port:0x%X Mod:%u Key:%u out='\"'\n", P, CurrentPressedMod, CurrentPressedKey);
                     return (0xFF - 0x01); // (Symbol Shift +) p ==> '"'
                 }
             }
             break;
         case 'o':
-            if (P == SHRP_POIUY)
+            if (P == SHRP_YUIOP)
                 return (0xFF - 0x02);
             break;
         case 'i':
-            if (P == SHRP_POIUY)
+            if (P == SHRP_YUIOP)
                 return (0xFF - 0x04);
             break;
         case 'u':
-            if (P == SHRP_POIUY)
+            if (P == SHRP_YUIOP)
                 return (0xFF - 0x08);
             break;
         case 'y':
-            if (P == SHRP_POIUY)
+            if (P == SHRP_YUIOP)
                 return (0xFF - 0x10);
             break;
 
         case SDLK_RETURN:
-            if (P == SHRP_eLKJH)
+            if (P == SHRP_HJKLe)
                 return (0xFF - 0x01);
             break;
         case 'l':
-            if (P == SHRP_eLKJH)
+            if (P == SHRP_HJKLe)
                 return (0xFF - 0x02);
             break;
         case 'k':
-            if (P == SHRP_eLKJH)
+            if (P == SHRP_HJKLe)
                 return (0xFF - 0x04);
             break;
         case 'j':
-            if (P == SHRP_eLKJH)
+            if (P == SHRP_HJKLe)
                 return (0xFF - 0x08);
             break;
         case 'h':
-            if (P == SHRP_eLKJH)
+            if (P == SHRP_HJKLe)
                 return (0xFF - 0x10);
             break;
 
         case ' ':
-            if (P == SHRP_saMNB)
+            if (P == SHRP_BNMas)
                 return (0xFF - 0x01);
             break;
         // SYMBOL SHIFT is ignored
         case 'm':
-            if (P == SHRP_saMNB)
+            if (P == SHRP_BNMas)
                 return (0xFF - 0x04);
             break;
         case '.':   // '.' ==>
-            if (P == SHRP_saMNB) {
+            if (P == SHRP_BNMas) {
                 //printf("port:0x%X Mod:%u Key:%u out='.'\n", P, CurrentPressedMod, CurrentPressedKey);
-                return (0xFF - 0x02 - 0x04); } // Symbol Shift + m = '.'
+                return (0xFF - 0x04 - 0x02); // Symbol Shift + m = '.'
+            }
             break;
         case 'n':
-            if (P == SHRP_saMNB)
+            if (P == SHRP_BNMas)
                 return (0xFF - 0x08);
             break;
         case ',':   // ',' ==>
-            if (P == SHRP_saMNB) {
+            if (P == SHRP_BNMas) {
                 //printf("port:0x%X Mod:%u Key:%u out=','\n", P, CurrentPressedMod, CurrentPressedKey);
-                return (0xFF - 0x02 - 0x08); } // Symbol Shift + n = ','
+                return (0xFF - 0x08 - 0x02); // Symbol Shift + n = ','
+            }
             break;
         case 'b':
-            if (P == SHRP_saMNB)
+            if (P == SHRP_BNMas)
                 return (0xFF - 0x10);
             break;
 
@@ -625,6 +642,9 @@ void JumpZ80(word PC)
         case V12:
             if (PC == L_PRINT_CHAR_V12)
             {
+                //printf("%02X=", a);
+                //if (a>=32) printf("%c ", a);
+                //else printf("  ");
                 if (LastChar == 0x0D)
                 {
                     LastChar = 0;

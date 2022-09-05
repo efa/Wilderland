@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220822                                                          *
+* V 2.09 - 20220904                                                          *
 *                                                                            *
 *  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -35,6 +35,7 @@
 
 byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
+
 /****************************************************************************\
 * SDLTWE_DrawTextWindowFrame                                                 *
 *                                                                            *
@@ -51,10 +52,10 @@ void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct *TW, int BorderWidth, co
     
     SDL_GetRenderDrawColor(renPtr, &r, &g, &b, &a); // save prev color
     SDL_SetRenderDrawColor(renPtr, components(Color));
-    for (int i=1; i<=BorderWidth; i++) {
-       rect.x = TW->rect.x - i;
+    for (int i=1; i<=BorderWidth; i++) { // 1,2,3,4
+       rect.x = TW->rect.x - i; // 7,6,5,4
        rect.y = TW->rect.y - i;
-       rect.w = TW->rect.w + 2*i;
+       rect.w = TW->rect.w + 2*i; // 2,4,6,8
        rect.h = TW->rect.h + 2*i;
        SDL_RenderDrawRect(renPtr, &rect);
     }
@@ -105,7 +106,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetS
 * a vertical scroll is performed if necessary.                               *
 * The following control characters are processed:                            *
 *   \n \r (both used as Newline, ie CR/LF)                                   *
-*   \f    (used as CLS)                                                      *
+*   \f    (used as formfeed / CLS)                                           *
 *   \b    (used as backspace)                                                *
 \****************************************************************************/
 void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct CharSetStruct *CS, color_t ink, color_t paper)
@@ -125,14 +126,14 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
         }
     }
 
-    if (a == '\f') // CLS
+    if (a == '\f') // formfeed / CLS
     {
         for (i = 0; i < (TW->rect.h / CS->Height); i++) { // # of char lines
             SDLTWE_VerticalScrollUpOneLine(TW, CS, paper);
-            SDL_UpdateTexture (TW->texPtr, NULL, TW->framePtr, TW->pitch); // copy Frame to Texture
-            SDL_RenderCopy (renPtr, TW->texPtr, NULL, &TW->rect); // Texture to renderer
-            SDL_RenderPresent (renPtr);
-            SDL_Delay (12); // at least 12 ms to avoid flickering
+            SDL_UpdateTexture(TW->texPtr, NULL, TW->framePtr, TW->pitch); // copy Frame to Texture
+            SDL_RenderCopy(renPtr, TW->texPtr, NULL, &TW->rect); // Texture to renderer
+            SDL_RenderPresent(renPtr);
+            SDL_Delay(12); // at least 12 ms to avoid flickering
         }
         TW->CurrentPrintPosX = 0;
         TW->CurrentPrintPosY = 0;
@@ -153,7 +154,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
         return;
     }
 
-    if (a == '\b') { // Backspace
+    if (a == '\b') { // Backspace 0x08
         if (TW->CurrentPrintPosX > firstEditable*CS->Width) {
             TW->CurrentPrintPosX -= CS->Width;
             a=0; // will be substituted

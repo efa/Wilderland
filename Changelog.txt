@@ -1,3 +1,28 @@
+2.09 - 20220904
+---------------
+- show object/NPC property 4,5,6 variations in console to help hacking
+- save/load file names now support '-' and '_' (US and IT layout)
+- support for backspace also in editing Go to room number
+- Shift+0 for clearing the whole input line passed to The Hobbit
+- macOS version now should save the .wls files without changing attributes
+- added the compass rose on game map
+- " and @ now are readed insensitive to NumLock state
+- added sources to macOS package
+- documented option -FIT to scale window to desktop resolution
+- tested -FIT with anti-aliasing: same not good interpolation results
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+- reduced most flash / disappear gray border & cyan background
+      SDLTWE_DrawTextWindowFrame(&***Win , 4, BORDERGRAY);
+      SDL_RenderPresent(renPtr);
+- README.txt/md without unwanted tag, now use wiki/html tag:
+  # Titles     titles with bold and underline
+  ========     titles with bold and underline
+  * point 1    dot list
+  ```code```   programming code
+  <img src="doc/WL.png" width="500">   embed image
+- 1 pixel imperfection in rectangles visible on snapshot
+  ==> bug of 'SDL_RenderDrawRect(renPtr, &rect);'
+
 2.08 - 20220822
 ---------------
 - Added 'z80emu' a new Z80 emulator from Lin Ke-Fong with a free license

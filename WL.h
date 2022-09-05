@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220822                                                          *
+* V 2.09 - 20220904                                                          *
 *                                                                            *
 *  WL.h is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -30,7 +30,7 @@
 
 #include "SPECTRUM.h"
 
-
+#define WLVER "2.09"
 #define WL_DEBUG 0
 
 // tape related values
@@ -122,41 +122,41 @@
 #define SS_HEIGHT_SPIXELS (SP_HEIGHT*SP_ZOOM)
 
 // Main Window
-#define MAINWINWIDTH  1280
-#define MAINWINHEIGHT 1024
+#define MAINWINWIDTH  1280                                           // 1280
+#define MAINWINHEIGHT 1024                                           // 1024
 #define COLORDEPTH    32
 #define BYTESPERPIXEL (COLORDEPTH/8) // 4
 #define BORDERGRAY    0xFF404040ul // Gray in ARGB888 format with SDL_ALPHA_OPAQUE set
 #define BORDERWIDTH   4
 
-// Log Window (the rigth and left frame overdraws game and object window)
-#define LOGWINPOSX    (2*BORDERWIDTH) // 8
-#define LOGWINPOSY    (2*BORDERWIDTH) // 8
-#define LOGWINWIDTH   (MAINWINWIDTH - OBJWINWIDTH - GAMEWINWIDTH - 10*BORDERWIDTH) // 280
-#define LOGWINHEIGHT  (OBJWINHEIGHT) // 512: GAMEWINHEIGHT + HELPWINHEIGHT + 4*BORDERWIDTH
+// Log Window
+#define LOGWINPOSX    (2*BORDERWIDTH)                                // 8
+#define LOGWINPOSY    (2*BORDERWIDTH)                                // 8
+#define LOGWINWIDTH   (MAINWINWIDTH - OBJWINWIDTH - GAMEWINWIDTH - 10*BORDERWIDTH)  // 280
+#define LOGWINHEIGHT  (OBJWINHEIGHT) // GAMEWINHEIGHT + HELPWINHEIGHT + 4*BORDERWIDTH: 512
 
 // Game Window
-#define GAMEWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH) // 300
-#define GAMEWINPOSY   (2*BORDERWIDTH) // 8
-#define GAMEWINWIDTH  SS_WIDTH_SPIXELS  // 512
-#define GAMEWINHEIGHT SS_HEIGHT_SPIXELS // 384
+#define GAMEWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH)                  // 300
+#define GAMEWINPOSY   (2*BORDERWIDTH)                                // 8
+#define GAMEWINWIDTH  SS_WIDTH_SPIXELS                               // 512
+#define GAMEWINHEIGHT SS_HEIGHT_SPIXELS                              // 384
 
 // Object Window
-#define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH) // 824
-#define OBJWINPOSY    (2*BORDERWIDTH) // 8
-#define OBJWINWIDTH   (56*8) // 448: 56 column, 8 pixel/char
-#define OBJWINHEIGHT  (64*8) // 512: 64 lines, 8 pixel/char
+#define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH)   // 824
+#define OBJWINPOSY    (2*BORDERWIDTH)                                // 8
+#define OBJWINWIDTH   (56*8)                // 56 column, 8 pixel/char: 448
+#define OBJWINHEIGHT  (64*8)                // 64 lines , 8 pixel/char: 512
 
 // Help Window
-#define HELPWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH)   // 300
-#define HELPWINPOSY   (GAMEWINHEIGHT + 6*BORDERWIDTH) // 408
-#define HELPWINWIDTH  (GAMEWINWIDTH) // 512
+#define HELPWINPOSX   (GAMEWINPOSX)                                  // 300
+#define HELPWINPOSY   (GAMEWINHEIGHT + 6*BORDERWIDTH)                // 408
+#define HELPWINWIDTH  (GAMEWINWIDTH)                                 // 512
 #define HELPWINHEIGHT (LOGWINHEIGHT - GAMEWINHEIGHT - 4*BORDERWIDTH) // 112
 
 // Game Map Window
-#define MAPWINPOSX    0
-#define MAPWINPOSY    (LOGWINHEIGHT + 4*BORDERWIDTH) // 528
-#define MAPWINWIDTH   MAINWINWIDTH // 1280
+#define MAPWINPOSX    0                                              // 0
+#define MAPWINPOSY    (LOGWINHEIGHT + 4*BORDERWIDTH)                 // 528
+#define MAPWINWIDTH   MAINWINWIDTH                                   // 1280
 #define MAPWINHEIGHT  (MAINWINHEIGHT - LOGWINHEIGHT - 4*BORDERWIDTH) // 496
 #define INDICATOROFFSET 2
 
@@ -187,15 +187,15 @@
 
 
 // Object Properties Offsets
-#define OCC_OFF          0x00
-#define MO_OFF           0x01
-#define VOLUME_OFF       0x02
-#define MASS_OFF         0x03
-#define A4_OFF           0x04
-#define A5_OFF           0x05
-#define A6_OFF           0x06
+#define P0_OFF_QTY       0x00
+#define P1_OFF_MO        0x01
+#define P2_OFF_VOLUME    0x02
+#define P3_OFF_MASS      0x03
+#define P4_OFF           0x04
+#define P5_OFF_STRENGTH  0x05
+#define P6_OFF           0x06
 #define ATTRIBUTE_OFF    0x07
-#define FIRST_OCCURRENCE 0x10
+#define P10_OFF_ROOM     0x10
 
 // Object Attributes
 #define ATTR_LOCKED      0x01

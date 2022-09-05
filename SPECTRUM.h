@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
 *                                                                            *
-* V 2.08 - 20220822                                                          *
+* V 2.09 - 20220904                                                          *
 *                                                                            *
 *  SPECTRUM.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -117,8 +117,8 @@ typedef Uint32 color_t;
 // Hardware stuff
 //#define NUMBER_OF_IN_READS   1
 #if 0
-typedef enum SHR {
-    SHR_cV = 0,       // keyboard half rows
+typedef enum SHR { // keyboard half rows
+    SHR_cV = 0,
     SHR_AG,
     SHR_QT,
     SHR_15,
@@ -128,15 +128,17 @@ typedef enum SHR {
     SHR_sB
 } SHR;
 #endif
-typedef enum SHRP {
-    SHRP_cZXCV = 0xFE,   // keyboard half row port addresses
-    SHRP_ASDFG = 0xFD,
-    SHRP_QWERT = 0xFB,
-    SHRP_12345 = 0xF7,
-    SHRP_09876 = 0xEF,
-    SHRP_POIUY = 0xDF,
-    SHRP_eLKJH = 0xBF,
-    SHRP_saMNB = 0x7F
+typedef enum SHRP { // keyboard half row port addresses
+    //   43210 : keys bit number
+    //  108421 : keys bit weight hex
+    SHRP_VCXZc = 0xFE,
+    SHRP_GFDSA = 0xFD,
+    SHRP_TREWQ = 0xFB,
+    SHRP_54321 = 0xF7,
+    SHRP_67890 = 0xEF,
+    SHRP_YUIOP = 0xDF,
+    SHRP_HJKLe = 0xBF,
+    SHRP_BNMas = 0x7F
 } SHRP;
 
 // Prototypes

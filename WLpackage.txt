@@ -15,6 +15,7 @@ MakefileM64                   TXT: Makefile to cross-build for Win64 on Linux us
 MakefileM32                   TXT: Makefile to cross-build for Win32 on Linux using GNU toolchain (MXE)
 MakefileO64                   TXT: Makefile to cross-build for macOS64 on Linux using CLang/LLVM (OSXCROSS)
 WLpkg                         TXT: script to generate the WL MinGW/MXE package
+WLrel                         TXT: script to generate the WL release files
 dict_v12.txt                  TXT: list of words
 rooms_v12.txt                 TXT: list of rooms
 SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps
