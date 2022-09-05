@@ -295,7 +295,7 @@ clearing the whole input line.
 =================
 The object database is (beside the room and dictionary database) one of the
 core items of the game. The following information is stored for each object:
-
+```
 * Object Number: the game's internal object reference number (NPCs are >= 60d).
 * Name: the object's full name (a noun and a maximum of two adjectives).
 * 1L (first location): most objects do only appear in one location, which is
@@ -311,8 +311,9 @@ core items of the game. The following information is stored for each object:
 * 04 (property with offset +04): currently unknown
 * St (strength): the NPC/object's strength (eg. used in fighting)
 * 06 (property with offset +06): currently unknown
-
+```
 Attributes, each object has 8 binary attributes associated with it:
+```
 * v: visible
 * A: animal (otherwise it is an object)
 * o: open (otherwise it is closed)
@@ -321,6 +322,7 @@ Attributes, each object has 8 binary attributes associated with it:
 * f: full
 * F: it is a fluid (water, wine)
 * l: locked
+```
 
 
 
