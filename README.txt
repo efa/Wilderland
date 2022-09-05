@@ -311,6 +311,7 @@ core items of the game. The following information is stored for each object:
 * 04 (property with offset +04): currently unknown
 * St (strength): the NPC/object's strength (eg. used in fighting)
 * 06 (property with offset +06): currently unknown
+
 Attributes, each object has 8 binary attributes associated with it:
 * v: visible
 * A: animal (otherwise it is an object)
