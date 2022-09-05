@@ -9,7 +9,7 @@
                             wilderland AT aonDOTat
                                efa AT iol DOT it
 
-<img src="Design/Wilderland2.09_1.png" width="500">
+<img src="Design/Wilderland2.09_1.png" width="640">
 
 
 
@@ -120,6 +120,7 @@ bit is also available. The package includes source files and compiled versions:
 * 'WLmxe32.exe' Win32 binary cross-built with MXE.static [4] link on Linux64
 * 'WLpc.exe'    Win32 binary built with Pelles C/LCC on Win32
 * 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
+
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
 can be installed opening it and dragging to Applications. In case the app won't
 start from the GUI, open terminal @ /Applications/Wilderland.app/Contents/MacOS
@@ -128,19 +129,34 @@ and start 'WLosx'
 The sources was ported to SDLv2.0, added the support for a free Z80 emulator:
 'z80emu' by Lin Ke-Fong [6] now the default, and some improvements, see
 Changelog.txt
+
 To build sources on Linux, install dependencies with:
+
 ```$ sudo apt install build-essential libsdl2-dev libsdl2-image-dev```
+
 then just run ```make```.
+
 To buid @32bit on 64 bit Linux use ```make -f Makefile32```, this require:
+
 ```$ sudo apt install build-essential libsdl2-dev:i386 libsdl2-image-dev:i386```
+
 On Windows you can build a native Win version using MinGW/MSYS2 [3]:
+
 To build for Win64 on Win use: ```make -f MakefileG64```
+
 To build for Win32 on Win use: ```make -f MakefileG32```
+
 Makefiles for cross-compilation from Linux are also provided:
+
 To build for Win64 on Linux use: ```make -f MakefileM64```, require [4]
+
 To build for Win32 on Linux use: ```make -f MakefileM32```, require [4]
+
 To build for macOS64 on Linux use:``` make -f MakefileO64```, require [5]
-On all builds, you can select the CPU emulator to be used with:```
+
+On all builds, you can select the CPU emulator to be used with:
+
+```
 $ make CPUEMUL=ez80emu   OR   $ make    # to use 'z80emu' emulator
 $ make CPUEMUL=eZ80                     # to use 'Z80'    emulator
 ```
@@ -165,7 +181,7 @@ Step-by-Step-Instruction:
 *  (4.4) Unzip the downloaded file, put 'HOBBIT12.TAP', 'HOBBIT.TAP',
          'The Hobbit v1.2.tzx' or 'The Hobbit v1.0.tzx' file into the
          Wilderland directory.
-   Optionally you can generate the binary file stripping the tape headers:
+Optionally you can generate the binary file stripping the tape headers:
 *  (4.5) Unzip the 'HOBBIT12.TAP', 'HOBBIT.TAP', 'The Hobbit v1.2.tzx' or
          'The Hobbit v1.0.tzx' file into the 'TapCon' directory.
 *  (4.6) Run 'TapCon' or 'TapCon.exe' to extract the game binaries.
@@ -199,7 +215,9 @@ Run WL from the command line with the following command:
 (6) - Controlling 'Wilderland'
 ==============================
 The 'Wilderland' screen is divided into a number of different windows
-<img src="Design/Wilderland2.09_2.png" width="500">
+
+<img src="Design/Wilderland2.09_2.png" width="640">
+
 with the following layout:
 
                     +--------+----------------+-----------+
