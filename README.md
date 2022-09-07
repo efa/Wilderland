@@ -122,9 +122,7 @@ bit is also available. The package includes source files and compiled versions:
 * 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
 
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
-can be installed opening it and dragging to Applications. In case the app won't
-start from the GUI, open terminal @ /Applications/Wilderland.app/Contents/MacOS
-and start 'WLosx'
+can be installed opening it and dragging to Applications.
 
 The sources was ported to SDLv2.0, added the support for a free Z80 emulator:
 'z80emu' by Lin Ke-Fong [6] now the default, and some improvements, see
@@ -181,6 +179,7 @@ Step-by-Step-Instruction:
 *  (4.4) Unzip the downloaded file, put 'HOBBIT12.TAP', 'HOBBIT.TAP',
          'The Hobbit v1.2.tzx' or 'The Hobbit v1.0.tzx' file into the
          Wilderland directory.
+
 Optionally you can generate the binary file stripping the tape headers:
 *  (4.5) Unzip the 'HOBBIT12.TAP', 'HOBBIT.TAP', 'The Hobbit v1.2.tzx' or
          'The Hobbit v1.0.tzx' file into the 'TapCon' directory.
@@ -344,4 +343,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.09 - 20220904
+README.txt Version 2.09 - 20220907

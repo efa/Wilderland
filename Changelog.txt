@@ -1,10 +1,11 @@
-2.09 - 20220904
+2.09 - 20220907
 ---------------
 - show object/NPC property 4,5,6 variations in console to help hacking
 - save/load file names now support '-' and '_' (US and IT layout)
 - support for backspace also in editing Go to room number
 - Shift+0 for clearing the whole input line passed to The Hobbit
 - macOS version now should save the .wls files without changing attributes
+- macOS version now should start from the DockBar too
 - added the compass rose on game map
 - " and @ now are readed insensitive to NumLock state
 - added sources to macOS package

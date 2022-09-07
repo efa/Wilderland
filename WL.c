@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.09 - 20220904                                                          *
+* V 2.09 - 20220907                                                          *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -35,10 +35,13 @@
 
 
 /*** INCLUDES ***************************************************************/
+#define _DEFAULT_SOURCE // realpath()
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h> // PATH_MAX,NAME_MAX
 #include <string.h>
-#include <SDL.h> // SDL2
+#include <unistd.h> // getcwd(),chdir()
+#include <SDL.h>    // SDL2
 #include <SDL_image.h>
 
 #include "WL.h"
@@ -48,6 +51,10 @@
 
 /*** GLOBAL VARIABLES *******************************************************/
 #include "GLOBAL_VARS.h"
+
+#ifdef _WIN32
+   #define realpath(N,R) _fullpath((R),(N),PATH_MAX)
+#endif
 
 #define MAXNAMELEN 100
 
@@ -1222,10 +1229,10 @@ int InitSpectrum(void)
         ZXmem[i] = 0xC9;  /* = RET in ROM, just in case... */
 
     // we need the character set for the lower window
-    fp = fopen(SDLTWE_CHARSETFILEPATH, "rb");
+    fp = fopen(SDLTWE_CHARSETFILENAME, "rb");
     if (!fp)
     {
-        fprintf(stderr, "ERROR in WL.c: can't open character set file '%s'\n", SDLTWE_CHARSETFILEPATH);
+        fprintf(stderr, "ERROR in WL.c: can't open character set file '%s'\n", SDLTWE_CHARSETFILENAME);
         return (1);
     }
     fseek(fp, 0, SEEK_END);
@@ -1233,7 +1240,7 @@ int InitSpectrum(void)
     fseek(fp, 0, SEEK_SET);
     if (WL_DEBUG)
     {
-        printf("WL: Reading character set with %li byte from %s ... ", FileLength, SDLTWE_CHARSETFILEPATH);
+        printf("WL: Reading character set with %li byte from %s ... ", FileLength, SDLTWE_CHARSETFILENAME);
     }
     BytesRead = fread(ZXmem + SL_CHARSET - 1, 1, FileLength, fp);
     fclose(fp);
@@ -1417,7 +1424,7 @@ int InitGraphicsSystem(Uint32 WinMode)
         fprintf(stderr, "WL: ERROR in allocationg memory for character set.\n");
         return 1;
     }
-    if (!SDLTWE_ReadCharSet(SDLTWE_CHARSETFILEPATH, CharSet.Bitmap))
+    if (!SDLTWE_ReadCharSet(SDLTWE_CHARSETFILENAME, CharSet.Bitmap))
     {
         fprintf(stderr, "WL: ERROR while reading character set.\n");
         return 1;
@@ -1588,10 +1595,10 @@ SDL_Log("\n");
 
     // Load Game Map
     IMG_Init(IMG_INIT_PNG);
-    temp = IMG_Load("GameMap.png");
+    temp = IMG_Load(GAMEMAPFILENAME);
     if (temp == NULL)
     {
-        fprintf(stderr, "WL: ERROR in 'InitGraphicsSystem'. Unable to load GameMap.png\n");
+        fprintf(stderr, "WL: ERROR in 'InitGraphicsSystem'. Unable to load '"GAMEMAPFILENAME"'\n");
         return (-1);
     }
 #if 0
@@ -1642,6 +1649,31 @@ void helpLine() {
     printf("Syntax:\n");
     printf(" WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]\n");
     printf(" WL [-HELP]\n");
+}
+
+
+/****************************************************************************\
+* change current working directory to WL binary path                         *
+*                                                                            *
+\****************************************************************************/
+void chDirBin(char* argList) {
+    char* cwdPath;
+    char absPath[PATH_MAX];
+    cwdPath=malloc(PATH_MAX);
+    cwdPath=getcwd(cwdPath, PATH_MAX);
+    //printf("cwdPath='%s'\n", cwdPath);
+    realpath(argList, absPath);
+    //printf("realpath()='%s'\n", absPath);
+    int len=strlen(absPath);
+    for (int l=len; l>0; l--) {
+        if (absPath[l]=='/' || absPath[l]=='\\') {
+            absPath[l]='\0';
+            break;
+        }
+    }
+    //printf("absPath()='%s'\n", absPath);
+    chdir(absPath);
+    return;
 }
 
 
@@ -1705,6 +1737,8 @@ int main(int argc, char *argv[])
     }
 
     if (HV == -1) HV = V12; // default to V12
+
+    chDirBin(argv[0]); // to let find assets files
 
     if (InitSpectrum())
     {
@@ -1790,15 +1824,15 @@ int main(int argc, char *argv[])
 
     // Game title screen
     if (HV == V12) {
-        f = fopen("HOBBIT12.SCR", "rb");
+        f = fopen(TITLESCREEN12FILENAME, "rb");
         if (!f) {
-            fprintf(stderr, "WL: ERROR - Can't open title screen file 'HOBBIT12.SCR'\n");
+            fprintf(stderr, "WL: ERROR - Can't open title screen file '"TITLESCREEN12FILENAME"'\n");
             exit(-1);
         }
     } else {
-        f = fopen("HOBBIT.SCR", "rb");
+        f = fopen(TITLESCREEN10FILENAME, "rb");
         if (!f) {
-            fprintf(stderr, "WL: ERROR - Can't open title screen file 'HOBBIT.SCR'\n");
+            fprintf(stderr, "WL: ERROR - Can't open title screen file '"TITLESCREEN10FILENAME"'\n");
             exit(-1);
         }
     }
