@@ -41,35 +41,35 @@ enum {
 
 #ifdef Z80_BIG_ENDIAN
 
-#       define Z80_B       0
-#       define Z80_C       1
-#       define Z80_D       2
-#       define Z80_E       3
-#       define Z80_H       4
-#       define Z80_L       5
-#       define Z80_A       6
-#       define Z80_F       7
+#   define Z80_B     0
+#   define Z80_C     1
+#   define Z80_D     2
+#   define Z80_E     3
+#   define Z80_H     4
+#   define Z80_L     5
+#   define Z80_A     6
+#   define Z80_F     7
 
-#       define Z80_IXH     8
-#       define Z80_IXL     9
-#       define Z80_IYH     10
-#       define Z80_IYL     11
+#   define Z80_IXH   8
+#   define Z80_IXL   9
+#   define Z80_IYH   10
+#   define Z80_IYL   11
 
 #else
 
-#       define Z80_B       1
-#       define Z80_C       0
-#       define Z80_D       3
-#       define Z80_E       2
-#       define Z80_H       5
-#       define Z80_L       4
-#       define Z80_A       7
-#       define Z80_F       6
+#   define Z80_B     1
+#   define Z80_C     0
+#   define Z80_D     3
+#   define Z80_E     2
+#   define Z80_H     5
+#   define Z80_L     4
+#   define Z80_A     7
+#   define Z80_F     6
 
-#       define Z80_IXH     9
-#       define Z80_IXL     8
-#       define Z80_IYH     11
-#       define Z80_IYL     10
+#   define Z80_IXH   9
+#   define Z80_IXL   8
+#   define Z80_IYH   11
+#   define Z80_IYL   10
 
 #endif
 
@@ -89,7 +89,7 @@ enum {
 #define Z80_Y_FLAG_SHIFT   5
 #define Z80_H_FLAG_SHIFT   4
 #define Z80_X_FLAG_SHIFT   3
-#define Z80_PV_FLAG_SHIFT       2
+#define Z80_PV_FLAG_SHIFT  2
 #define Z80_N_FLAG_SHIFT   1
 #define Z80_C_FLAG_SHIFT   0
 
@@ -124,18 +124,18 @@ enum {
 
 typedef struct Z80_STATE {
 
-   int   status;
+   int status;
 
    union {
 
-      unsigned char   byte[14];
-      unsigned short  word[7];
+      unsigned char  byte[14];
+      unsigned short word[7];
 
    } registers;
 
-   unsigned short  alternates[4];
+   unsigned short alternates[4];
 
-   int   i, r, pc, iff1, iff2, im;
+   int i, r, pc, iff1, iff2, im;
 
    /* Register decoding tables. */
 
@@ -147,11 +147,11 @@ typedef struct Z80_STATE {
 
 /* Initialize processor's register pointers */
 
-extern void     Z80ResetTable (Z80_STATE *state);
+extern void Z80ResetTable (Z80_STATE *state);
 
 /* Initialize processor's state to power-on default. */
 
-extern void     Z80Reset (Z80_STATE *state);
+extern void Z80Reset (Z80_STATE *state);
 
 /* Trigger an interrupt according to the current interrupt mode and return the
  * number of cycles elapsed to accept it. If maskable interrupts are disabled,
@@ -159,15 +159,15 @@ extern void     Z80Reset (Z80_STATE *state);
  * byte opcode.
  */
 
-extern int      Z80Interrupt (Z80_STATE *state,
-    int data_on_bus,
-    void *context);
+extern int Z80Interrupt (Z80_STATE *state,
+   int data_on_bus,
+   void *context);
 
 /* Trigger a non maskable interrupt, then return the number of cycles elapsed
  * to accept it.
  */
 
-extern int      Z80NonMaskableInterrupt (Z80_STATE *state, void *context);
+extern int Z80NonMaskableInterrupt (Z80_STATE *state, void *context);
 
 /* Execute instructions as long as the number of elapsed cycles is smaller than
  * number_cycles, and return the number of cycles emulated. The emulator can be
@@ -175,9 +175,9 @@ extern int      Z80NonMaskableInterrupt (Z80_STATE *state, void *context);
  * (see z80user.h) also control the emulation.
  */
 
-extern int      Z80Emulate (Z80_STATE *state,
-    int number_cycles,
-    void *context);
+extern int Z80Emulate (Z80_STATE *state,
+   int number_cycles,
+   void *context);
 
 #ifdef __cplusplus
 }

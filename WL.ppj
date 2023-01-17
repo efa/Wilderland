@@ -65,10 +65,10 @@ output\WL.obj: \
 	C:\Programme\PellesC\Include\SDL\SDL_timer.h \
 	C:\Programme\PellesC\Include\SDL\SDL_version.h \
 	C:\Programme\PellesC\Include\SDL\SDL_video.h \
-	GLOBAL_VARS.h \
+	GlobalVars.h \
 	MapCoordinates.h \
 	SDLTWE.h \
-	SPECTRUM.h \
+	Spectrum.h \
 	WL.h \
 	Z80\Z80.h
 	$(CC) $(CCFLAGS) "$!" -Fo"$@"
@@ -114,8 +114,8 @@ output\Z80.obj: \
 	C:\Programme\PellesC\Include\SDL\SDL_timer.h \
 	C:\Programme\PellesC\Include\SDL\SDL_version.h \
 	C:\Programme\PellesC\Include\SDL\SDL_video.h \
-	GLOBAL_VARS.h \
-	SPECTRUM.h \
+	GlobalVars.h \
+	Spectrum.h \
 	Z80\Codes.h \
 	Z80\CodesCB.h \
 	Z80\CodesED.h \
@@ -157,9 +157,9 @@ output\Spectrum.obj: \
 	C:\Programme\PellesC\Include\SDL\SDL_timer.h \
 	C:\Programme\PellesC\Include\SDL\SDL_version.h \
 	C:\Programme\PellesC\Include\SDL\SDL_video.h \
-	GLOBAL_VARS.h \
+	GlobalVars.h \
 	SDLTWE.h \
-	SPECTRUM.h \
+	Spectrum.h \
 	WL.h \
 	Z80\Z80.h
 	$(CC) $(CCFLAGS) "$!" -Fo"$@"

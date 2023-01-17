@@ -70,20 +70,19 @@ static const int RST_TABLE[8] = {
 static const int OVERFLOW_TABLE[4] = {
 
    0,
-          Z80_V_FLAG,
-          Z80_V_FLAG,
-          0,
+   Z80_V_FLAG,
+   Z80_V_FLAG,
+   0,
 
 };
 
-static int   emulate (Z80_STATE * state,
-         int opcode,
-         int elapsed_cycles, int number_cycles,
-         void *context);
+static int emulate (Z80_STATE * state,
+   int opcode,
+   int elapsed_cycles, int number_cycles,
+   void *context);
 
-void Z80ResetTable (Z80_STATE *state)
-{
-   int     i;
+void Z80ResetTable (Z80_STATE *state) {
+   int i;
 
    /* Build register decoding tables for both 3-bit encoded 8-bit
     * registers and 2-bit encoded 16-bit registers. When an opcode is
@@ -144,11 +143,10 @@ void Z80ResetTable (Z80_STATE *state)
    state->fd_register_table[14] = &state->registers.word[Z80_IY];
 }
 
-void Z80Reset (Z80_STATE *state)
-{
+void Z80Reset (Z80_STATE *state) {
    state->status = 0;
    AF = 0xffff;
-   // miss: BC, DE, HL, AF', BC', DE', HL', IX, IY, R
+   /* miss: BC, DE, HL, AF', BC', DE', HL', IX, IY, R */
    SP = 0xffff;
    state->i = state->pc = state->iff1 = state->iff2 = 0;
    state->im = Z80_INTERRUPT_MODE_0;
@@ -156,8 +154,7 @@ void Z80Reset (Z80_STATE *state)
    Z80ResetTable (state);
 }
 
-int Z80Interrupt (Z80_STATE *state, int data_on_bus, void *context)
-{
+int Z80Interrupt (Z80_STATE *state, int data_on_bus, void *context) {
    state->status = 0;
    if (state->iff1) {
 
@@ -219,9 +216,8 @@ int Z80Interrupt (Z80_STATE *state, int data_on_bus, void *context)
       return 0;
 }
 
-int Z80NonMaskableInterrupt (Z80_STATE *state, void *context)
-{
-   int   elapsed_cycles;
+int Z80NonMaskableInterrupt (Z80_STATE *state, void *context) {
+   int elapsed_cycles;
 
    state->status = 0;
 
@@ -237,9 +233,8 @@ int Z80NonMaskableInterrupt (Z80_STATE *state, void *context)
    return elapsed_cycles + 11;
 }
 
-int Z80Emulate (Z80_STATE *state, int number_cycles, void *context)
-{
-   int     elapsed_cycles, pc, opcode;
+int Z80Emulate (Z80_STATE *state, int number_cycles, void *context) {
+   int elapsed_cycles, pc, opcode;
 
    state->status = 0;
    elapsed_cycles = 0;
@@ -257,8 +252,7 @@ int Z80Emulate (Z80_STATE *state, int number_cycles, void *context)
 static int emulate (Z80_STATE * state,
    int opcode,
    int elapsed_cycles, int number_cycles,
-   void *context)
-{
+   void *context) {
    int   pc, r;
 
    pc = state->pc;
@@ -267,8 +261,8 @@ static int emulate (Z80_STATE * state,
 
    for ( ; ; ) {
 
-      void    **registers;
-      int     instruction;
+      void **registers;
+      int  instruction;
 
       Z80_FETCH_BYTE(pc, opcode);
       pc++;
@@ -311,7 +305,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                READ_D(d);
                d += HL_IX_IY;
@@ -332,7 +326,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                READ_D(d);
                d += HL_IX_IY;
@@ -347,7 +341,7 @@ emulate_next_instruction:
 
          case LD_INDIRECT_HL_N: {
 
-            int     n;
+            int n;
 
             if (registers == state->register_table) {
 
@@ -356,7 +350,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                READ_D(d);
                d += HL_IX_IY;
@@ -387,7 +381,7 @@ emulate_next_instruction:
 
          case LD_A_INDIRECT_NN: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             READ_BYTE(nn, A);
@@ -411,7 +405,7 @@ emulate_next_instruction:
 
          case LD_INDIRECT_NN_A: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             WRITE_BYTE(nn, A);
@@ -421,7 +415,7 @@ emulate_next_instruction:
 
          case LD_A_I_LD_A_R: {
 
-            int     a, f;
+            int a, f;
 
             a = opcode == OPCODE_LD_A_I
                ? state->i
@@ -475,7 +469,7 @@ emulate_next_instruction:
 
          case LD_HL_INDIRECT_NN: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             READ_WORD(nn, HL_IX_IY);
@@ -485,7 +479,7 @@ emulate_next_instruction:
 
          case LD_RR_INDIRECT_NN: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             READ_WORD(nn, RR(P(opcode)));
@@ -495,7 +489,7 @@ emulate_next_instruction:
 
          case LD_INDIRECT_NN_HL: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             WRITE_WORD(nn, HL_IX_IY);
@@ -505,7 +499,7 @@ emulate_next_instruction:
 
          case LD_INDIRECT_NN_RR: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             WRITE_WORD(nn, RR(P(opcode)));
@@ -563,7 +557,7 @@ emulate_next_instruction:
 
          case EX_INDIRECT_SP_HL: {
 
-            int     t;
+            int t;
 
             READ_WORD(SP, t);
             WRITE_WORD(SP, HL_IX_IY);
@@ -576,7 +570,7 @@ emulate_next_instruction:
 
          case LDI_LDD: {
 
-            int     n, f, d;
+            int n, f, d;
 
             READ_BYTE(HL, n);
             WRITE_BYTE(DE, n);
@@ -607,11 +601,11 @@ emulate_next_instruction:
 
          case LDIR_LDDR: {
 
-            int     d, f, bc, de, hl, n;
+            int d, f, bc, de, hl, n;
 
 #ifdef Z80_HANDLE_SELF_MODIFYING_CODE
 
-            int     p, q;
+            int p, q;
 
             p = (pc - 2) & 0xffff;
             q = (pc - 1) & 0xffff;
@@ -696,7 +690,7 @@ emulate_next_instruction:
 
          case CPI_CPD: {
 
-            int     a, n, z, f;
+            int a, n, z, f;
 
             a = A;
             READ_BYTE(HL, n);
@@ -727,7 +721,7 @@ emulate_next_instruction:
 
          case CPIR_CPDR: {
 
-            int     d, a, bc, hl, n, z, f;
+            int d, a, bc, hl, n, z, f;
 
             d = opcode == OPCODE_CPIR ? +1 : -1;
 
@@ -802,7 +796,7 @@ emulate_next_instruction:
 
          case ADD_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             ADD(n);
@@ -812,7 +806,7 @@ emulate_next_instruction:
 
          case ADD_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             ADD(x);
@@ -829,7 +823,7 @@ emulate_next_instruction:
 
          case ADC_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             ADC(n);
@@ -839,7 +833,7 @@ emulate_next_instruction:
 
          case ADC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             ADC(x);
@@ -856,7 +850,7 @@ emulate_next_instruction:
 
          case SUB_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             SUB(n);
@@ -866,7 +860,7 @@ emulate_next_instruction:
 
          case SUB_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             SUB(x);
@@ -883,7 +877,7 @@ emulate_next_instruction:
 
          case SBC_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             SBC(n);
@@ -893,7 +887,7 @@ emulate_next_instruction:
 
          case SBC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             SBC(x);
@@ -910,7 +904,7 @@ emulate_next_instruction:
 
          case AND_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             AND(n);
@@ -920,7 +914,7 @@ emulate_next_instruction:
 
          case AND_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             AND(x);
@@ -937,7 +931,7 @@ emulate_next_instruction:
 
          case OR_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             OR(n);
@@ -947,7 +941,7 @@ emulate_next_instruction:
 
          case OR_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             OR(x);
@@ -964,7 +958,7 @@ emulate_next_instruction:
 
          case XOR_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             XOR(n);
@@ -974,7 +968,7 @@ emulate_next_instruction:
 
          case XOR_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             XOR(x);
@@ -991,7 +985,7 @@ emulate_next_instruction:
 
          case CP_N: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             CP(n);
@@ -1001,7 +995,7 @@ emulate_next_instruction:
 
          case CP_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             READ_INDIRECT_HL(x);
             CP(x);
@@ -1018,7 +1012,7 @@ emulate_next_instruction:
 
          case INC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1030,7 +1024,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                READ_D(d);
                d += HL_IX_IY;
@@ -1054,7 +1048,7 @@ emulate_next_instruction:
 
          case DEC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1066,7 +1060,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                READ_D(d);
                d += HL_IX_IY;
@@ -1085,7 +1079,7 @@ emulate_next_instruction:
 
          case DAA: {
 
-            int     a, c, d;
+            int a, c, d;
 
             /* The following algorithm is from
              * comp.sys.sinclair's FAQ.
@@ -1134,7 +1128,7 @@ emulate_next_instruction:
 
          case NEG: {
 
-            int     a, f, z, c;
+            int a, f, z, c;
 
             a = A;
             z = -a;
@@ -1155,7 +1149,7 @@ emulate_next_instruction:
 
          case CCF: {
 
-            int     c;
+            int c;
 
             c = F & Z80_C_FLAG;
             F = (F & SZPV_FLAGS)
@@ -1294,7 +1288,7 @@ emulate_next_instruction:
 
          case ADD_HL_RR: {
 
-            int     x, y, z, f, c;
+            int x, y, z, f, c;
 
             x = HL_IX_IY;
             y = RR(P(opcode));
@@ -1323,7 +1317,7 @@ emulate_next_instruction:
 
          case ADC_HL_RR: {
 
-            int     x, y, z, f, c;
+            int x, y, z, f, c;
 
             x = HL;
             y = RR(P(opcode));
@@ -1354,7 +1348,7 @@ emulate_next_instruction:
 
          case SBC_HL_RR: {
 
-            int     x, y, z, f, c;
+            int x, y, z, f, c;
 
             x = HL;
             y = RR(P(opcode));
@@ -1387,7 +1381,7 @@ emulate_next_instruction:
 
          case INC_RR: {
 
-            int     x;
+            int x;
 
             x = RR(P(opcode));
             x++;
@@ -1401,7 +1395,7 @@ emulate_next_instruction:
 
          case DEC_RR: {
 
-            int     x;
+            int x;
 
             x = RR(P(opcode));
             x--;
@@ -1426,7 +1420,7 @@ emulate_next_instruction:
 
          case RLA: {
 
-            int     a, f;
+            int a, f;
 
             a = A << 1;
             f = (F & SZPV_FLAGS)
@@ -1447,7 +1441,7 @@ emulate_next_instruction:
 
          case RRCA: {
 
-            int     c;
+            int c;
 
             c = A & 0x01;
             A = (A >> 1) | (A << 7);
@@ -1467,7 +1461,7 @@ emulate_next_instruction:
 
          case RRA: {
 
-            int     c;
+            int c;
 
             c = A & 0x01;
             A = (A >> 1) | ((F & Z80_C_FLAG) << 7);
@@ -1494,7 +1488,7 @@ emulate_next_instruction:
 
          case RLC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1506,7 +1500,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1538,7 +1532,7 @@ emulate_next_instruction:
 
          case RL_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1550,7 +1544,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1581,7 +1575,7 @@ emulate_next_instruction:
 
          case RRC_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1593,7 +1587,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1624,7 +1618,7 @@ emulate_next_instruction:
 
          case RR_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1636,7 +1630,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1667,7 +1661,7 @@ emulate_next_instruction:
 
          case SLA_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1679,7 +1673,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1710,7 +1704,7 @@ emulate_next_instruction:
 
          case SLL_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1722,7 +1716,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1753,7 +1747,7 @@ emulate_next_instruction:
 
          case SRA_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1765,7 +1759,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1796,7 +1790,7 @@ emulate_next_instruction:
 
          case SRL_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1808,7 +1802,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1832,7 +1826,7 @@ emulate_next_instruction:
 
          case RLD_RRD: {
 
-            int     x, y;
+            int x, y;
 
             READ_BYTE(HL, x);
             y = (A & 0xf0) << 8;
@@ -1857,7 +1851,7 @@ emulate_next_instruction:
 
          case BIT_B_R: {
 
-            int     x;
+            int x;
 
             x = R(Z(opcode)) & (1 << Y(opcode));
             F = (x ? 0 : Z80_Z_FLAG | Z80_P_FLAG)
@@ -1878,7 +1872,7 @@ emulate_next_instruction:
 
          case BIT_B_INDIRECT_HL: {
 
-            int     d, x;
+            int d, x;
 
             if (registers == state->register_table) {
 
@@ -1924,7 +1918,7 @@ emulate_next_instruction:
 
          case SET_B_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1936,7 +1930,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -1967,7 +1961,7 @@ emulate_next_instruction:
 
          case RES_B_INDIRECT_HL: {
 
-            int     x;
+            int x;
 
             if (registers == state->register_table) {
 
@@ -1979,7 +1973,7 @@ emulate_next_instruction:
 
             } else {
 
-               int     d;
+               int d;
 
                Z80_FETCH_BYTE(pc, d);
                d = ((signed char) d) + HL_IX_IY;
@@ -2005,7 +1999,7 @@ emulate_next_instruction:
 
          case JP_NN: {
 
-            int     nn;
+            int nn;
 
             Z80_FETCH_WORD(pc, nn);
             pc = nn;
@@ -2019,7 +2013,7 @@ emulate_next_instruction:
 
          case JP_CC_NN: {
 
-            int     nn;
+            int nn;
 
             if (CC(Y(opcode))) {
 
@@ -2047,7 +2041,7 @@ emulate_next_instruction:
 
          case JR_E: {
 
-            int     e;
+            int e;
 
             Z80_FETCH_BYTE(pc, e);
             pc += ((signed char) e) + 1;
@@ -2061,7 +2055,7 @@ emulate_next_instruction:
 
          case JR_DD_E: {
 
-            int     e;
+            int e;
 
             if (DD(Q(opcode))) {
 
@@ -2098,7 +2092,7 @@ emulate_next_instruction:
 
          case DJNZ_E: {
 
-            int     e;
+            int e;
 
             if (--B) {
 
@@ -2129,7 +2123,7 @@ emulate_next_instruction:
 
          case CALL_NN: {
 
-            int     nn;
+            int nn;
 
             READ_NN(nn);
             PUSH(pc);
@@ -2144,7 +2138,7 @@ emulate_next_instruction:
 
          case CALL_CC_NN: {
 
-            int     nn;
+            int nn;
 
             if (CC(Y(opcode))) {
 
@@ -2274,7 +2268,7 @@ emulate_next_instruction:
 
          case INI_IND: {
 
-            int     x=0, f;
+            int x=0, f;
 
             Z80_INPUT_BYTE(B, C, x);
             WRITE_BYTE(HL, x);
@@ -2305,11 +2299,11 @@ emulate_next_instruction:
 
          case INIR_INDR: {
 
-            int     d, b, hl, x=0, f;
+            int d, b, hl, x=0, f;
 
 #ifdef Z80_HANDLE_SELF_MODIFYING_CODE
 
-            int     p, q;
+            int p, q;
 
             p = (pc - 2) & 0xffff;
             q = (pc - 1) & 0xffff;
@@ -2387,7 +2381,7 @@ emulate_next_instruction:
 
          case OUT_N_A: {
 
-            int     n;
+            int n;
 
             READ_N(n);
             Z80_OUTPUT_BYTE(A, n, A);
@@ -2400,7 +2394,7 @@ emulate_next_instruction:
 
          case OUT_C_R: {
 
-            int     x;
+            int x;
 
             x = Y(opcode) != INDIRECT_HL
                ? R(Y(opcode))
@@ -2415,7 +2409,7 @@ emulate_next_instruction:
 
          case OUTI_OUTD: {
 
-            int     x, f;
+            int x, f;
 
             READ_BYTE(HL, x);
             Z80_OUTPUT_BYTE(B, C, x);
@@ -2436,7 +2430,7 @@ emulate_next_instruction:
 
          case OTIR_OTDR: {
 
-            int     d, b, hl, x, f;
+            int d, b, hl, x, f;
 
             d = opcode == OPCODE_OTIR ? +1 : -1;
 

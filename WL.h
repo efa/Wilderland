@@ -28,7 +28,7 @@
 #ifndef WL_H
 #define WL_H
 
-#include "SPECTRUM.h"
+#include "Spectrum.h"
 
 #define WLVER "2.09"
 #define WL_DEBUG 0
@@ -210,10 +210,10 @@
 #define ATTR_VISIBLE     0x80
 
 /*struct GameKeyboardInputStruct {
-    int B;
-    int E;
-    char buffer[100];
-    int length;
+   int B;
+   int E;
+   char buffer[100];
+   int length;
 };*/
 
 #endif /* WL_H */

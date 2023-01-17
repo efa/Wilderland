@@ -51,61 +51,53 @@
 
 /* Macros to read constants, displacements, or addresses from code. */
 
-#define READ_N(n)                                                       \
-{                                                                       \
+#define READ_N(n) {                                                     \
         Z80_FETCH_BYTE(pc, (n));                                        \
         pc++;                                                           \
         elapsed_cycles += 3;                                            \
 }
 
-#define READ_NN(nn)                                                     \
-{                                                                       \
+#define READ_NN(nn) {                                                   \
         Z80_FETCH_WORD(pc, (nn));                                       \
         pc += 2;                                                        \
         elapsed_cycles += 6;                                            \
 }
 
-#define READ_D(d)                                                       \
-{                                                                       \
+#define READ_D(d) {                                                     \
         Z80_FETCH_BYTE(pc, (d));                                        \
-        (d) = (signed char) (d);					\
+        (d) = (signed char) (d);                                        \
         pc++;                                                           \
         elapsed_cycles += 3;                                            \
 }
 
 /* Macros to read and write data. */
 
-#define READ_BYTE(address, x)                                           \
-{                                                                       \
+#define READ_BYTE(address, x) {                                         \
         Z80_READ_BYTE((address), (x));                                  \
         elapsed_cycles += 3;                                            \
 }
-                                                        
-#define WRITE_BYTE(address, x)                                          \
-{                                                                       \
+
+#define WRITE_BYTE(address, x) {                                        \
         Z80_WRITE_BYTE((address), (x));                                 \
         elapsed_cycles += 3;                                            \
 }
-                                                        
-#define READ_WORD(address, x)                                           \
-{                                                                       \
+
+#define READ_WORD(address, x) {                                         \
         Z80_READ_WORD((address), (x));                                  \
         elapsed_cycles += 6;                                            \
 }
 
-#define WRITE_WORD(address, x)                                          \
-{                                                                       \
+#define WRITE_WORD(address, x) {                                        \
         Z80_WRITE_WORD((address), (x));                                 \
         elapsed_cycles += 6;                                            \
 }
 
-/* Indirect (HL) and indexed (IX + d) or (IY + d) memory operands read and 
+/* Indirect (HL) and indexed (IX + d) or (IY + d) memory operands read and
  * write macros.
- */ 
-                                                
-#define READ_INDIRECT_HL(x)                                             \
-{                                                                       \
-        if (registers == state->register_table) {			\
+ */
+
+#define READ_INDIRECT_HL(x) {                                           \
+        if (registers == state->register_table) {                       \
                                                                         \
                 READ_BYTE(HL, (x));                                     \
                                                                         \
@@ -122,9 +114,8 @@
         }                                                               \
 }
 
-#define WRITE_INDIRECT_HL(x)                                            \
-{                                                                       \
-        if (registers == state->register_table) {			\
+#define WRITE_INDIRECT_HL(x) {                                          \
+        if (registers == state->register_table) {                       \
                                                                         \
                 WRITE_BYTE(HL, (x));                                    \
                                                                         \
@@ -143,22 +134,19 @@
 
 /* Stack operation macros. */
 
-#define PUSH(x)                                                         \
-{                                                                       \
+#define PUSH(x) {                                                       \
         SP -= 2;                                                        \
         WRITE_WORD(SP, (x));                                            \
 }
 
-#define POP(x)                                                          \
-{                                                                       \
+#define POP(x) {                                                        \
         READ_WORD(SP, (x));                                             \
         SP += 2;                                                        \
 }
 
 /* Exchange macro. */
 
-#define EXCHANGE(a, b)                                                  \
-{                                                                       \
+#define EXCHANGE(a, b) {                                                \
         int     t;                                                      \
                                                                         \
         t = (a);                                                        \
@@ -168,8 +156,7 @@
 
 /* 8-bit arithmetic and logic operations. */
 
-#define ADD(x)                                                          \
-{                                                                       \
+#define ADD(x) {                                                        \
         int     a, z, c, f;                                             \
                                                                         \
         a = A;                                                          \
@@ -185,8 +172,7 @@
         F = f;                                                          \
 }
 
-#define ADC(x)                                                          \
-{                                                                       \
+#define ADC(x) {                                                        \
         int     a, z, c, f;                                             \
                                                                         \
         a = A;                                                          \
@@ -200,10 +186,9 @@
                                                                         \
         A = z;                                                          \
         F = f;                                                          \
-}               
+}
 
-#define SUB(x)                                                          \
-{                                                                       \
+#define SUB(x) {                                                        \
         int     a, z, c, f;                                             \
                                                                         \
         a = A;                                                          \
@@ -220,8 +205,7 @@
         F = f;                                                          \
 }
 
-#define SBC(x)                                                          \
-{                                                                       \
+#define SBC(x) {                                                        \
         int     a, z, c, f;                                             \
                                                                         \
         a = A;                                                          \
@@ -238,23 +222,19 @@
         F = f;                                                          \
 }
 
-#define AND(x)                                                          \
-{                                                                       \
+#define AND(x) {                                                        \
         F = SZYXP_FLAGS_TABLE[A &= (x)] | Z80_H_FLAG;                   \
-}       
+}
 
-#define OR(x)                                                           \
-{                                                                       \
+#define OR(x) {                                                         \
         F = SZYXP_FLAGS_TABLE[A |= (x)];                                \
 }
 
-#define XOR(x)                                                          \
-{                                                                       \
+#define XOR(x) {                                                        \
         F = SZYXP_FLAGS_TABLE[A ^= (x)];                                \
 }
-         
-#define CP(x)                                                           \
-{                                                                       \
+
+#define CP(x) {                                                         \
         int     a, z, c, f;                                             \
                                                                         \
         a = A;                                                          \
@@ -271,8 +251,7 @@
         F = f;                                                          \
 }
 
-#define INC(x)                                                          \
-{                                                                       \
+#define INC(x) {                                                        \
         int     z, c, f;                                                \
                                                                         \
         z = (x) + 1;                                                    \
@@ -287,8 +266,7 @@
         F = f;                                                          \
 }
 
-#define DEC(x)                                                          \
-{                                                                       \
+#define DEC(x) {                                                        \
         int     z, c, f;                                                \
                                                                         \
         z = (x) - 1;                                                    \
@@ -305,8 +283,7 @@
 
 /* 0xcb prefixed logical operations. */
 
-#define RLC(x)                                                          \
-{                                                                       \
+#define RLC(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) >> 7;                                                   \
@@ -314,8 +291,7 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define RL(x)                                                           \
-{                                                                       \
+#define RL(x) {                                                         \
         int     c;                                                      \
                                                                         \
         c = (x) >> 7;                                                   \
@@ -323,8 +299,7 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define RRC(x)                                                          \
-{                                                                       \
+#define RRC(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) & 0x01;                                                 \
@@ -332,8 +307,7 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define RR_INSTRUCTION(x)                                               \
-{                                                                       \
+#define RR_INSTRUCTION(x) {                                             \
         int     c;                                                      \
                                                                         \
         c = (x) & 0x01;                                                 \
@@ -341,8 +315,7 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define SLA(x)                                                          \
-{                                                                       \
+#define SLA(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) >> 7;                                                   \
@@ -350,8 +323,7 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define SLL(x)                                                          \
-{                                                                       \
+#define SLL(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) >> 7;                                                   \
@@ -359,17 +331,15 @@
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
 
-#define SRA(x)                                                          \
-{                                                                       \
+#define SRA(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) & 0x01;                                                 \
-        (x) = ((signed char) (x)) >> 1;  				\
+        (x) = ((signed char) (x)) >> 1;                                 \
         F = SZYXP_FLAGS_TABLE[(x) & 0xff] | c;                          \
 }
-        
-#define SRL(x)                                                          \
-{                                                                       \
+
+#define SRL(x) {                                                        \
         int     c;                                                      \
                                                                         \
         c = (x) & 0x01;                                                 \

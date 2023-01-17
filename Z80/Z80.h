@@ -74,32 +74,30 @@ typedef signed char offset;
 /** NOTICE: #define LSB_FIRST for machines where least      **/
 /**         signifcant byte goes first.                     **/
 /*************************************************************/
-typedef union
-{
+typedef union {
 #ifdef LSB_FIRST
-  struct { byte l,h; } B;
+   struct { byte l,h; } B;
 #else
-  struct { byte h,l; } B;
+   struct { byte h,l; } B;
 #endif
-  word W;
+   word W;
 } pair;
 
-typedef struct
-{
-  pair AF,BC,DE,HL,IX,IY,PC,SP;       /* Main registers      */
-  pair AF1,BC1,DE1,HL1;               /* Shadow registers    */
-  byte IFF,I;                         /* Interrupt registers */
-  byte R;                             /* Refresh register    */
+typedef struct {
+   pair AF,BC,DE,HL,IX,IY,PC,SP;      /* Main registers      */
+   pair AF1,BC1,DE1,HL1;              /* Shadow registers    */
+   byte IFF,I;                        /* Interrupt registers */
+   byte R;                            /* Refresh register    */
 
-  int IPeriod,ICount; /* Set IPeriod to number of CPU cycles */
+   int IPeriod,ICount;/* Set IPeriod to number of CPU cycles */
                       /* between calls to LoopZ80()          */
-  int IBackup;        /* Private, don't touch                */
-  word IRequest;      /* Set to address of pending IRQ       */
-  byte IAutoReset;    /* Set to 1 to autom. reset IRequest   */
-  byte TrapBadOps;    /* Set to 1 to warn of illegal opcodes */
-  word Trap;          /* Set Trap to address to trace from   */
-  byte Trace;         /* Set Trace=1 to start tracing        */
-  void *User;         /* Arbitrary user data (ID,RAM*,etc.)  */
+   int IBackup;       /* Private, don't touch                */
+   word IRequest;     /* Set to address of pending IRQ       */
+   byte IAutoReset;   /* Set to 1 to autom. reset IRequest   */
+   byte TrapBadOps;   /* Set to 1 to warn of illegal opcodes */
+   word Trap;         /* Set Trap to address to trace from   */
+   byte Trace;        /* Set Trace=1 to start tracing        */
+   void *User;        /* Arbitrary user data (ID,RAM*,etc.)  */
 } Z80;
 
 

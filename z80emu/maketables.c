@@ -2,7 +2,7 @@
  * Instructions and flags tables generator.
  *
  * Copyright (c) 2012, 2016 Lin Ke-Fong
- * 
+ *
  * This code is free, do whatever you want with it.
  */
 
@@ -21,715 +21,711 @@ static void     make_ed_instruction_table (void);
 static void     make_szyx_flags_table (void);
 static void     make_szyxp_flags_table (void);
 
-int main (void) 
-{
-        printf("/* Generated file, see maketables.c. */\n\n");
+int main (void) {
+   printf("/* Generated file, see maketables.c. */\n\n");
 
-        make_instruction_table();
-        putchar('\n');
-        make_cb_instruction_table();
-        putchar('\n');
-        make_ed_instruction_table();
-        putchar('\n');
+   make_instruction_table();
+   putchar('\n');
+   make_cb_instruction_table();
+   putchar('\n');
+   make_ed_instruction_table();
+   putchar('\n');
 
-        make_szyx_flags_table();
-        putchar('\n');
-        make_szyxp_flags_table();
+   make_szyx_flags_table();
+   putchar('\n');
+   make_szyxp_flags_table();
 
-        return EXIT_SUCCESS;
+   return EXIT_SUCCESS;
 }
 
 /* Make single opcodes instruction table. */
 
-static void make_instruction_table (void)
-{
-        int             i, j, k;
-        char            *s, *t;
-        static char     *accumulator_operations[8] = {
+static void make_instruction_table (void) {
+   int        i, j, k;
+   char       *s, *t;
+   static char     *accumulator_operations[8] = {
 
-                                "ADD",
-                                "ADC",
-                                "SUB",
-                                "SBC",
-                                "AND",
-                                "XOR",
-                                "OR",
-                                "CP",
+       "ADD",
+       "ADC",
+       "SUB",
+       "SBC",
+       "AND",
+       "XOR",
+       "OR",
+       "CP",
 
-                        };
+   };
 
-        printf("static const unsigned char INSTRUCTION_TABLE[256] = {\n\n");
-        for (k = 0; k < (1 << 6); k++) {
+   printf("static const unsigned char INSTRUCTION_TABLE[256] = {\n\n");
+   for (k = 0; k < (1 << 6); k++) {
 
-                putchar('\t');
-                i = k >> 3;
-                j = k & 0x07;
-                switch (j) {
+      printf("   ");
+      i = k >> 3;
+      j = k & 0x07;
+      switch (j) {
 
-                        /* Various opcodes. */
+      /* Various opcodes. */
 
-                        case 0x00: {
+      case 0x00: {
 
-                                static char     *strings[8] = {
+         static char     *strings[8] = {
 
-                                                        "NOP",
-                                                        "EX_AF_AF_PRIME",
-                                                        "DJNZ_E",
-                                                        "JR_E",
-                                                        "JR_DD_E",
-                                                        "JR_DD_E",
-                                                        "JR_DD_E",
-                                                        "JR_DD_E",
+            "NOP",
+            "EX_AF_AF_PRIME",
+            "DJNZ_E",
+            "JR_E",
+            "JR_DD_E",
+            "JR_DD_E",
+            "JR_DD_E",
+            "JR_DD_E",
 
-                                                };
+         };
 
-                                s = strings[i];
-                                break;
+         s = strings[i];
+         break;
 
-                        }
+         }
 
-                        /* LD_RR_NN and ADD_HL_RR. */
+      /* LD_RR_NN and ADD_HL_RR. */
 
-                        case 0x01: {
+      case 0x01: {
 
-                                s = i & 1 ? "ADD_HL_RR" : "LD_RR_NN";
-                                break;                                  
+         s = i & 1 ? "ADD_HL_RR" : "LD_RR_NN";
+         break;
 
-                        }
+         }
 
-                        /* Indirect loading. */
+      /* Indirect loading. */
 
-                        case 0x02: { 
-                        
-                                static char     *strings[8] = {
+      case 0x02: {
 
-                                                        "LD_INDIRECT_BC_A",
-                                                        "LD_A_INDIRECT_BC",
-                                                        "LD_INDIRECT_DE_A",
-                                                        "LD_A_INDIRECT_DE",
-                                                        "LD_INDIRECT_NN_HL",
-                                                        "LD_HL_INDIRECT_NN",
-                                                        "LD_INDIRECT_NN_A",
-                                                        "LD_A_INDIRECT_NN",
+         static char     *strings[8] = {
 
-                                                };
+            "LD_INDIRECT_BC_A",
+            "LD_A_INDIRECT_BC",
+            "LD_INDIRECT_DE_A",
+            "LD_A_INDIRECT_DE",
+            "LD_INDIRECT_NN_HL",
+            "LD_HL_INDIRECT_NN",
+            "LD_INDIRECT_NN_A",
+            "LD_A_INDIRECT_NN",
 
-                                s = strings[i];
-                                break;
+         };
 
-                        }
+         s = strings[i];
+         break;
 
-                        /* 16-bit INC and DEC. */
+         }
 
-                        case 0x03: {
+      /* 16-bit INC and DEC. */
 
-                                s = i & 1 ? "DEC_RR" : "INC_RR";
-                                break;                                  
+      case 0x03: {
 
-                        }
+         s = i & 1 ? "DEC_RR" : "INC_RR";
+         break;
 
-                        /* 8-bit INC and DEC. */
+         }
 
-                        case 0x04: 
-                        case 0x05: {
+      /* 8-bit INC and DEC. */
 
-                                if (j == 0x04)
+      case 0x04:
+      case 0x05: {
 
-                                        printf("INC_");
+         if (j == 0x04)
 
-                                else 
+            printf("INC_");
 
-                                        printf("DEC_");
+         else
 
-                                if (i == INDIRECT_HL)
+            printf("DEC_");
 
-                                        s = "INDIRECT_HL";
+         if (i == INDIRECT_HL)
 
-                                else
+            s = "INDIRECT_HL";
 
-                                        s = "R";
+         else
 
-                                break;
+            s = "R";
 
-                        }
+         break;
 
-                        /* Immediate 8-bit loading. */
+         }
 
-                        case 0x06: {
+      /* Immediate 8-bit loading. */
 
-                                if (i == INDIRECT_HL)
+      case 0x06: {
 
-                                        s = "LD_INDIRECT_HL_N";
+         if (i == INDIRECT_HL)
 
-                                else    
+            s = "LD_INDIRECT_HL_N";
 
-                                        s = "LD_R_N";
-                                
-                                break;
+         else
 
-                        }
+            s = "LD_R_N";
 
-                        /* RLCA, RRCA, RLA, RRA, DAA, CPL, SCF, and CCF. */
+         break;
 
-                        case 0x07: 
-                        default: {
+         }
 
-                                static char     *strings[8] = {
+      /* RLCA, RRCA, RLA, RRA, DAA, CPL, SCF, and CCF. */
 
-                                                        "RLCA",
-                                                        "RRCA",
-                                                        "RLA",
-                                                        "RRA",
-                                                        "DAA",
-                                                        "CPL",
-                                                        "SCF",
-                                                        "CCF",
+      case 0x07:
+      default: {
 
-                                                };
+         static char     *strings[8] = {
 
-                                s = strings[i];
-                                break;
+            "RLCA",
+            "RRCA",
+            "RLA",
+            "RRA",
+            "DAA",
+            "CPL",
+            "SCF",
+            "CCF",
 
-                        }
-                        
-                }
-                printf("%s,\n", s);
-                if (j == 0x07)
+         };
 
-                        putchar('\n');
+         s = strings[i];
+         break;
 
-        }
+         }
 
-        /* 8-bit loading and HALT. */
+      }
+      printf("%s,\n", s);
+      if (j == 0x07)
 
-        for (k = 0; k < (1 << 6); k++) {
+         putchar('\n');
 
-                i = k >> 3;
-                j = k & 0x07;
-                if (i == j) {
+   }
 
-                        if (i == INDIRECT_HL)
+   /* 8-bit loading and HALT. */
 
-                                s = "HALT";
+   for (k = 0; k < (1 << 6); k++) {
 
-                        else
+      i = k >> 3;
+      j = k & 0x07;
+      if (i == j) {
 
-                                s = "NOP";
+         if (i == INDIRECT_HL)
 
-                        printf("\t%s,\n", s);
+            s = "HALT";
 
-                } else {
+         else
 
-                        if (i == INDIRECT_HL)
+            s = "NOP";
 
-                                s = "LD_INDIRECT_HL_";
+         printf("   %s,\n", s);
 
-                        else
+      } else {
 
-                                s = "LD_R_";
+         if (i == INDIRECT_HL)
 
-                        if (j == INDIRECT_HL)
+            s = "LD_INDIRECT_HL_";
 
-                                t = "INDIRECT_HL";
+         else
 
-                        else
+            s = "LD_R_";
 
-                                t = "R";
+         if (j == INDIRECT_HL)
 
-                        printf("\t%s%s,\n", s, t);
+            t = "INDIRECT_HL";
 
-                }
-                if (j == 0x07)
+         else
 
-                        putchar('\n');
+            t = "R";
 
-        }
+         printf("   %s%s,\n", s, t);
 
-        /* Operation on accumulator and register/memory. */
+      }
+      if (j == 0x07)
 
-        for (i = 0; i < (1 << 3); i++) {
+         putchar('\n');
 
-                s = accumulator_operations[i];
-                for (j = 0; j < (1 << 3); j++) {
+   }
 
-                        printf("\t%s_", s);
-                        if (j == INDIRECT_HL)
+   /* Operation on accumulator and register/memory. */
 
-                                t = "INDIRECT_HL";
+   for (i = 0; i < (1 << 3); i++) {
 
-                        else
+      s = accumulator_operations[i];
+      for (j = 0; j < (1 << 3); j++) {
 
-                                t = "R";
+         printf("   %s_", s);
+         if (j == INDIRECT_HL)
 
-                        printf("%s,\n", t);
+            t = "INDIRECT_HL";
 
-                }
-                putchar('\n');
+         else
 
-        }
+            t = "R";
 
-        for (k = 0; k < (1 << 6); k++) {
+         printf("%s,\n", t);
 
-                putchar('\t');
-                i = k >> 3;
-                j = k & 0x07;
-                switch (j) {
+      }
+      putchar('\n');
 
-                        /* RET CC. */
-                                        
-                        case 0x00:      s = "RET_CC"; break;
+   }
 
-                        /* POP_SS, RET, EXX, JP_HL, and LD_SP_HL. */
+   for (k = 0; k < (1 << 6); k++) {
 
-                        case 0x01: {
+      printf("   ");
+      i = k >> 3;
+      j = k & 0x07;
+      switch (j) {
 
-                                if (i & 1) {
+      /* RET CC. */
 
-                                        static char     *strings[4] = {
+      case 0x00:      s = "RET_CC"; break;
 
-                                                                "RET",
-                                                                "EXX",
-                                                                "JP_HL",
-                                                                "LD_SP_HL",
+      /* POP_SS, RET, EXX, JP_HL, and LD_SP_HL. */
 
-                                                        };
+      case 0x01: {
 
-                                        s = strings[i >> 1];
+         if (i & 1) {
 
-                                } else 
+            static char     *strings[4] = {
 
-                                        s = "POP_SS";
+               "RET",
+               "EXX",
+               "JP_HL",
+               "LD_SP_HL",
 
-                                break;
+            };
 
-                        }
+            s = strings[i >> 1];
 
-                        /* JP CC, NN. */
+         } else
 
-                        case 0x02:      s = "JP_CC_NN"; break;
+            s = "POP_SS";
 
-                        /* Various opcodes. */
+         break;
 
-                        case 0x03: {
+      }
 
-                                static char     *strings[8] = {
+      /* JP CC, NN. */
 
-                                                        "JP_NN",
-                                                        "CB_PREFIX",
-                                                        "OUT_N_A",
-                                                        "IN_A_N",
-                                                        "EX_INDIRECT_SP_HL",
-                                                        "EX_DE_HL",
-                                                        "DI",
-                                                        "EI",
+      case 0x02:      s = "JP_CC_NN"; break;
 
-                                                };
+      /* Various opcodes. */
 
-                                s = strings[i];
-                                break;
+      case 0x03: {
 
-                        }
+         static char     *strings[8] = {
 
-                        /* CALL_CC_NN. */
+            "JP_NN",
+            "CB_PREFIX",
+            "OUT_N_A",
+            "IN_A_N",
+            "EX_INDIRECT_SP_HL",
+            "EX_DE_HL",
+            "DI",
+            "EI",
 
-                        case 0x04:      s = "CALL_CC_NN"; break;
+         };
 
-                        /* PUSH_SS, CALL_NN, and prefixes. */
+         s = strings[i];
+         break;
 
-                        case 0x05: {
+      }
 
-                                if (i & 1) {
+      /* CALL_CC_NN. */
 
-                                        static char     *strings[4] = {
+      case 0x04:      s = "CALL_CC_NN"; break;
 
-                                                                "CALL_NN",
-                                                                "DD_PREFIX",
-                                                                "ED_PREFIX",
-                                                                "FD_PREFIX",
+      /* PUSH_SS, CALL_NN, and prefixes. */
 
-                                                        };
+      case 0x05: {
 
-                                        s = strings[i >> 1];
+         if (i & 1) {
 
-                                } else 
+            static char     *strings[4] = {
 
-                                        s = "PUSH_SS";
+               "CALL_NN",
+               "DD_PREFIX",
+               "ED_PREFIX",
+               "FD_PREFIX",
 
-                                break;
+            };
 
-                        }
+            s = strings[i >> 1];
 
-                        /* Operation on accumulator and immediate. */
+         } else
 
-                        case 0x06: {
+            s = "PUSH_SS";
 
-                                printf("%s", accumulator_operations[i]);
-                                s = "_N";
-                                break;
+         break;
 
-                        }
+      }
 
-                        /* RST_P. */
+      /* Operation on accumulator and immediate. */
 
-                        case 0x07:      
-                        default:        s = "RST_P"; break;
+      case 0x06: {
 
-                }
-                printf("%s,\n", s);
-                if (j == 0x07)
+         printf("%s", accumulator_operations[i]);
+         s = "_N";
+         break;
 
-                        putchar('\n');
+      }
 
-        }
-        printf("};\n");
+      /* RST_P. */
+
+      case 0x07:
+      default:   s = "RST_P"; break;
+
+      }
+      printf("%s,\n", s);
+      if (j == 0x07)
+
+         putchar('\n');
+
+   }
+   printf("};\n");
 }
 
 /* Make 0xcb prefixed opcodes instruction table. */
 
-static void make_cb_instruction_table (void)
-{
-        int     i;
-        char    *s;
+static void make_cb_instruction_table (void) {
+   int     i;
+   char    *s;
 
-        printf("static const unsigned char CB_INSTRUCTION_TABLE[256] = {\n\n");
+   printf("static const unsigned char CB_INSTRUCTION_TABLE[256] = {\n\n");
 
-        /* Rotation/shift operations. */
+   /* Rotation/shift operations. */
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                static char     *rotation_shift_operations[8] = {
+      static char     *rotation_shift_operations[8] = {
 
-                                        "RLC",
-                                        "RRC",
-                                        "RL",
-                                        "RR",
-                                        "SLA",
-                                        "SRA",
-                                        "SLL",
-                                        "SRL",
+         "RLC",
+         "RRC",
+         "RL",
+         "RR",
+         "SLA",
+         "SRA",
+         "SLL",
+         "SRL",
 
-                                };
+      };
 
-                printf("\t%s_", rotation_shift_operations[i >> 3]);
-                if ((i & 0x07) == INDIRECT_HL)
+      printf("   %s_", rotation_shift_operations[i >> 3]);
+      if ((i & 0x07) == INDIRECT_HL)
 
-                        s = "INDIRECT_HL";
+         s = "INDIRECT_HL";
 
-                else
+      else
 
-                        s = "R";
+         s = "R";
 
-                printf("%s,\n", s);
-                if ((i & 0x07) == 0x07)
+      printf("%s,\n", s);
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        /* BIT_B_R and BIT_B_INDIRECT_HL. */
+   /* BIT_B_R and BIT_B_INDIRECT_HL. */
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                if ((i & 0x07) == INDIRECT_HL)
+      if ((i & 0x07) == INDIRECT_HL)
 
-                        s = "BIT_B_INDIRECT_HL";
+         s = "BIT_B_INDIRECT_HL";
 
-                else
+      else
 
-                        s = "BIT_B_R";
+         s = "BIT_B_R";
 
-                printf("\t%s,\n", s);
-                if ((i & 0x07) == 0x07)
+      printf("   %s,\n", s);
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        /* RES_B_R and RES_B_INDIRECT_HL. */
+   /* RES_B_R and RES_B_INDIRECT_HL. */
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                if ((i & 0x07) == INDIRECT_HL)
+      if ((i & 0x07) == INDIRECT_HL)
 
-                        s = "RES_B_INDIRECT_HL";
+         s = "RES_B_INDIRECT_HL";
 
-                else
+      else
 
-                        s = "RES_B_R";
+         s = "RES_B_R";
 
-                printf("\t%s,\n", s);
-                if ((i & 0x07) == 0x07)
+      printf("   %s,\n", s);
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        /* SET_B_R and SET_B_INDIRECT_HL. */
+   /* SET_B_R and SET_B_INDIRECT_HL. */
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                if ((i & 0x07) == INDIRECT_HL)
+      if ((i & 0x07) == INDIRECT_HL)
 
-                        s = "SET_B_INDIRECT_HL";
+         s = "SET_B_INDIRECT_HL";
 
-                else
+      else
 
-                        s = "SET_B_R";
+         s = "SET_B_R";
 
-                printf("\t%s,\n", s);
-                if ((i & 0x07) == 0x07)
+      printf("   %s,\n", s);
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        printf("};\n");
+   printf("};\n");
 }
 
 /* Make 0xed prefixed opcodes instruction table. */
 
-static void make_ed_instruction_table (void)
-{
-        int     i, j, k;
-        char    *s, *t;
+static void make_ed_instruction_table (void) {
+   int     i, j, k;
+   char    *s, *t;
 
-        printf("static const unsigned char ED_INSTRUCTION_TABLE[256] = {\n\n");
+   printf("static const unsigned char ED_INSTRUCTION_TABLE[256] = {\n\n");
 
-        /* Undefined opcodes are catched and will execute as NOPs. */
+   /* Undefined opcodes are catched and will execute as NOPs. */
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                printf("\tED_UNDEFINED,\n");
-                if ((i & 0x07) == 0x07)
+      printf("   ED_UNDEFINED,\n");
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        /* 0xed prefixed opcodes. */
+   /* 0xed prefixed opcodes. */
 
-        for (k = 0; k < (1 << 6); k++) {
+   for (k = 0; k < (1 << 6); k++) {
 
-                i = k >> 3;
-                j = k & 0x07;
-                switch (j) {
+      i = k >> 3;
+      j = k & 0x07;
+      switch (j) {
 
-                        case 0x00: 
-                        case 0x01: { 
+      case 0x00:
+      case 0x01: {
 
-                                s = j ? "OUT_C_R" : "IN_R_C";
-                                t = "";
-                                break;
+         s = j ? "OUT_C_R" : "IN_R_C";
+         t = "";
+         break;
 
-                        }
+         }
 
-                        /* SBC_HL_RR and ADC_HL_RR. */
+      /* SBC_HL_RR and ADC_HL_RR. */
 
-                        case 0x02: {
+      case 0x02: {
 
-                                s = i & 1 ? "ADC" : "SBC";
-                                t = "_HL_RR";
-                                break;
+         s = i & 1 ? "ADC" : "SBC";
+         t = "_HL_RR";
+         break;
 
-                        }
+         }
 
-                        /* LD_INDIRECT_NN_RR and LD_RR_INDIRECT_NN. */
+      /* LD_INDIRECT_NN_RR and LD_RR_INDIRECT_NN. */
 
-                        case 0x03: { 
+      case 0x03: {
 
-                                s = "LD_";
-                                t = i & 1 
-                                        ? "RR_INDIRECT_NN"
-                                        : "INDIRECT_NN_RR";
-                                break;
+         s = "LD_";
+         t = i & 1
+            ? "RR_INDIRECT_NN"
+            : "INDIRECT_NN_RR";
+         break;
 
-                        }
+         }
 
-                        /* NEG and IM_N. */
+      /* NEG and IM_N. */
 
-                        case 0x04: 
-                        case 0x06: { 
+      case 0x04:
+      case 0x06: {
 
-                                s = j == 0x04 ? "NEG" : "IM_N";
-                                t = "";
-                                break;
+         s = j == 0x04 ? "NEG" : "IM_N";
+         t = "";
+         break;
 
-                        }
+         }
 
-                        /* RETN and RETI. */
+      /* RETN and RETI. */
 
-                        case 0x05: {
+      case 0x05: {
 
-                                s = "RETI_RETN";
-                                t = "";
-                                break;                                    
+         s = "RETI_RETN";
+         t = "";
+         break;
 
-                        }
+         }
 
-                        /* Various opcodes. */
+      /* Various opcodes. */
 
-                        case 0x07: 
-                        default: {
+      case 0x07:
+      default: {
 
-                                static char     *strings[8] = {
+         static char     *strings[8] = {
 
-                                                        "LD_I_A_LD_R_A",
-                                                        "LD_I_A_LD_R_A",
-                                                        "LD_A_I_LD_A_R",
-                                                        "LD_A_I_LD_A_R",
-                                                        "RLD_RRD",
-                                                        "RLD_RRD",
-                                                        "ED_UNDEFINED",
-                                                        "ED_UNDEFINED",
+        "LD_I_A_LD_R_A",
+        "LD_I_A_LD_R_A",
+        "LD_A_I_LD_A_R",
+        "LD_A_I_LD_A_R",
+        "RLD_RRD",
+        "RLD_RRD",
+        "ED_UNDEFINED",
+        "ED_UNDEFINED",
 
-                                                };                                      
-                                s = strings[i];
-                                t = "";
-                                break;
+         };
+         s = strings[i];
+         t = "";
+         break;
 
-                        }
+         }
 
-                }
-                printf("\t%s%s,\n", s, t);
-                if ((j & 0x07) == 0x07)
+      }
+      printf("   %s%s,\n", s, t);
+      if ((j & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        /* Block instructions opcodes. */
+   /* Block instructions opcodes. */
 
-        for (k = 0; k < (1 << 6); k++) {
+   for (k = 0; k < (1 << 6); k++) {
 
-                static char     *strings[4][4] = {
+      static char     *strings[4][4] = {
 
-                                        { 
+         {
 
-                                                "LDI_LDD", 
-                                                "CPI_CPD", 
-                                                "INI_IND", 
-                                                "OUTI_OUTD", 
+            "LDI_LDD",
+            "CPI_CPD",
+            "INI_IND",
+            "OUTI_OUTD",
 
-                                        },
+         },
 
-                                        { 
+         {
 
-                                                "LDI_LDD", 
-                                                "CPI_CPD", 
-                                                "INI_IND", 
-                                                "OUTI_OUTD", 
+            "LDI_LDD",
+            "CPI_CPD",
+            "INI_IND",
+            "OUTI_OUTD",
 
-                                        },
+         },
 
-                                        { 
+         {
 
-                                                "LDIR_LDDR", 
-                                                "CPIR_CPDR", 
-                                                "INIR_INDR", 
-                                                "OTIR_OTDR", 
+            "LDIR_LDDR",
+            "CPIR_CPDR",
+            "INIR_INDR",
+            "OTIR_OTDR",
 
-                                        },
+         },
 
-                                        { 
+         {
 
-                                                "LDIR_LDDR", 
-                                                "CPIR_CPDR", 
-                                                "INIR_INDR", 
-                                                "OTIR_OTDR", 
+            "LDIR_LDDR",
+            "CPIR_CPDR",
+            "INIR_INDR",
+            "OTIR_OTDR",
 
-                                        },
+         },
 
-                                };
-                i = k >> 3;
-                j = k & 0x07;
-                if (i < 4 || j > 3)
+      };
+      i = k >> 3;
+      j = k & 0x07;
+      if (i < 4 || j > 3)
 
-                        s = "ED_UNDEFINED";
+         s = "ED_UNDEFINED";
 
-                else
+      else
 
-                        s = strings[i - 4][j];
+         s = strings[i - 4][j];
 
-                printf("\t%s, \n", s);
-                if ((j & 0x07) == 0x07)
+      printf("   %s,\n", s);
+      if ((j & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        for (i = 0; i < (1 << 6); i++) {
+   for (i = 0; i < (1 << 6); i++) {
 
-                printf("\tED_UNDEFINED,\n");
-                if ((i & 0x07) == 0x07)
+      printf("   ED_UNDEFINED,\n");
+      if ((i & 0x07) == 0x07)
 
-                        putchar('\n');
+         putchar('\n');
 
-        }
+   }
 
-        printf("};\n");
+   printf("};\n");
 }
 
 /* Make S, Z, Y, and X flags table. */
 
-static void make_szyx_flags_table (void)
-{
-        int     i;
+static void make_szyx_flags_table (void) {
+   int     i;
 
-        printf("static const unsigned char SZYX_FLAGS_TABLE[256] = {\n");
-        for (i = 0; i < 256; i++) {
+   printf("static const unsigned char SZYX_FLAGS_TABLE[256] = {\n");
+   for (i = 0; i < 256; i++) {
 
-                int     r;
+      int     r;
 
-                r = i & (Z80_S_FLAG | Z80_Y_FLAG | Z80_X_FLAG);
-                r |= !i ? Z80_Z_FLAG : 0;
+      r = i & (Z80_S_FLAG | Z80_Y_FLAG | Z80_X_FLAG);
+      r |= !i ? Z80_Z_FLAG : 0;
 
-                if (!(i & 7))
+      if (!(i & 7)) {
 
-                        printf("\n\t0x%02x, ", r);
+         printf("\n  ");
+         printf(" 0x%02x,", r);
 
-                else
+      } else
 
-                        printf("0x%02x, ", r);
+         printf(" 0x%02x,", r);
 
 
-        }
-        printf("\n\n};\n");
+   }
+   printf("\n\n};\n");
 }
 
 /* Make S, Z, Y, X, and P flags table. */
 
-static void make_szyxp_flags_table (void)
-{
-        int     i;
+static void make_szyxp_flags_table (void) {
+   int     i;
 
-        printf("static const unsigned char SZYXP_FLAGS_TABLE[256] = {\n");
-        for (i = 0; i < 256; i++) {
+   printf("static const unsigned char SZYXP_FLAGS_TABLE[256] = {\n");
+   for (i = 0; i < 256; i++) {
 
-                int     j, p, r;
+      int     j, p, r;
 
-                j = i;
-                p = !0;
-                while (j) {
+      j = i;
+      p = !0;
+      while (j) {
 
-                        if (j & 1)
+         if (j & 1)
 
-                                p = !p;
+            p = !p;
 
-                        j >>= 1;
+         j >>= 1;
 
-                }
-                r = i & (Z80_S_FLAG | Z80_Y_FLAG | Z80_X_FLAG);
-                r |= !i ? Z80_Z_FLAG : 0;
-                r |= p ? Z80_PV_FLAG : 0;
+      }
+      r = i & (Z80_S_FLAG | Z80_Y_FLAG | Z80_X_FLAG);
+      r |= !i ? Z80_Z_FLAG : 0;
+      r |= p ? Z80_PV_FLAG : 0;
 
-                if (!(i & 7))
+      if (!(i & 7)) {
 
-                        printf("\n\t0x%02x, ", r);
+         printf("\n  ");
+         printf(" 0x%02x,", r);
 
-                else
+      } else
 
-                        printf("0x%02x, ", r);
+         printf(" 0x%02x,", r);
 
-        }
-        printf("\n\n};\n");
+   }
+   printf("\n\n};\n");
 }

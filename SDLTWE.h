@@ -8,7 +8,7 @@
 *                                                                            *
 * V 2.09 - 20220907                                                          *
 *                                                                            *
-*  sdltwe.h is part of Wilderland - A Hobbit Environment                     *
+*  SDLTWE.h is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
 *  it under the terms of the GNU General Public License as published by      *
 *  the Free Software Foundation, either version 2 of the License, or         *
@@ -40,22 +40,22 @@
 
 
 struct TextWindowStruct {
-    SDL_Texture* texPtr;
-    Uint32* framePtr;
-    int frameSize;
-    SDL_Rect rect;
-    int pitch;
-    int CurrentPrintPosX;
-    int CurrentPrintPosY;
+   SDL_Texture* texPtr;
+   Uint32* framePtr;
+   int frameSize;
+   SDL_Rect rect;
+   int pitch;
+   int CurrentPrintPosX;
+   int CurrentPrintPosY;
 };
 
 struct CharSetStruct {
-    int Width;
-    int Height;
-    byte * Bitmap;
-    char CharMin;
-    char CharMax;
-    char CharSubstitute;
+   int Width;
+   int Height;
+   byte * Bitmap;
+   char CharMin;
+   char CharMax;
+   char CharSubstitute;
 };
 
 extern byte firstEditable; // column by SDLTWE_PrintCharTextWindow

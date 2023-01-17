@@ -29,11 +29,9 @@ extern "C" {
  * respectively Z80_READ_WORD() and Z80_WRITE_WORD(), except they are only used
  * for interrupt generation.
  *
- * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() are for input and output. The upper
- * bits of the port number to read or write are always zero. The input byte x
- * must be an unsigned 8-bit value. The value x to write is an unsigned 8-bit
- * with its upper bits zeroed.
- *
+ * Z80_INPUT_BYTE() and Z80_OUTPUT_BYTE() are for input and output. The port
+ * number is a 16-bit value. The input byte x must be an unsigned 8-bit value.
+ * The value x to write is an unsigned 8-bit with its upper bits zeroed. *
  * All macros have access to the following three variables:
  *
  *      state      Pointer to the current Z80_STATE. Because the
@@ -89,18 +87,17 @@ extern "C" {
  * "traps" to simulate system calls.
  */
 
-#include "SPECTRUM.h"
+/*#include "zextest.h"*/
+#include "Spectrum.h"
 
-#define Z80_READ_BYTE(address, x)                           \
-{                                                           \
+#define Z80_READ_BYTE(address, x) {                         \
    /*(x) = ((ZEXTEST *) context)->memory[(address) & 0xffff];*/ \
    (x) = (byte)RdZ80((word)(address));                        \
 }
 
 #define Z80_FETCH_BYTE(address, x)   Z80_READ_BYTE((address), (x))
 
-#define Z80_READ_WORD(address, x)                \
-{                                                \
+#define Z80_READ_WORD(address, x) {              \
    /*unsigned char   *memory;                      \
                                                  \
    memory = ((ZEXTEST *) context)->memory;       \
@@ -111,14 +108,12 @@ extern "C" {
 
 #define Z80_FETCH_WORD(address, x)   Z80_READ_WORD((address), (x))
 
-#define Z80_WRITE_BYTE(address, x)                          \
-{                                                           \
+#define Z80_WRITE_BYTE(address, x) {                        \
    /*((ZEXTEST *) context)->memory[(address) & 0xffff] = (x);*/ \
    WrZ80( (word)(address), (byte)(x) );                     \
 }
 
-#define Z80_WRITE_WORD(address, x)              \
-{                                               \
+#define Z80_WRITE_WORD(address, x) {            \
    /*unsigned char   *memory;                     \
                                                 \
    memory = ((ZEXTEST *) context)->memory;      \
@@ -131,24 +126,21 @@ extern "C" {
 
 #define Z80_WRITE_WORD_INTERRUPT(address, x)   Z80_WRITE_WORD((address), (x))
 
-#define Z80_INPUT_BYTE(portHi, portLo, x)   \
-{                                           \
+#define Z80_INPUT_BYTE(portHi, portLo, x) { \
    /*SystemCall((ZEXTEST *) context);*/     \
    word p = ((word)((byte)(portHi)))<<8 | (byte)(portLo); \
    (x) = InZ80(p); \
 }
 
-#define Z80_OUTPUT_BYTE(portHi, portLo, x)    \
-{                                             \
+#define Z80_OUTPUT_BYTE(portHi, portLo, x) {  \
    /*((ZEXTEST *) context)->is_done = !0;*/   \
    number_cycles = 0;                         \
    word p = ((word)((byte)(portHi)))<<8 | (byte)(portLo); \
    OutZ80( p, (byte)(x) );                    \
 }
 
-// called on JP, JR, CALL, RST, or RET
-#define Z80_JUMP(pc)  \
-{                     \
+/* called on JP, JR, CALL, RST, or RET */
+#define Z80_JUMP(pc) {\
    JumpZ80((word)pc); \
 }
 

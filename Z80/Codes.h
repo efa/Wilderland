@@ -123,7 +123,7 @@ case CP_L:     M_CP(R->HL.B.l);break;
 case CP_A:     R->AF.B.l=N_FLAG|Z_FLAG;break;
 case CP_xHL:   I=RdZ80(R->HL.W);M_CP(I);break;
 case CP_BYTE:  I=RdZ80(R->PC.W++);M_CP(I);break;
-               
+
 case LD_BC_WORD: M_LDWORD(BC);break;
 case LD_DE_WORD: M_LDWORD(DE);break;
 case LD_HL_WORD: M_LDWORD(HL);break;
@@ -168,25 +168,25 @@ case INC_A:    M_INC(R->AF.B.h);break;
 case INC_xHL:  I=RdZ80(R->HL.W);M_INC(I);WrZ80(R->HL.W,I);break;
 
 case RLCA:
-  I=R->AF.B.h&0x80? C_FLAG:0;
-  R->AF.B.h=(R->AF.B.h<<1)|I;
-  R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
-  break;
+   I=R->AF.B.h&0x80? C_FLAG:0;
+   R->AF.B.h=(R->AF.B.h<<1)|I;
+   R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
+   break;
 case RLA:
-  I=R->AF.B.h&0x80? C_FLAG:0;
-  R->AF.B.h=(R->AF.B.h<<1)|(R->AF.B.l&C_FLAG);
-  R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
-  break;
+   I=R->AF.B.h&0x80? C_FLAG:0;
+   R->AF.B.h=(R->AF.B.h<<1)|(R->AF.B.l&C_FLAG);
+   R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
+   break;
 case RRCA:
-  I=R->AF.B.h&0x01;
-  R->AF.B.h=(R->AF.B.h>>1)|(I? 0x80:0);
-  R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I; 
-  break;
+   I=R->AF.B.h&0x01;
+   R->AF.B.h=(R->AF.B.h>>1)|(I? 0x80:0);
+   R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
+   break;
 case RRA:
-  I=R->AF.B.h&0x01;
-  R->AF.B.h=(R->AF.B.h>>1)|(R->AF.B.l&C_FLAG? 0x80:0);
-  R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
-  break;
+   I=R->AF.B.h&0x01;
+   R->AF.B.h=(R->AF.B.h>>1)|(R->AF.B.l&C_FLAG? 0x80:0);
+   R->AF.B.l=(R->AF.B.l&~(C_FLAG|N_FLAG|H_FLAG))|I;
+   break;
 
 case RST00:    M_RST(0x0000);break;
 case RST08:    M_RST(0x0008);break;
@@ -219,40 +219,39 @@ case OUTA: I=RdZ80(R->PC.W++);OutZ80(I|(R->AF.W&0xFF00),R->AF.B.h);break;
 case INA:  I=RdZ80(R->PC.W++);R->AF.B.h=InZ80(I|(R->AF.W&0xFF00));break;
 
 case HALT:
-  R->PC.W--;
-  R->IFF|=IFF_HALT;
-  R->IBackup=0;
-  R->ICount=0;
-  break;
+   R->PC.W--;
+   R->IFF|=IFF_HALT;
+   R->IBackup=0;
+   R->ICount=0;
+   break;
 
 case DI:
-  if(R->IFF&IFF_EI) R->ICount+=R->IBackup-1;
-  R->IFF&=~(IFF_1|IFF_2|IFF_EI);
-  break;
+   if(R->IFF&IFF_EI) R->ICount+=R->IBackup-1;
+   R->IFF&=~(IFF_1|IFF_2|IFF_EI);
+   break;
 
 case EI:
-  if(!(R->IFF&(IFF_1|IFF_EI)))
-  {
-    R->IFF|=IFF_2|IFF_EI;
-    R->IBackup=R->ICount;
-    R->ICount=1;
-  }
-  break;
+   if(!(R->IFF&(IFF_1|IFF_EI))) {
+      R->IFF|=IFF_2|IFF_EI;
+      R->IBackup=R->ICount;
+      R->ICount=1;
+   }
+   break;
 
 case CCF:
-  R->AF.B.l^=C_FLAG;R(N_FLAG|H_FLAG);
-  R->AF.B.l|=R->AF.B.l&C_FLAG? 0:H_FLAG;
-  break;
+   R->AF.B.l^=C_FLAG;R(N_FLAG|H_FLAG);
+   R->AF.B.l|=R->AF.B.l&C_FLAG? 0:H_FLAG;
+   break;
 
 case EXX:
-  J.W=R->BC.W;R->BC.W=R->BC1.W;R->BC1.W=J.W;
-  J.W=R->DE.W;R->DE.W=R->DE1.W;R->DE1.W=J.W;
-  J.W=R->HL.W;R->HL.W=R->HL1.W;R->HL1.W=J.W;
-  break;
+   J.W=R->BC.W;R->BC.W=R->BC1.W;R->BC1.W=J.W;
+   J.W=R->DE.W;R->DE.W=R->DE1.W;R->DE1.W=J.W;
+   J.W=R->HL.W;R->HL.W=R->HL1.W;R->HL1.W=J.W;
+   break;
 
 case EX_DE_HL: J.W=R->DE.W;R->DE.W=R->HL.W;R->HL.W=J.W;break;
-case EX_AF_AF: J.W=R->AF.W;R->AF.W=R->AF1.W;R->AF1.W=J.W;break;  
-  
+case EX_AF_AF: J.W=R->AF.W;R->AF.W=R->AF1.W;R->AF1.W=J.W;break;
+
 case LD_B_B:   R->BC.B.h=R->BC.B.h;break;
 case LD_C_B:   R->BC.B.l=R->BC.B.h;break;
 case LD_D_B:   R->DE.B.h=R->BC.B.h;break;
@@ -337,50 +336,49 @@ case LD_A_BYTE:   R->AF.B.h=RdZ80(R->PC.W++);break;
 case LD_xHL_BYTE: WrZ80(R->HL.W,RdZ80(R->PC.W++));break;
 
 case LD_xWORD_HL:
-  J.B.l=RdZ80(R->PC.W++);
-  J.B.h=RdZ80(R->PC.W++);
-  WrZ80(J.W++,R->HL.B.l);
-  WrZ80(J.W,R->HL.B.h);
-  break;
+   J.B.l=RdZ80(R->PC.W++);
+   J.B.h=RdZ80(R->PC.W++);
+   WrZ80(J.W++,R->HL.B.l);
+   WrZ80(J.W,R->HL.B.h);
+   break;
 
 case LD_HL_xWORD:
-  J.B.l=RdZ80(R->PC.W++);
-  J.B.h=RdZ80(R->PC.W++);
-  R->HL.B.l=RdZ80(J.W++);
-  R->HL.B.h=RdZ80(J.W);
-  break;
+   J.B.l=RdZ80(R->PC.W++);
+   J.B.h=RdZ80(R->PC.W++);
+   R->HL.B.l=RdZ80(J.W++);
+   R->HL.B.h=RdZ80(J.W);
+   break;
 
 case LD_A_xWORD:
-  J.B.l=RdZ80(R->PC.W++);
-  J.B.h=RdZ80(R->PC.W++); 
-  R->AF.B.h=RdZ80(J.W);
-  break;
+   J.B.l=RdZ80(R->PC.W++);
+   J.B.h=RdZ80(R->PC.W++);
+   R->AF.B.h=RdZ80(J.W);
+   break;
 
 case LD_xWORD_A:
-  J.B.l=RdZ80(R->PC.W++);
-  J.B.h=RdZ80(R->PC.W++);
-  WrZ80(J.W,R->AF.B.h);
-  break;
+   J.B.l=RdZ80(R->PC.W++);
+   J.B.h=RdZ80(R->PC.W++);
+   WrZ80(J.W,R->AF.B.h);
+   break;
 
 case EX_HL_xSP:
-  J.B.l=RdZ80(R->SP.W);WrZ80(R->SP.W++,R->HL.B.l);
-  J.B.h=RdZ80(R->SP.W);WrZ80(R->SP.W--,R->HL.B.h);
-  R->HL.W=J.W;
-  break;
+   J.B.l=RdZ80(R->SP.W);WrZ80(R->SP.W++,R->HL.B.l);
+   J.B.h=RdZ80(R->SP.W);WrZ80(R->SP.W--,R->HL.B.h);
+   R->HL.W=J.W;
+   break;
 
 case DAA:
-  J.W=R->AF.B.h;
-  if(R->AF.B.l&C_FLAG) J.W|=256;
-  if(R->AF.B.l&H_FLAG) J.W|=512;
-  if(R->AF.B.l&N_FLAG) J.W|=1024;
-  R->AF.W=DAATable[J.W];
-  break;
+   J.W=R->AF.B.h;
+   if(R->AF.B.l&C_FLAG) J.W|=256;
+   if(R->AF.B.l&H_FLAG) J.W|=512;
+   if(R->AF.B.l&N_FLAG) J.W|=1024;
+   R->AF.W=DAATable[J.W];
+   break;
 
 default:
-  if(R->TrapBadOps)
-    printf
-    (
-      "[Z80 %zX] Unrecognized instruction: %02X at PC=%04X\n",
-      (size_t)R->User,RdZ80(R->PC.W-1),R->PC.W-1
-    );
-  break;
+   if(R->TrapBadOps)
+      printf(
+         "[Z80 %zX] Unrecognized instruction: %02X at PC=%04X\n",
+         (size_t)R->User,RdZ80(R->PC.W-1),R->PC.W-1
+      );
+   break;

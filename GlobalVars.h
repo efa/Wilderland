@@ -1,6 +1,6 @@
 /****************************************************************************\
 *                                                                            *
-*                               GLOBAL_VARS.h                                *
+*                               GlobalVars.h                                 *
 *                                                                            *
 * The global variables for the WL project                                    *
 *                                                                            *
@@ -8,7 +8,7 @@
 *                                                                            *
 * V 2.09 - 20220907                                                          *
 *                                                                            *
-*  GLOBAL_VARS.h is part of Wilderland - A Hobbit Environment                *
+*  GlobalVars.h is part of Wilderland - A Hobbit Environment                 *
 *  Wilderland is free software: you can redistribute it and/or modify        *
 *  it under the terms of the GNU General Public License as published by      *
 *  the Free Software Foundation, either version 2 of the License, or         *
@@ -25,20 +25,20 @@
 \****************************************************************************/
 
 
-#ifndef GLOBAL_VARS_H
-#define GLOBAL_VARS_H
+#ifndef GLOBALVARS_H
+#define GLOBALVARS_H
 
 #include "SDLTWE.h"
 
 
-extern int HV;      // Hobbit version
+extern int HV; // Hobbit version
 
 extern word DictionaryBaseAddress;
 extern word ObjectsIndexAddress, ObjectsAddress;
 
 extern SDL_Window*   winPtr;
 extern SDL_Renderer* renPtr;
-extern SDL_Surface* GameMapSfcPtr;
+extern SDL_Surface*  GameMapSfcPtr;
 
 extern int NoScanLines;
 extern unsigned int LockLevel;

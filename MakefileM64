@@ -1,4 +1,4 @@
-# MakefileM64: Copyright 2019-2022 Valerio Messina efa@iol.it
+# MakefileM64: Copyright 2019-2023 Valerio Messina efa@iol.it
 #
 # MakefileM64 is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
@@ -69,13 +69,13 @@ all: $(TARGET) $(TAPCON)
 $(TARGET): $(SOURCE).o SDLTWE.o spectrum.o $(CPUOBJ)
 	$(MXE)/$(LD) $^ $(LDFLAGS) -o $@
 
-$(SOURCE).o: $(SOURCE).c WL.h GLOBAL_VARS.h MapCoordinates.h SDLTWE.h SPECTRUM.h $(CPUIF)
+$(SOURCE).o: $(SOURCE).c WL.h GlobalVars.h MapCoordinates.h SDLTWE.h Spectrum.h $(CPUIF)
 	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 SDLTWE.o: SDLTWE.c WL.h SDLTWE.h
 	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
-spectrum.o: Spectrum.c GLOBAL_VARS.h SPECTRUM.h WL.h SDLTWE.h $(CPUIF)
+spectrum.o: Spectrum.c GlobalVars.h Spectrum.h WL.h SDLTWE.h $(CPUIF)
 	$(MXE)/$(CC) $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 z80emu/tables.h: z80emu/maketables.c
@@ -84,10 +84,10 @@ z80emu/tables.h: z80emu/maketables.c
 	./z80emu/maketables > $@
 
 z80emu.o: z80emu/z80emu.c z80emu/z80emu.h z80emu/z80config.h z80emu/z80user.h \
-	z80emu/instructions.h z80emu/macros.h z80emu/tables.h SPECTRUM.h
+	z80emu/instructions.h z80emu/macros.h z80emu/tables.h Spectrum.h
 	$(CC) -I. $(CFLAGS) -c $<
 
-Z80.o: Z80/Z80.c GLOBAL_VARS.h SPECTRUM.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
+Z80.o: Z80/Z80.c GlobalVars.h Spectrum.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h Z80/CodesXCB.h Z80/CodesXX.h Z80/Tables.h Z80/Z80.h
 	$(MXE)/$(CC) -I. $(CFLAGS) $(SDLCFLAGS) -c $< -o $@
 
 $(TAPCON): TapCon/TapCon.c WL.h

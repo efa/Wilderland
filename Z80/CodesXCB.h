@@ -47,19 +47,19 @@ case BIT7_H: case BIT7_L: case BIT7_A:
 case BIT7_xHL: I=RdZ80(J.W);M_BIT(7,I);break;
 
 case RES0_xHL: I=RdZ80(J.W);M_RES(0,I);WrZ80(J.W,I);break;
-case RES1_xHL: I=RdZ80(J.W);M_RES(1,I);WrZ80(J.W,I);break;   
-case RES2_xHL: I=RdZ80(J.W);M_RES(2,I);WrZ80(J.W,I);break;   
-case RES3_xHL: I=RdZ80(J.W);M_RES(3,I);WrZ80(J.W,I);break;   
-case RES4_xHL: I=RdZ80(J.W);M_RES(4,I);WrZ80(J.W,I);break;   
-case RES5_xHL: I=RdZ80(J.W);M_RES(5,I);WrZ80(J.W,I);break;   
-case RES6_xHL: I=RdZ80(J.W);M_RES(6,I);WrZ80(J.W,I);break;   
-case RES7_xHL: I=RdZ80(J.W);M_RES(7,I);WrZ80(J.W,I);break;   
+case RES1_xHL: I=RdZ80(J.W);M_RES(1,I);WrZ80(J.W,I);break;
+case RES2_xHL: I=RdZ80(J.W);M_RES(2,I);WrZ80(J.W,I);break;
+case RES3_xHL: I=RdZ80(J.W);M_RES(3,I);WrZ80(J.W,I);break;
+case RES4_xHL: I=RdZ80(J.W);M_RES(4,I);WrZ80(J.W,I);break;
+case RES5_xHL: I=RdZ80(J.W);M_RES(5,I);WrZ80(J.W,I);break;
+case RES6_xHL: I=RdZ80(J.W);M_RES(6,I);WrZ80(J.W,I);break;
+case RES7_xHL: I=RdZ80(J.W);M_RES(7,I);WrZ80(J.W,I);break;
 
-case SET0_xHL: I=RdZ80(J.W);M_SET(0,I);WrZ80(J.W,I);break;   
-case SET1_xHL: I=RdZ80(J.W);M_SET(1,I);WrZ80(J.W,I);break; 
-case SET2_xHL: I=RdZ80(J.W);M_SET(2,I);WrZ80(J.W,I);break; 
-case SET3_xHL: I=RdZ80(J.W);M_SET(3,I);WrZ80(J.W,I);break; 
-case SET4_xHL: I=RdZ80(J.W);M_SET(4,I);WrZ80(J.W,I);break; 
-case SET5_xHL: I=RdZ80(J.W);M_SET(5,I);WrZ80(J.W,I);break; 
-case SET6_xHL: I=RdZ80(J.W);M_SET(6,I);WrZ80(J.W,I);break; 
-case SET7_xHL: I=RdZ80(J.W);M_SET(7,I);WrZ80(J.W,I);break; 
+case SET0_xHL: I=RdZ80(J.W);M_SET(0,I);WrZ80(J.W,I);break;
+case SET1_xHL: I=RdZ80(J.W);M_SET(1,I);WrZ80(J.W,I);break;
+case SET2_xHL: I=RdZ80(J.W);M_SET(2,I);WrZ80(J.W,I);break;
+case SET3_xHL: I=RdZ80(J.W);M_SET(3,I);WrZ80(J.W,I);break;
+case SET4_xHL: I=RdZ80(J.W);M_SET(4,I);WrZ80(J.W,I);break;
+case SET5_xHL: I=RdZ80(J.W);M_SET(5,I);WrZ80(J.W,I);break;
+case SET6_xHL: I=RdZ80(J.W);M_SET(6,I);WrZ80(J.W,I);break;
+case SET7_xHL: I=RdZ80(J.W);M_SET(7,I);WrZ80(J.W,I);break;

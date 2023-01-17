@@ -60,7 +60,7 @@
 		</category>
 	</category>
 	<category name="SDLTWE.h" />
-	<category name="SPECTRUM.h" />
+	<category name="Spectrum.h" />
 	<category name="Z80\Z80.h" />
 	<category name="Z80\Z80.c" />
 	<category name="Spectrum.c">
@@ -82,7 +82,7 @@
 	<category name="C:\Programme\PellesC\Include\SDL\SDL_keysym.h" />
 	<category name="Z80\CodesCB.h" />
 	<category name="C:\Programme\PellesC\Include\SDL\SDL_video.h" />
-	<category name="GLOBAL_VARS.h" />
+	<category name="GlobalVars.h" />
 	<category name="MapCoordinates.h" />
 	<category name="C:\Programme\PellesC\Include\SDL\SDL_version.h">
 		<category name="Window">

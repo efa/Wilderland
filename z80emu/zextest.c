@@ -14,40 +14,37 @@
 #include "zextest.h"
 #include "z80emu.h"
 
-#define Z80_CPU_SPEED      4000000   /* In Hz. */
-#define CYCLES_PER_STEP    (Z80_CPU_SPEED / 50)   // 80000
+#define Z80_CPU_SPEED     4000000   /* In Hz. */
+#define CYCLES_PER_STEP   (Z80_CPU_SPEED / 50)   // 80000
 #define MAXIMUM_STRING_LENGTH   100
 
-static double emulate (char *filename);
+static long long int emulate (char *filename);
 
-int main (void)
-{
-   time_t   start, stop;
-   double total = 0.0; // float with elapsed cycles
-   int times, s; // seconds
+int main (void) {
+   time_t start, stop;
+   long long int total = 0; // elapsed cycles
+   time_t times, s; // seconds
 
    start = time(NULL);
    total += emulate("testfiles/zexdoc.com");
    total += emulate("testfiles/zexall.com");
    stop = time(NULL);
-   times = (int) (stop - start);
-   s = (int) (total / Z80_CPU_SPEED);
-   printf("Total runt emulated time is %d s\n", s);
-   printf("Emulating zexdoc and zexall took a total of %d seconds real time.\n",
-      times);
-   printf("Emulation speed was: %u%%\n", s/times);
+   times = stop - start;
+   s = total / Z80_CPU_SPEED;
+   printf("Total runt emulated time for the 2 tests is: %ld s\n", s);
+   printf("Emulating zexdoc and zexall took a total of: %ld s real time.\n", times);
+   printf("Emulation speed was: %ld%% of a real Z80 @%.2f MHz\n", s/times, Z80_CPU_SPEED / 1000000.0);
 
    return EXIT_SUCCESS;
 }
 
 /* Emulate "zexdoc.com" or "zexall.com". */
 
-static double emulate (char *filename)
-{
-   FILE      *file;
-   long      l;
-   ZEXTEST   context;
-   double    total; // count cycles
+static long long int emulate (char *filename) {
+   FILE    *file;
+   long    l;
+   ZEXTEST context;
+   long long int total; // count cycles
 
    printf("Testing \"%s\"...\n", filename);
    if ((file = fopen(filename, "rb")) == NULL) {
@@ -82,34 +79,34 @@ static double emulate (char *filename)
 
    Z80Reset(&context.state);
    context.state.pc = 0x100;
-   total = 0.0;
+   total = 0;
    do
 
       total += Z80Emulate(&context.state, CYCLES_PER_STEP, &context);
 
    while (!context.is_done);
-   printf("\n%.0f cycle(s) emulated.\n"
-      "For a Z80 running at %.2fMHz, "
+   printf("\n%lld cycle(s) emulated.\n"
+      "For a Z80 running at %.2f MHz, "
       "that would be %d second(s) or %.2f hour(s).\n",
       total,
       Z80_CPU_SPEED / 1000000.0,
       (int) (total / Z80_CPU_SPEED),
       total / ((double) 3600 * Z80_CPU_SPEED));
+
    return total;
 }
 
 /* Emulate CP/M bdos call 5 functions 2 (output character on screen) and 9
  * (output $-terminated string to screen).
  */
-void SystemCall (ZEXTEST *zextest)
-{
+void SystemCall (ZEXTEST *zextest) {
    if (zextest->state.registers.byte[Z80_C] == 2)
 
       printf("%c", zextest->state.registers.byte[Z80_E]);
 
    else if (zextest->state.registers.byte[Z80_C] == 9) {
 
-      int     i, c;
+      int i, c;
 
       for (i = zextest->state.registers.word[Z80_DE], c = 0;
          zextest->memory[i] != '$';

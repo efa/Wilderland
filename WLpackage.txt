@@ -19,7 +19,7 @@ WLrel                         TXT: script to generate the WL release files
 dict_v12.txt                  TXT: list of words
 rooms_v12.txt                 TXT: list of rooms
 SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps
-WL2.08package.txt             TXT: package file list
+WLpackage.txt                 TXT: package file list
 WL.ppj                        TXT: Pelles C Project files
 WL                            x64 Binary: Linux64 executable built with GCC
 WL32                          686 Binary: Linux32 executable built with GCC
@@ -34,14 +34,14 @@ WL.ppx                        XML: IDE/Widgets settings???
 WL.tag                        SQLite: ???
 Wilderland.ico                ICO: 128x128x16 icon file for Windows
 Wilderland.icns               ICNS: 32x32-1024x1024x32bit icon file for macOS
-GLOBAL_VARS.h                 C header: -
+GlobalVars.h                  C header: -
 MapCoordinates.h              C header: -
 SDLTWE.h                      C header: < SDL/SDL.h
-SPECTRUM.h                    C header: < SDL/SDL.h, Z80/Z80.h
+Spectrum.h                    C header: < SDL/SDL.h, Z80/Z80.h
 WL.h                          C header: -
 SDLTWE.c                      C source: < stdio.h,SDL/SDL.h,WL.h,SDLTWE.h
-Spectrum.c                    C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,SPECTRUM.h,WL.h,SDLTWE.h,Z80/Z80.h,GLOBAL_VARS.h
-WL.c                          C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,WL.h,SDLTWE.h,SPECTRUM.h,Z80/Z80.h,MapCoordinates.h,GLOBAL_VARS.h
+Spectrum.c                    C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,Spectrum.h,WL.h,SDLTWE.h,Z80/Z80.h,GlobalVars.h
+WL.c                          C source: < stdio.h,stdlib.h,string.h,SDL/SDL.h,WL.h,SDLTWE.h,Spectrum.h,Z80/Z80.h,MapCoordinates.h,GlobalVars.h
 
 z80emu/macros.h               C header: 
 z80emu/instructions.h         C header: 
@@ -74,7 +74,7 @@ Z80/Tables.h                  C header: -
 Z80/Z80.h                     C header: -
 Z80/ConDebug.c                C source: < stdlib.h,Console.h,Debug.c,Z80.h
 Z80/Debug.c                   C source: < stdio.h,ctype.h,string.h,Z80.h,AY8910.h
-Z80/Z80.c                     C source: < stdio.h,Codes.h,CodesCB.h,CodesED.h,CodesXCB.h,CodesXX.h,Tables.h,Z80.h,GLOBAL_VARS.h,SPECTRUM.h
+Z80/Z80.c                     C source: < stdio.h,Codes.h,CodesCB.h,CodesED.h,CodesXCB.h,CodesXX.h,Tables.h,Z80.h,GlobalVars.h,Spectrum.h
 
 TapCon/TapCon.ppj             TXT: Pelles C Project files
 TapCon/TapCon.tag             SQLite: ???

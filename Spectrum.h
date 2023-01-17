@@ -1,6 +1,6 @@
 /****************************************************************************\
 *                                                                            *
-*                                 SPECTRUM.h                                 *
+*                                 Spectrum.h                                 *
 *                                                                            *
 * Spectrum specific subroutines for the WL project                           *
 *                                                                            *
@@ -8,7 +8,7 @@
 *                                                                            *
 * V 2.09 - 20220907                                                          *
 *                                                                            *
-*  SPECTRUM.h is part of Wilderland - A Hobbit Environment                   *
+*  Spectrum.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
 *  it under the terms of the GNU General Public License as published by      *
 *  the Free Software Foundation, either version 2 of the License, or         *
@@ -118,27 +118,27 @@ typedef Uint32 color_t;
 //#define NUMBER_OF_IN_READS   1
 #if 0
 typedef enum SHR { // keyboard half rows
-    SHR_cV = 0,
-    SHR_AG,
-    SHR_QT,
-    SHR_15,
-    SHR_06,
-    SHR_PY,
-    SHR_eH,
-    SHR_sB
+   SHR_cV = 0,
+   SHR_AG,
+   SHR_QT,
+   SHR_15,
+   SHR_06,
+   SHR_PY,
+   SHR_eH,
+   SHR_sB
 } SHR;
 #endif
 typedef enum SHRP { // keyboard half row port addresses
-    //   43210 : keys bit number
-    //  108421 : keys bit weight hex
-    SHRP_VCXZc = 0xFE,
-    SHRP_GFDSA = 0xFD,
-    SHRP_TREWQ = 0xFB,
-    SHRP_54321 = 0xF7,
-    SHRP_67890 = 0xEF,
-    SHRP_YUIOP = 0xDF,
-    SHRP_HJKLe = 0xBF,
-    SHRP_BNMas = 0x7F
+   //   43210 : keys bit number
+   //  108421 : keys bit weight hex
+   SHRP_VCXZc = 0xFE,
+   SHRP_GFDSA = 0xFD,
+   SHRP_TREWQ = 0xFB,
+   SHRP_54321 = 0xF7,
+   SHRP_67890 = 0xEF,
+   SHRP_YUIOP = 0xDF,
+   SHRP_HJKLe = 0xBF,
+   SHRP_BNMas = 0x7F
 } SHRP;
 
 // Prototypes
@@ -155,7 +155,7 @@ void OutZ80(word P, byte v);
 //void PatchZ80(register Z80 *R);
 void JumpZ80(word PC);
 #if CPUEMUL == ez80emu
-    void SystemCall (void* context);
+   void SystemCall (void* context);
 #endif
 
 #endif /* SPECTRUM_H */
