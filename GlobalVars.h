@@ -31,18 +31,15 @@
 #include "SDLTWE.h"
 
 
+extern int NoScanLines;
 extern int HV; // Hobbit version
-
+extern struct CharSetStruct CharSet;
 extern word DictionaryBaseAddress;
 extern word ObjectsIndexAddress, ObjectsAddress;
 
 extern SDL_Window*   winPtr;
 extern SDL_Renderer* renPtr;
 extern SDL_Surface*  GameMapSfcPtr;
-
-extern int NoScanLines;
-extern unsigned int LockLevel;
-extern struct CharSetStruct CharSet;
 
 extern struct TextWindowStruct GameWin;
 extern struct TextWindowStruct LogWin;
@@ -61,6 +58,6 @@ extern struct TextWindowStruct MapWin;
 extern byte ZXmem[];       // Spectrum 64 kB memory
 
 extern SDL_Keycode CurrentPressedKey;  // used by InZ80()
-extern Uint16 CurrentPressedMod;       // used by InZ80()
+extern uint16_t    CurrentPressedMod;  // used by InZ80()
 
 #endif /* GLOBAL_VARS_H */

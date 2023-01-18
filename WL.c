@@ -58,18 +58,15 @@
 
 #define MAXNAMELEN 100
 
+int NoScanLines;
 int HV; //Hobbit version
-
+struct CharSetStruct CharSet;
 word DictionaryBaseAddress;
 word ObjectsIndexAddress, ObjectsAddress;
 
 SDL_Window*   winPtr;
 SDL_Renderer* renPtr;
 SDL_Surface*  GameMapSfcPtr;
-
-int NoScanLines;
-unsigned int LockLevel;
-struct CharSetStruct CharSet;
 
 struct TextWindowStruct GameWin;  // game frame
 struct TextWindowStruct LogWin;   // left frame
@@ -93,7 +90,7 @@ uint8_t bit = 8*sizeof(void*); // 32 or 64 bit
 
 //SDL_Scancode CurrentPressedCod;
 SDL_Keycode CurrentPressedKey;  // used by InZ80()
-Uint16      CurrentPressedMod;  // used by InZ80()
+uint16_t    CurrentPressedMod;  // used by InZ80()
 
 int delay=12; // min 12 ms to avoid flickering
 char dp=0; // used to hack unknown property 04 and 06
@@ -103,33 +100,10 @@ byte six[OBJECTS_NR_MAX+1]; // used to hack unknown property 06
 
 
 /****************************************************************************\
-* LockScreen                                                                 *
-*                                                                            *
-\****************************************************************************/
-void LockScreen(SDL_Window *LSscreen) {
-   if (LockLevel==UINT32_MAX)
-      return;
-   LockLevel++;
-}
-
-
-/****************************************************************************\
-* UnLockScreen                                                               *
-*                                                                            *
-\****************************************************************************/
-void UnLockScreen(SDL_Window *ULSscreen) {
-   if (LockLevel>=1) LockLevel--;
-   if (LockLevel == 0) {
-      //SDL_RenderPresent(renPtr);
-   }
-}
-
-
-/****************************************************************************\
 * Setpixel on map                                                            *
 *                                                                            *
 \****************************************************************************/
-void SetPixel(Uint32* framePtr, int x, int y, color_t color) {
+void SetPixel(uint32_t* framePtr, int x, int y, color_t color) {
    if (x>=MAPWINWIDTH) return;
    if (y>=MAPWINHEIGHT) return;
    framePtr[y*MAPWINWIDTH + x] = color;
@@ -140,7 +114,7 @@ void SetPixel(Uint32* framePtr, int x, int y, color_t color) {
 * DrawLineRelative: x,y start; dx,dy offset to end; rx,ry thick; color       *
 *                                                                            *
 \****************************************************************************/
-void DrawLineRelative(Uint32* framePtr, int x, int y, int dx, int dy, int rx, int ry, color_t color) {
+void DrawLineRelative(uint32_t* framePtr, int x, int y, int dx, int dy, int rx, int ry, color_t color) {
    int x1, y1, sx, sy;
 
    if (rx == 0 || ry == 0)
@@ -171,12 +145,12 @@ void DrawLineRelative(Uint32* framePtr, int x, int y, int dx, int dy, int rx, in
 * PrintChar on map                                                           *
 *                                                                            *
 \****************************************************************************/
-void PrintChar(Uint32* framePtr, struct CharSetStruct *cs, char a, int x, int y, color_t ink, color_t paper) {
+void PrintChar(uint32_t* framePtr, struct CharSetStruct *cs, char a, int x, int y, color_t ink, color_t paper) {
    int i, j;
    int CharIndex;
    byte mask;
    int ymul;
-   Uint32 *pixm;
+   uint32_t *pixm;
 
    if (WL_DEBUG) {
       if ((cs->Width != 8) || (cs->Height != 8)) {
@@ -191,7 +165,7 @@ void PrintChar(Uint32* framePtr, struct CharSetStruct *cs, char a, int x, int y,
       mask = 0x80;
       CharIndex = (a - cs->CharMin) * cs->Height;
       for (j = 0; j <= 7; j++, mask >>= 1) {
-         pixm = (Uint32 *) framePtr + (y + i) * ymul + x + j;
+         pixm = (uint32_t*) framePtr + (y + i) * ymul + x + j;
          if (cs->Bitmap[CharIndex + i] & mask)
             *pixm = ink;
          else
@@ -205,7 +179,7 @@ void PrintChar(Uint32* framePtr, struct CharSetStruct *cs, char a, int x, int y,
 * PrintString on map                                                         *
 *                                                                            *
 \****************************************************************************/
-void PrintString(Uint32* framePtr, struct CharSetStruct *cs, char *ps, int x, int y, color_t ink, color_t paper) {
+void PrintString(uint32_t* framePtr, struct CharSetStruct *cs, char *ps, int x, int y, color_t ink, color_t paper) {
    while (*ps) {
       PrintChar(framePtr, cs, *ps++, x, y, ink, paper);
       x += cs->Width;
@@ -249,7 +223,7 @@ word GetObjectAttributePointer(byte a, byte attributeoffset) {
 * DrawAnimalPositon on map                                                   *
 *                                                                            *
 \****************************************************************************/
-void DrawAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte animalnr, word x, word y, byte objectoffset) {
+void DrawAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte animalnr, word x, word y, byte objectoffset) {
    char initials[10];
 
    DrawLineRelative(framePtr, x, y + objectoffset*15, 10, -30, 4, 1, SC_BRRED);
@@ -268,7 +242,7 @@ void DrawAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte animaln
 * PrepareOneAnimalPositon on map                                             *
 *                                                                            *
 \****************************************************************************/
-void PrepareOneAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte AnimalNr, byte *objectsperroom) {
+void PrepareOneAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte AnimalNr, byte *objectsperroom) {
    byte CurrentAnimalRoom;
    int i;
 
@@ -289,7 +263,7 @@ void PrepareOneAnimalPosition(Uint32* framePtr, struct CharSetStruct *cs, byte A
 * PrepareAnimalPositions on map                                              *
 *                                                                            *
 \****************************************************************************/
-void PrepareAnimalPositions(Uint32* framePtr, struct CharSetStruct *cs, byte *objectsperroom) {
+void PrepareAnimalPositions(uint32_t* framePtr, struct CharSetStruct *cs, byte *objectsperroom) {
    byte AnimalNr;
 
    PrepareOneAnimalPosition(framePtr, cs, OBJNR_YOU, objectsperroom);
@@ -451,7 +425,7 @@ void printZ80 () {
 \****************************************************************************/
 void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t ink, color_t paper) {
    SDL_Keycode s;
-   Uint16 m;
+   uint16_t m;
    char* f = fnstr;
    SDL_Event event;
 
@@ -467,10 +441,8 @@ void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct 
                   if (s=='-' && (m==KMOD_LSHIFT||m==KMOD_RSHIFT)) s='_';
                   *fnstr = s;
                   fnstr++;
-                  LockScreen(winPtr);
                   SDLTWE_PrintCharTextWindow(TW, s, CS, ink, paper);
                   ShowTextWindow(TW);
-                  UnLockScreen(winPtr);
                   if (fnstr-f >= MAXNAMELEN) {
                      *fnstr = 0;
                      return;
@@ -482,10 +454,8 @@ void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct 
                   if (f!=fnstr) { // not on first editable
                      *fnstr = '\b'; // backspace
                      fnstr--;
-                     LockScreen(winPtr);
                      SDLTWE_PrintCharTextWindow(TW, '\b', CS, ink, paper);
                      ShowTextWindow(TW);
-                     UnLockScreen(winPtr);
                   }
                   break;
                }
@@ -510,10 +480,8 @@ void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
    FILE *f;
    int i;
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, "\n\nSave Filename: ", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
    firstEditable = 15; // "Save Filename: "
    GetFileName(fn, TW, CS, ink, paper);
    firstEditable = 0;
@@ -522,10 +490,8 @@ void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
    f = fopen(fn, "wb");
    if (!f) {
       fprintf(stderr, "WL: ERROR - Can't open file '%s' for saving game.\n", fn);
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "Can't open file for saving\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
@@ -553,10 +519,8 @@ void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 
    fclose(f);
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, ".wls saved.\n\n", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
 }
 
 
@@ -573,10 +537,8 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
    int fileversion, z80version;
    size_t sizeOfZ80, fileOfZ80;
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, "\n\nLoad Filename: ", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
    firstEditable = 15; // "Load Filename: "
    GetFileName(fn, TW, CS, ink, paper);
    firstEditable = 0;
@@ -585,71 +547,55 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
    f = fopen(fn, "rb");
    if (!f) {
       fprintf(stderr, "WL: ERROR - Can't open file '%s' for loading game.\n", fn);
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, ".wls not found!\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
    ret = fscanf(f, "GAMEVERSION=%i\r\n", &gameversion);
    if (ret != 1) {
       printf("ret:%d gamever:%d\n", ret, gameversion);
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: GAMEVERSION not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
    if (gameversion != hv) {
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: Wrong game version.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
    ret=fscanf(f, "FILEVERSION=%i\r\n", &fileversion);
    if (ret != 1) {
       printf("ERROR: FILEVERSION not found.\n");
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: FILEVERSION not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
    if (fileversion < 1 || fileversion > 2) {
       printf("ret:%d filever:%d\n", ret, fileversion);
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: Unsupported Fileversion.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
    if (fileversion == 2) { // compare z80 emulator
        if (fscanf(f, "Z80VERSION=%i\r\n", &z80version) != 1) {
           printf("ERROR: Z80VERSION not found.\n");
-          LockScreen(winPtr);
           SDLTWE_PrintString(TW, "\nError: Z80VERSION not found.\n\n", CS, ink, paper);
           ShowTextWindow(TW);
-          UnLockScreen(winPtr);
           return;
        }
        if (z80version != CPUEMUL) {
-          LockScreen(winPtr);
           SDLTWE_PrintString(TW, "\nError: Wrong z80 emulator version.\n\n", CS, ink, paper);
           ShowTextWindow(TW);
-          UnLockScreen(winPtr);
           return;
        }
    }
 
    if (fscanf(f, "SIZE(Z80)=%05zX\r\n", &sizeOfZ80) != 1) {
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: SIZE(Z80) not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
    if (sizeOfZ80 != SizeOfZ80) {
@@ -667,10 +613,8 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
          if (bit==64 && sizeOfZ80==244 && SizeOfZ80==440) { // 440 on 64bit and 244 on 32bit
             goto bitDiffer;
          }
-         LockScreen(winPtr);
          SDLTWE_PrintString(TW, "\nError: Z80-structure sizes do not match.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
-         UnLockScreen(winPtr);
          return;
       } else // on filever=2 will use and check FileOfZ80
          bitDiffer:
@@ -679,18 +623,14 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 
    if (fileversion == 2) { // new in filever 2: read FILE(Z80)
       if (fscanf(f, "FILE(Z80)=%04zX\r\n", &fileOfZ80) != 1) {
-         LockScreen(winPtr);
          SDLTWE_PrintString(TW, "\nError: FILE(Z80) not found.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
-         UnLockScreen(winPtr);
          return;
       }
       if (fileOfZ80 != FileOfZ80) {
          printf("ERROR: z80file:%zu mem:%zu\n", fileOfZ80, FileOfZ80);
-         LockScreen(winPtr);
          SDLTWE_PrintString(TW, "\nError: Z80-structure File sizes do not match.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
-         UnLockScreen(winPtr);
          return;
       }
    }
@@ -705,19 +645,15 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
       z80.pc=pc;
       if (ret != 1) {
    #endif
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: PC address not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
    ret = fscanf(f, "***Z80***\n"); // should be "***Z80***", so ret = 0 conversions
    if (ret != 0) { // so is EOF=-1
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: ***Z80*** not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
@@ -725,10 +661,8 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
    // FileOfZ80: Z80:47 on 64/32bit, z80emu:52 on 64/32bit
    for (i = 0; i < FileOfZ80; i++) { // read z80 partially
       if (fscanf(f, "%c", ( ((byte*)&z80) + i) ) != 1) {
-         LockScreen(winPtr);
          SDLTWE_PrintString(TW, "\nError: Z80struct:%%c does not match format.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
-         UnLockScreen(winPtr);
          return;
       }
    }
@@ -746,27 +680,21 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 
    ret = fscanf(f, "***MEMORY***\n"); // should be "***MEMORY***", so ret = 0 conversions
    if (ret != 0) { // so is EOF=-1
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
    for (i = 0; i <= SL_RAMEND; i++)
       if (fscanf(f, "%c", ZXmem + i) != 1) {
-         LockScreen(winPtr);
          SDLTWE_PrintString(TW, "\nError: MEMORY:%%c does not match format.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
-         UnLockScreen(winPtr);
          return;
       }
    fclose(f);
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, ".wls loaded.\n\n", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
 
    for (i = SL_SCREENSTART; i <= SL_ATTRIBUTEEND; i++) // display buffer
       WrZ80(i, ZXmem[i]); // force call to WriteScreenByte+WriteAttributeByte
@@ -853,10 +781,8 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
                   *b <<= 4;
                   *b += (s - '0');
                   nibble_count++;
-                  LockScreen(winPtr);
                   SDLTWE_PrintCharTextWindow(TW, s, CS, ink, paper);
                   ShowTextWindow(TW);
-                  UnLockScreen(winPtr);
                   break;
                }
                if ((s >= 'a' && s <= 'f') || (s >= 'A' && s <= 'F')) {
@@ -865,10 +791,8 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
                   *b <<= 4;
                   *b += (s - 'a' + 0x0a);
                   nibble_count++;
-                  LockScreen(winPtr);
                   SDLTWE_PrintCharTextWindow(TW, s, CS, ink, paper);
                   ShowTextWindow(TW);
-                  UnLockScreen(winPtr);
                   break;
                }
                if (s == SDLK_BACKSPACE) {
@@ -876,10 +800,8 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
                   if (nibble_count>0) {
                      *b >>= 4;
                      nibble_count--;
-                     LockScreen(winPtr);
                      SDLTWE_PrintCharTextWindow(TW, '\b', CS, ink, paper);
                      ShowTextWindow(TW);
-                     UnLockScreen(winPtr);
                   }
                   break;
                }
@@ -902,20 +824,16 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
 void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper) {
    byte rn;
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, "\n\nEnter room number 0x", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
 
    firstEditable=20;
    GetHexByte(&rn, TW, CS, ink, paper);
    firstEditable=0;
 
    if (rn < 1 || rn > ROOMS_NR_MAX) {
-      LockScreen(winPtr);
       SDLTWE_PrintString(TW, ". ERROR, invalid room number.\n", CS, ink, paper);
       ShowTextWindow(TW);
-      UnLockScreen(winPtr);
       return;
    }
 
@@ -943,10 +861,8 @@ void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t i
       }
    }
 
-   LockScreen(winPtr);
    SDLTWE_PrintString(TW, ". OK, you are now in this room.\n", CS, ink, paper);
    ShowTextWindow(TW);
-   UnLockScreen(winPtr);
 }
 
 
@@ -960,7 +876,6 @@ void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
 
    sprintf(bitStr, "%u bit         ", bit); // 15
    if (strlen(str)+strlen(bitStr) <= 64) strcat(str, bitStr); // 64
-   LockScreen(winPtr);
 
    //                     "0000000001111111111222222222233333333334444444444555555555566666"
    //                     "1234567890123456789012345678901234567890123456789012345678901234"
@@ -995,7 +910,6 @@ void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0) \n", CS, SC_RED, SC_BLACK);
    ShowTextWindow(TW);
 
-   UnLockScreen(winPtr);
 }
 
 
@@ -1004,7 +918,6 @@ void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
 *                                                                            *
 \****************************************************************************/
 void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
-   LockScreen(winPtr);
 
    SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2022 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
@@ -1028,7 +941,6 @@ void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
    SDLTWE_PrintString(TW, "Contact: wilderland@aon.at, efa@iol.it\n", CS, SC_WHITE, SC_BLACK);
    ShowTextWindow(TW);
 
-   UnLockScreen(winPtr);
 }
 
 
@@ -1326,7 +1238,7 @@ int InitGame(int hv) {
 *                                                                            *
 * The global variables  SDL_Window *winPtr and renPtr must be defined!       *
 \****************************************************************************/
-int InitGraphicsSystem(Uint32 WinMode) {
+int InitGraphicsSystem(uint32_t WinMode) {
    SDL_Surface *temp;
 
    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -1513,21 +1425,6 @@ int InitGraphicsSystem(Uint32 WinMode) {
    //SDL_RenderPresent(renPtr); // show empty canvas
    //SDL_Delay(delay); // ms
 
-#if 0
-Uint32 pixelFormat;
-int access;
-int w;
-int h;
-const char* pixelFormatName;
-SDL_QueryTexture(MapWin.texPtr, &pixelFormat, &access, &w, &h);
-SDL_Log("SDL_BITSPERPIXEL: %d", SDL_BITSPERPIXEL(pixelFormat));
-SDL_Log("SDL_ISPIXELFORMAT_ALPHA: %d", SDL_ISPIXELFORMAT_ALPHA(pixelFormat));
-SDL_Log("MapWin.texPtr format: %d", pixelFormat);
-pixelFormatName = SDL_GetPixelFormatName(pixelFormat);
-SDL_Log("MapWin.texPtr pixelformat:%s", pixelFormatName);
-SDL_Log("\n");
-#endif
-
    // Load Game Map
    IMG_Init(IMG_INIT_PNG);
    temp = IMG_Load(GAMEMAPFILENAME);
@@ -1535,15 +1432,6 @@ SDL_Log("\n");
        fprintf(stderr, "WL: ERROR in 'InitGraphicsSystem'. Unable to load '"GAMEMAPFILENAME"'\n");
        return (-1);
    }
-#if 0
-pixelFormat = temp->format->format;
-SDL_Log("SDL_BITSPERPIXEL: %d", SDL_BITSPERPIXEL(pixelFormat));
-SDL_Log("SDL_ISPIXELFORMAT_ALPHA: %d", SDL_ISPIXELFORMAT_ALPHA(pixelFormat));
-SDL_Log("temp->format->format: %d", pixelFormat);
-pixelFormatName = SDL_GetPixelFormatName(pixelFormat);
-SDL_Log("temp pixelformat:%s", pixelFormatName);
-SDL_Log("\n");
-#endif
    GameMapSfcPtr = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_ARGB8888, 0);
    SDL_FreeSurface(temp);
    if (GameMapSfcPtr == NULL) {
@@ -1561,15 +1449,6 @@ SDL_Log("\n");
       SDL_Quit();
       return 1;
    }
-#if 0
-pixelFormat = GameMapSfcPtr->format->format;
-SDL_Log("SDL_BITSPERPIXEL: %d", SDL_BITSPERPIXEL(pixelFormat));
-SDL_Log("SDL_ISPIXELFORMAT_ALPHA: %d", SDL_ISPIXELFORMAT_ALPHA(pixelFormat));
-SDL_Log("GameMapSfcPtr->format->format: %d", pixelFormat);
-pixelFormatName = SDL_GetPixelFormatName(pixelFormat);
-SDL_Log("GameMapSfcPtr pixelformat:%s", pixelFormatName);
-SDL_Log("\n");
-#endif
 
     return 0;
 } // InitGraphicsSystem()
@@ -1625,11 +1504,11 @@ int main(int argc, char *argv[]) {
 
    byte b;
    FILE *f;
-   Uint32 WinMode = 0; // window mode (vs. full screen);
+   uint32_t WinMode = 0; // window mode (vs. full screen);
    int SeedRND    = 0;
    int MaxSpeed   = 0;
-   Uint32 msTimer = 0;
-   Sint32 DeltaT  = 0;
+   uint32_t msTimer = 0;
+   int32_t DeltaT  = 0;
    int FrameCount = 0;
 
    static byte ObjectsPerRoom[ROOMS_NROF_MAX]; // 0x50=80
@@ -1735,7 +1614,6 @@ int main(int argc, char *argv[]) {
       exit(-1);
    }
 
-   LockScreen(winPtr);
    //SDL_RenderClear(renPtr); // clear renderer
 
    /*** start to drawn on the empty renderer ***/
@@ -1783,8 +1661,6 @@ int main(int argc, char *argv[]) {
    SDL_RenderCopy(renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
    //SDL_RenderPresent(renPtr);
 
-   UnLockScreen(winPtr);
-
    //CurrentPressedCod = SDL_GetScancodeFromKey(SDLK_QUOTEDBL);
 
    RunMainLoop = 1;
@@ -1805,7 +1681,6 @@ int main(int argc, char *argv[]) {
       //SDL_Log("msTimer:%u", msTimer);
       FrameCount++;
 
-      LockScreen(winPtr);
       //SDL_RenderClear(renPtr); // clear renderer: require redraw border,log,map
 
       #if CPUEMUL == eZ80
@@ -1836,7 +1711,6 @@ int main(int argc, char *argv[]) {
       }
       SDL_RenderPresent(renPtr); // needed update screen
       //SDL_Delay(delay); // ms
-      UnLockScreen(winPtr);
 
       while (SDL_PollEvent(&event)!=0) {
 
@@ -1851,16 +1725,6 @@ int main(int argc, char *argv[]) {
                //CurrentPressedCod = event.key.keysym.scancode;
                CurrentPressedKey = event.key.keysym.sym;
                CurrentPressedMod = event.key.keysym.mod;
-#if 0
-               //printf("key down, cod:0x%02X\n", CurrentPressedCod);
-               //printf("key down, key:0x%02X='%s'\n", CurrentPressedKey, SDL_GetKeyName(CurrentPressedKey));
-               SDL_Log("SDL_KEYDOWN key:%u='%c'", CurrentPressedKey, CurrentPressedKey);
-               SDL_Log("SDL_KEYDOWN mod:%u", event.key.keysym.mod);
-               //SDL_Log("q:%d='%c' Q:%d='%c' SDLK_q:%d=%c", 'q', 'q', 'Q', 'Q', SDLK_q, SDLK_q);
-               //SDL_Log("KMOD_LSHIFT:%d=%c KMOD_RSHIFT:%d=%c", KMOD_LSHIFT, KMOD_LSHIFT, KMOD_RSHIFT, KMOD_RSHIFT);
-               //SDL_Log("KMOD_SHIFT :%d=%c KMOD_CAPS:%d=%c", KMOD_SHIFT, KMOD_SHIFT, KMOD_CAPS, KMOD_CAPS);
-               SDL_Log("---\n");
-#endif
                if (CurrentPressedKey == SDLK_BACKSPACE)
                   CurrentPressedKey = SDLK_0; // '0' used as backspace
                if (CurrentPressedMod&KMOD_CAPS || CurrentPressedMod&KMOD_SHIFT) { // capital

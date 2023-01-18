@@ -43,10 +43,10 @@ byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 * The caller is responsible for sensible values!                             *
 \****************************************************************************/
 void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct *TW, int BorderWidth, color_t Color) {
-   Uint8 r;
-   Uint8 g;
-   Uint8 b;
-   Uint8 a;
+   uint8_t r;
+   uint8_t g;
+   uint8_t b;
+   uint8_t a;
    SDL_Rect rect;
 
    SDL_GetRenderDrawColor(renPtr, &r, &g, &b, &a); // save prev color
@@ -83,7 +83,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetS
    //size_t plines = TW->rect.h - CS->Height; // pixel lines number - 1 char line
    //memmove (&TW->framePtr[0], &TW->framePtr[CS->Height * TW->rect.w], plines * TW->rect.w * BYTESPERPIXEL); // move up Frame
    int sp, dp;
-   for (Uint8 l=1; l<TW->rect.h/CS->Height; l++) { // lines 1 to 63
+   for (uint8_t l=1; l<TW->rect.h/CS->Height; l++) { // lines 1 to 63
       sp= l    * CS->Height * TW->rect.w;
       dp=(l-1) * CS->Height * TW->rect.w;
       //printf("l:%02u sp:%06d, dp:%06d sz:%04u\n", l, sp, dp, CS->Height * TW->pitch);
@@ -110,7 +110,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
    int i, j;
    int CharIndex;
    byte mask;
-   Uint32 pixm;
+   uint32_t pixm;
    byte bs=0;
 
    if (WL_DEBUG) {

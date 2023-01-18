@@ -51,9 +51,9 @@ color_t ColorTable[] = {
 *                                                                            *
 \****************************************************************************/
 void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, color_t color) {
-   Uint32 *pixmem32;
+   uint32_t* pixmem32;
 
-   pixmem32 = (Uint32 *)TW->framePtr + 2 * (y * TW->rect.w) + 2 * x;
+   pixmem32 = (uint32_t*)TW->framePtr + 2 * (y * TW->rect.w) + 2 * x;
    *pixmem32++ = color;
    *pixmem32 = color;
 

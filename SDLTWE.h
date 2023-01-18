@@ -41,7 +41,7 @@
 
 struct TextWindowStruct {
    SDL_Texture* texPtr;
-   Uint32* framePtr;
+   uint32_t* framePtr;
    int frameSize;
    SDL_Rect rect;
    int pitch;
@@ -60,11 +60,11 @@ struct CharSetStruct {
 
 extern byte firstEditable; // column by SDLTWE_PrintCharTextWindow
 
-void SDLTWE_SetPixel(struct TextWindowStruct *TW, int x, int y, Uint32 color);
+void SDLTWE_SetPixel(struct TextWindowStruct *TW, int x, int y, uint32_t color);
 void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t paper);
 void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct *TW, int BorderWidth, color_t Color);
-void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct CharSetStruct *CS, Uint32 ink, Uint32 paper);
-void SDLTWE_PrintString (struct TextWindowStruct *TW, char *ps, struct CharSetStruct *CS, Uint32 ink, Uint32 paper);
+void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct CharSetStruct *CS, uint32_t ink, uint32_t paper);
+void SDLTWE_PrintString (struct TextWindowStruct *TW, char *ps, struct CharSetStruct *CS, uint32_t ink, uint32_t paper);
 byte *SDLTWE_ReadCharSet(char *CharSetFilename, byte *CharSet);
 
 #endif /* SDLTWE_H */

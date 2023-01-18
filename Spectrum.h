@@ -42,32 +42,20 @@
 #endif
 
 
-// Custom data types, use C99 as basis
-#ifndef Uint8
-#define Uint8 uint8_t
-#endif
-
-#ifndef Uint16
-#define Uint16 uint16_t
-#endif
-
-#ifndef Uint32
-#define Uint32 uint32_t
-#endif
-
+// Custom data types, use C99 fixed size as basis
 #ifndef BYTE_TYPE_DEFINED
 #define BYTE_TYPE_DEFINED
-typedef Uint8 byte;
+typedef uint8_t byte;
 #endif /* BYTE_TYPE_DEFINED */
 
 #ifndef WORD_TYPE_DEFINED
 #define WORD_TYPE_DEFINED
-typedef Uint16 word;
+typedef uint16_t word;
 #endif /* WORD_TYPE_DEFINED */
 
 #ifndef COLOR_T_TYPE_DEFINED
 #define COLOR_T_TYPE_DEFINED
-typedef Uint32 color_t;
+typedef uint32_t color_t;
 #endif /* COLOR_T_TYPE_DEFINED */
 
 
@@ -142,7 +130,7 @@ typedef enum SHRP { // keyboard half row port addresses
 } SHRP;
 
 // Prototypes
-//void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, Uint32 color);
+//void SetQuadPixel(struct TextWindowStruct *TW, int x, int y, uint32_t color);
 void WriteScreenByte(word address, byte v);
 void WriteAttributeByte(word address, byte v);
 byte RdZ80(word A);

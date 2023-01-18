@@ -209,11 +209,4 @@
 #define ATTR_ANIMAL      0x40
 #define ATTR_VISIBLE     0x80
 
-/*struct GameKeyboardInputStruct {
-   int B;
-   int E;
-   char buffer[100];
-   int length;
-};*/
-
 #endif /* WL_H */
