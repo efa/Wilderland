@@ -28,6 +28,8 @@
 #ifndef GLOBALVARS_H
 #define GLOBALVARS_H
 
+#include <stdbool.h>
+
 #include "SDLTWE.h"
 
 
@@ -36,15 +38,17 @@ extern int HV; // Hobbit version
 extern struct CharSetStruct CharSet;
 extern word DictionaryBaseAddress;
 extern word ObjectsIndexAddress, ObjectsAddress;
+extern bool dockMap; // when true the map is docked
 
 extern SDL_Window*   winPtr;
+extern SDL_Window*   winMapPtr;
 extern SDL_Renderer* renPtr;
-extern SDL_Surface*  GameMapSfcPtr;
-
-extern struct TextWindowStruct GameWin;
+extern SDL_Renderer* renMapPtr;
+extern SDL_Surface*  MapSfcPtr;
 extern struct TextWindowStruct LogWin;
-extern struct TextWindowStruct ObjWin;
+extern struct TextWindowStruct GameWin;
 extern struct TextWindowStruct HelpWin;
+extern struct TextWindowStruct ObjWin;
 extern struct TextWindowStruct MapWin;
 
 // select the CPU emulator, CPUEMUL must be: eZ80 or ez80emu, see Makefile

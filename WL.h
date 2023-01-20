@@ -122,48 +122,50 @@
 #define SS_HEIGHT_SPIXELS (SP_HEIGHT*SP_ZOOM)
 
 // Main Window
-#define MAINWINWIDTH  1280                                           // 1280
-#define MAINWINHEIGHT 1024                                           // 1024
-#define COLORDEPTH    32
-#define BYTESPERPIXEL (COLORDEPTH/8) // 4
-#define BORDERGRAY    0xFF404040ul // Gray in ARGB888 format with SDL_ALPHA_OPAQUE set
-#define BORDERWIDTH   4
+#define MAINWINWIDTH   1280                                           // 1280
+#define MAINWINHEIGHT  1024                                           // 1024
+#define COLORDEPTH     32
+#define BYTESPERPIXEL  (COLORDEPTH/8) // 4
+#define BORDERGRAY     0xFF404040ul // Gray in ARGB888 format with SDL_ALPHA_OPAQUE set
+#define BORDERWIDTH    4
 
 // Log Window
-#define LOGWINPOSX    (2*BORDERWIDTH)                                // 8
-#define LOGWINPOSY    (2*BORDERWIDTH)                                // 8
-#define LOGWINWIDTH   (MAINWINWIDTH - OBJWINWIDTH - GAMEWINWIDTH - 10*BORDERWIDTH)  // 280
-#define LOGWINHEIGHT  (OBJWINHEIGHT) // GAMEWINHEIGHT + HELPWINHEIGHT + 4*BORDERWIDTH: 512
+#define LOGWINPOSX     (2*BORDERWIDTH)                                // 8
+#define LOGWINPOSY     (2*BORDERWIDTH)                                // 8
+#define LOGWINWIDTH    (MAINWINWIDTH - OBJWINWIDTH - GAMEWINWIDTH - 10*BORDERWIDTH)  // 280
+#define LOGWINHEIGHT   (OBJWINHEIGHT) // GAMEWINHEIGHT + HELPWINHEIGHT + 4*BORDERWIDTH: 512
 
 // Game Window
-#define GAMEWINPOSX   (LOGWINWIDTH + 5*BORDERWIDTH)                  // 300
-#define GAMEWINPOSY   (2*BORDERWIDTH)                                // 8
-#define GAMEWINWIDTH  SS_WIDTH_SPIXELS                               // 512
-#define GAMEWINHEIGHT SS_HEIGHT_SPIXELS                              // 384
+#define GAMEWINPOSX    (LOGWINWIDTH + 5*BORDERWIDTH)                  // 300
+#define GAMEWINPOSY    (2*BORDERWIDTH)                                // 8
+#define GAMEWINWIDTH   SS_WIDTH_SPIXELS                               // 512
+#define GAMEWINHEIGHT  SS_HEIGHT_SPIXELS                              // 384
 
 // Object Window
-#define OBJWINPOSX    (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH)   // 824
-#define OBJWINPOSY    (2*BORDERWIDTH)                                // 8
-#define OBJWINWIDTH   (56*8)                // 56 column, 8 pixel/char: 448
-#define OBJWINHEIGHT  (64*8)                // 64 lines , 8 pixel/char: 512
+#define OBJWINPOSX     (MAINWINWIDTH - OBJWINWIDTH - 2*BORDERWIDTH)   // 824
+#define OBJWINPOSY     (2*BORDERWIDTH)                                // 8
+#define OBJWINWIDTH    (56*8)                // 56 column, 8 pixel/char: 448
+#define OBJWINHEIGHT   (64*8)                // 64 lines , 8 pixel/char: 512
 
 // Help Window
-#define HELPWINPOSX   (GAMEWINPOSX)                                  // 300
-#define HELPWINPOSY   (GAMEWINHEIGHT + 6*BORDERWIDTH)                // 408
-#define HELPWINWIDTH  (GAMEWINWIDTH)                                 // 512
-#define HELPWINHEIGHT (LOGWINHEIGHT - GAMEWINHEIGHT - 4*BORDERWIDTH) // 112
+#define HELPWINPOSX    (GAMEWINPOSX)                                  // 300
+#define HELPWINPOSY    (GAMEWINHEIGHT + 6*BORDERWIDTH)                // 408
+#define HELPWINWIDTH   (GAMEWINWIDTH)                                 // 512
+#define HELPWINHEIGHT  (LOGWINHEIGHT - GAMEWINHEIGHT - 4*BORDERWIDTH) // 112
 
 // Game Map Window
-#define MAPWINPOSX    0                                              // 0
-#define MAPWINPOSY    (LOGWINHEIGHT + 4*BORDERWIDTH)                 // 528
-#define MAPWINWIDTH   MAINWINWIDTH                                   // 1280
-#define MAPWINHEIGHT  (MAINWINHEIGHT - LOGWINHEIGHT - 4*BORDERWIDTH) // 496
+#define MAPWINPOSX     0                                              // 0
+#define MAPWINPOSY     (LOGWINHEIGHT + 4*BORDERWIDTH)                 // 528
+#define MAPWINWIDTH    MAINWINWIDTH                                   // 1280
+#define MAPWINHEIGHT   (MAINWINHEIGHT - LOGWINHEIGHT - 4*BORDERWIDTH) // 496
+#define MAPWINWIDTHND  1870
+#define MAPWINHEIGHTND  725
 #define INDICATOROFFSET 2
-
 
 #define SDLTWE_CHARSETLENGTH    (0x300)
 #define SDLTWE_CHARSETFILENAME  "CharSetSpectrum8x8.bin"
 #define GAMEMAPFILENAME         "GameMap.png"
+#define GAMEMAPFILENAMEND       "GameMapHi.png"
 #define TITLESCREEN10FILENAME   "HOBBIT.SCR"
 #define TITLESCREEN12FILENAME   "HOBBIT12.SCR"
 

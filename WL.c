@@ -63,15 +63,17 @@ int HV; //Hobbit version
 struct CharSetStruct CharSet;
 word DictionaryBaseAddress;
 word ObjectsIndexAddress, ObjectsAddress;
+bool dockMap; // when true the map is docked
 
 SDL_Window*   winPtr;
+SDL_Window*   winMapPtr;
 SDL_Renderer* renPtr;
-SDL_Surface*  GameMapSfcPtr;
-
-struct TextWindowStruct GameWin;  // game frame
+SDL_Renderer* renMapPtr;
+SDL_Surface*  MapSfcPtr;
 struct TextWindowStruct LogWin;   // left frame
-struct TextWindowStruct ObjWin;   // right frame with attributes
+struct TextWindowStruct GameWin;  // game frame
 struct TextWindowStruct HelpWin;  // center frame with commands
+struct TextWindowStruct ObjWin;   // right frame with attributes
 struct TextWindowStruct MapWin;   // lower frame with map
 
 // select the CPU emulator, CPUEMUL must be: eZ80 or ez80emu
@@ -103,10 +105,13 @@ byte six[OBJECTS_NR_MAX+1]; // used to hack unknown property 06
 * Setpixel on map                                                            *
 *                                                                            *
 \****************************************************************************/
-void SetPixel(uint32_t* framePtr, int x, int y, color_t color) {
-   if (x>=MAPWINWIDTH) return;
-   if (y>=MAPWINHEIGHT) return;
-   framePtr[y*MAPWINWIDTH + x] = color;
+void SetPixel(struct TextWindowStruct* TW, int x, int y, color_t color) {
+   int maxw = TW->rect.w;
+   int maxh = TW->rect.h;
+   
+   if (x>=maxw) return; // MAPWINWIDTH
+   if (y>=maxh) return; // MAPWINHEIGHT
+   TW->framePtr[y*maxw + x] = color;
 }
 
 
@@ -114,7 +119,7 @@ void SetPixel(uint32_t* framePtr, int x, int y, color_t color) {
 * DrawLineRelative: x,y start; dx,dy offset to end; rx,ry thick; color       *
 *                                                                            *
 \****************************************************************************/
-void DrawLineRelative(uint32_t* framePtr, int x, int y, int dx, int dy, int rx, int ry, color_t color) {
+void DrawLineRelative(struct TextWindowStruct* TW, int x, int y, int dx, int dy, int rx, int ry, color_t color) {
    int x1, y1, sx, sy;
 
    if (rx == 0 || ry == 0)
@@ -133,10 +138,10 @@ void DrawLineRelative(uint32_t* framePtr, int x, int y, int dx, int dy, int rx, 
          ry--;
       if (dx > dy)
          for (x1 = 0; x1 < dx; x1++)
-            SetPixel(framePtr, x + sx * (x1 + (rx - 1)), sy * (y + ((int)(dy * x1 / dx)) + (ry - 1)), color);
+            SetPixel(TW, x + sx * (x1 + (rx - 1)), sy * (y + ((int)(dy * x1 / dx)) + (ry - 1)), color);
       else
          for (y1 = 0; y1 < dy; y1++)
-            SetPixel(framePtr, x + sx * (((int)(dx * y1 / dy)) + (rx - 1)), y + sy * (y1 + (ry - 1)), color);
+            SetPixel(TW, x + sx * (((int)(dx * y1 / dy)) + (rx - 1)), y + sy * (y1 + (ry - 1)), color);
    }
 }
 
@@ -145,7 +150,7 @@ void DrawLineRelative(uint32_t* framePtr, int x, int y, int dx, int dy, int rx, 
 * PrintChar on map                                                           *
 *                                                                            *
 \****************************************************************************/
-void PrintChar(uint32_t* framePtr, struct CharSetStruct *cs, char a, int x, int y, color_t ink, color_t paper) {
+void PrintChar(struct TextWindowStruct* TW, struct CharSetStruct* cs, char a, int x, int y, color_t ink, color_t paper) {
    int i, j;
    int CharIndex;
    byte mask;
@@ -160,12 +165,13 @@ void PrintChar(uint32_t* framePtr, struct CharSetStruct *cs, char a, int x, int 
    }
 
 
-   ymul = MAPWINWIDTH; // scr->pitch / BYTESPERPIXEL;
+   //ymul = MAPWINWIDTH; // scr->pitch / BYTESPERPIXEL;
+   ymul = TW->rect.w;
    for (i = 0; i <= 7; i++) {
       mask = 0x80;
       CharIndex = (a - cs->CharMin) * cs->Height;
       for (j = 0; j <= 7; j++, mask >>= 1) {
-         pixm = (uint32_t*) framePtr + (y + i) * ymul + x + j;
+         pixm = (uint32_t*) TW->framePtr + (y + i) * ymul + x + j;
          if (cs->Bitmap[CharIndex + i] & mask)
             *pixm = ink;
          else
@@ -179,9 +185,9 @@ void PrintChar(uint32_t* framePtr, struct CharSetStruct *cs, char a, int x, int 
 * PrintString on map                                                         *
 *                                                                            *
 \****************************************************************************/
-void PrintString(uint32_t* framePtr, struct CharSetStruct *cs, char *ps, int x, int y, color_t ink, color_t paper) {
+void PrintString(struct TextWindowStruct* TW, struct CharSetStruct* cs, char* ps, int x, int y, color_t ink, color_t paper) {
    while (*ps) {
-      PrintChar(framePtr, cs, *ps++, x, y, ink, paper);
+      PrintChar(TW, cs, *ps++, x, y, ink, paper);
       x += cs->Width;
    }
 }
@@ -223,18 +229,18 @@ word GetObjectAttributePointer(byte a, byte attributeoffset) {
 * DrawAnimalPositon on map                                                   *
 *                                                                            *
 \****************************************************************************/
-void DrawAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte animalnr, word x, word y, byte objectoffset) {
+void DrawAnimalPosition(struct TextWindowStruct* TW, struct CharSetStruct* cs, byte animalNr, word x, word y, byte objectoffset) {
    char initials[10];
 
-   DrawLineRelative(framePtr, x, y + objectoffset*15, 10, -30, 4, 1, SC_BRRED);
+   DrawLineRelative(TW, x, y + objectoffset*15, 10, -30, 4, 1, SC_BRRED);
 
-   strcpy(initials, AnimalInitials[animalnr]);
-   if (ZXmem[GetObjectAttributePointer(animalnr, ATTRIBUTE_OFF)] & ATTR_BROKEN)
+   strcpy(initials, AnimalInitials[animalNr]);
+   if (ZXmem[GetObjectAttributePointer(animalNr, ATTRIBUTE_OFF)] & ATTR_BROKEN)
       strcat(initials, "+");
-   if (animalnr == OBJNR_YOU || animalnr == OBJNR_GANDALF || animalnr == OBJNR_THORIN)
-      PrintString(framePtr, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRRED, 0x00000000ul);
+   if (animalNr == OBJNR_YOU || animalNr == OBJNR_GANDALF || animalNr == OBJNR_THORIN)
+      PrintString(TW, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRRED, 0x00000000ul);
    else
-      PrintString(framePtr, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRGREEN, 0x00000000ul);
+      PrintString(TW, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRGREEN, 0x00000000ul);
 }
 
 
@@ -242,16 +248,24 @@ void DrawAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte anima
 * PrepareOneAnimalPositon on map                                             *
 *                                                                            *
 \****************************************************************************/
-void PrepareOneAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte AnimalNr, byte *objectsperroom) {
+void PrepareOneAnimalPosition(struct TextWindowStruct* TW, struct CharSetStruct* cs, byte animalNr, byte *objectsperroom) {
    byte CurrentAnimalRoom;
    int i;
+   int x, y;
 
-   CurrentAnimalRoom = ZXmem[GetObjectAttributePointer(AnimalNr, P10_OFF_ROOM)];
+   CurrentAnimalRoom = ZXmem[GetObjectAttributePointer(animalNr, P10_OFF_ROOM)];
 
    for(i = 0; i<ROOMS_NROF_MAX; i++) {
       if (MapCoordinates[i].RoomNumber == CurrentAnimalRoom) {
-         DrawAnimalPosition(framePtr, cs, AnimalNr, MapCoordinates[i].X - INDICATOROFFSET,
-            MapCoordinates[i].Y + INDICATOROFFSET,
+         if (dockMap==true) {
+            x = MapCoordinates[i].X;
+            y = MapCoordinates[i].Y;
+         } else {
+            x = (float)MAPWINWIDTHND/MAPWINWIDTH*MapCoordinates[i].X;
+            y = (float)MAPWINWIDTHND/MAPWINWIDTH*MapCoordinates[i].Y;
+         }
+         DrawAnimalPosition(TW, cs, animalNr, x - INDICATOROFFSET,
+            y + INDICATOROFFSET,
             objectsperroom[CurrentAnimalRoom]);
          objectsperroom[CurrentAnimalRoom]++;
       }
@@ -263,13 +277,13 @@ void PrepareOneAnimalPosition(uint32_t* framePtr, struct CharSetStruct *cs, byte
 * PrepareAnimalPositions on map                                              *
 *                                                                            *
 \****************************************************************************/
-void PrepareAnimalPositions(uint32_t* framePtr, struct CharSetStruct *cs, byte *objectsperroom) {
+void PrepareAnimalPositions(struct TextWindowStruct* TW, struct CharSetStruct* cs, byte* objectsperroom) {
    byte AnimalNr;
 
-   PrepareOneAnimalPosition(framePtr, cs, OBJNR_YOU, objectsperroom);
+   PrepareOneAnimalPosition(TW, cs, OBJNR_YOU, objectsperroom);
 
    for(AnimalNr = OBJNR_DRAGON; AnimalNr <= OBJNR_DISGUSTINGGOBLIN; AnimalNr++)
-      PrepareOneAnimalPosition(framePtr, cs, AnimalNr, objectsperroom);
+      PrepareOneAnimalPosition(TW, cs, AnimalNr, objectsperroom);
 }
 
 
@@ -423,7 +437,7 @@ void printZ80 () {
 * GetFileName                                                                *
 *                                                                            *
 \****************************************************************************/
-void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void GetFileName(char* fnstr, struct TextWindowStruct* TW, struct CharSetStruct* CS, color_t ink, color_t paper) {
    SDL_Keycode s;
    uint16_t m;
    char* f = fnstr;
@@ -475,7 +489,7 @@ void GetFileName(char *fnstr, struct TextWindowStruct *TW, struct CharSetStruct 
 * SaveGame                                                                   *
 *                                                                            *
 \****************************************************************************/
-void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper) {
+void SaveGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t ink, color_t paper) {
    char fn[MAXNAMELEN+4];
    FILE *f;
    int i;
@@ -528,7 +542,7 @@ void SaveGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 * LoadGame                                                                   *
 *                                                                            *
 \****************************************************************************/
-void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper) {
+void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t ink, color_t paper) {
    char fn[MAXNAMELEN+4];
    FILE *f;
    int ret;
@@ -709,7 +723,7 @@ void LoadGame(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, col
 * GetDictWord                                                                *
 *                                                                            *
 \****************************************************************************/
-void GetDictWord(word a, char *buf) {
+void GetDictWord(word a, char* buf) {
    word i = 1; // char count
 
    a += DictionaryBaseAddress;
@@ -733,7 +747,7 @@ void GetDictWord(word a, char *buf) {
 *                                                                            *
 * +0A/0B: ADJECTIVE1, +0C/0D: ADJECTIVE2, +08/09: NOUN                       *
 \****************************************************************************/
-void GetObjectFullName(word oa, char *OFN) {
+void GetObjectFullName(word oa, char* OFN) {
    word wa;
    char StringBuffer[25];
 
@@ -764,7 +778,7 @@ void GetObjectFullName(word oa, char *OFN) {
 * GetHexByte                                                                 *
 *                                                                            *
 \****************************************************************************/
-void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void GetHexByte(byte* b, struct TextWindowStruct* TW, struct CharSetStruct* CS, color_t ink, color_t paper) {
    SDL_Keycode s;
    SDL_Event event;
    int nibble_count = 0;
@@ -821,7 +835,7 @@ void GetHexByte(byte *b, struct TextWindowStruct *TW, struct CharSetStruct *CS, 
 * Go                                                                         *
 *                                                                            *
 \****************************************************************************/
-void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t ink, color_t paper) {
+void Go(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t ink, color_t paper) {
    byte rn;
 
    SDLTWE_PrintString(TW, "\n\nEnter room number 0x", CS, ink, paper);
@@ -870,7 +884,7 @@ void Go(struct TextWindowStruct *TW, struct CharSetStruct *CS, int hv, color_t i
 * Help                                                                       *
 *                                                                            *
 \****************************************************************************/
-void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
+void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
    char bitStr[20];
    char str[65]="         WILDERLAND - A Hobbit Environment v"WLVER" "; // 45+WLVER(4)=49
 
@@ -917,7 +931,7 @@ void Help(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
 * Info                                                                       *
 *                                                                            *
 \****************************************************************************/
-void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
+void Info(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
 
    SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2022 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
@@ -948,7 +962,7 @@ void Info(struct TextWindowStruct *TW, struct CharSetStruct *CS) {
 * sbinprintf                                                                 *
 *                                                                            *
 \****************************************************************************/
-void sbinprintf(char *buf, byte b) {
+void sbinprintf(char* buf, byte b) {
    int i;
    byte mask = 0x80;
 
@@ -965,7 +979,7 @@ void sbinprintf(char *buf, byte b) {
 * PrintObject                                                                *
 *                                                                            *
 \****************************************************************************/
-void PrintObject(word ai, struct TextWindowStruct *OW, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void PrintObject(word ai, struct TextWindowStruct* OW, struct CharSetStruct* CS, color_t ink, color_t paper) {
    word oa;
    byte ObjectNumber;
    char ObjectPrintLine[100];
@@ -1035,7 +1049,7 @@ void PrintObject(word ai, struct TextWindowStruct *OW, struct CharSetStruct *CS,
 * PrintObjectsList                                                           *
 *                                                                            *
 \****************************************************************************/
-void PrintObjectsList(word OIA, word OA, struct TextWindowStruct *OW, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void PrintObjectsList(word OIA, word OA, struct TextWindowStruct* OW, struct CharSetStruct* CS, color_t ink, color_t paper) {
    word ai;
    OW->CurrentPrintPosX = 0;
    OW->CurrentPrintPosY = 0;
@@ -1052,22 +1066,22 @@ void PrintObjectsList(word OIA, word OA, struct TextWindowStruct *OW, struct Cha
 
 
 /****************************************************************************\
+* PrepareGameMap                                                             *
+*                                                                            *
+\****************************************************************************/
+void PrepareGameMap(void) {
+   memcpy (MapWin.framePtr, MapSfcPtr->pixels, MapWin.frameSize); // empty map as background
+}
+
+
+/****************************************************************************\
 * DisplayGameMap                                                             *
 *                                                                            *
 \****************************************************************************/
 void DisplayGameMap(void) {
    SDL_UpdateTexture(MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
-   SDL_RenderCopy(renPtr, MapWin.texPtr, NULL, &MapWin.rect);
+   SDL_RenderCopy(renMapPtr, MapWin.texPtr, NULL, &MapWin.rect);
    //SDL_RenderPresent(renPtr);
-}
-
-
-/****************************************************************************\
-* PrepareGameMap                                                             *
-*                                                                            *
-\****************************************************************************/
-void PrepareGameMap(void) {
-   memcpy (MapWin.framePtr, GameMapSfcPtr->pixels, MapWin.frameSize); // map as background
 }
 
 
@@ -1239,18 +1253,34 @@ int InitGame(int hv) {
 * The global variables  SDL_Window *winPtr and renPtr must be defined!       *
 \****************************************************************************/
 int InitGraphicsSystem(uint32_t WinMode) {
-   SDL_Surface *temp;
+   SDL_Surface* sfcPtr;
 
    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
       return 1;
    }
 
-   if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 110, 25, MAINWINWIDTH, MAINWINHEIGHT, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
-      fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
-      SDL_Quit();
-      return 1;
+   if (dockMap==true) {
+      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAINWINHEIGHT, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+         SDL_Quit();
+         return 1;
+      }
+      winMapPtr = winPtr;
+   } else {
+      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAPWINPOSY, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+         SDL_Quit();
+         return 1;
+      }
+      winMapPtr = SDL_CreateWindow("Wilderland - Map ", 40, 552, MAPWINWIDTHND, MAPWINHEIGHTND, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI); // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+      if (winMapPtr == NULL) {
+         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+         SDL_Quit();
+         return 1;
+      }
    }
+
    // Creating a Renderer (window, driver index, flags: HW accelerated + vsync)
    renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
    if (renPtr == NULL){
@@ -1259,13 +1289,31 @@ int InitGraphicsSystem(uint32_t WinMode) {
       SDL_Quit();
       return 1;
    }
+   renMapPtr = renPtr;
+   if (dockMap==false) {
+      renMapPtr = SDL_CreateRenderer(winMapPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+   }
+
    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear"); // nearest, linear, best
-   SDL_SetWindowSize(winPtr, MAINWINWIDTH, MAINWINHEIGHT);
-   SDL_RenderSetLogicalSize(renPtr, MAINWINWIDTH, MAINWINHEIGHT);
+   if (dockMap==true) {
+      SDL_SetWindowSize(winPtr, MAINWINWIDTH, MAINWINHEIGHT);
+      SDL_RenderSetLogicalSize(renPtr, MAINWINWIDTH, MAINWINHEIGHT);
+   } else {
+      SDL_SetWindowSize(winPtr, MAINWINWIDTH, MAPWINPOSY);
+      SDL_RenderSetLogicalSize(renPtr, MAINWINWIDTH, MAPWINPOSY);
+      
+      SDL_SetWindowSize(winMapPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
+      SDL_RenderSetLogicalSize(renMapPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
+      SDL_SetRenderDrawColor(renMapPtr, 0, 0, 0, 0); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+      SDL_RenderClear(renMapPtr);
+      //SDL_RenderPresent(renMapPtr); // show BLACK background
+      //SDL_Delay(delay); // ms
+   }
    SDL_SetRenderDrawColor(renPtr, components(SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
    SDL_RenderClear(renPtr);
    //SDL_RenderPresent(renPtr); // show CYAN background
    //SDL_Delay(delay); // ms
+
 
    CharSet.Bitmap = malloc(SDLTWE_CHARSETLENGTH);
    if (!(CharSet.Bitmap)) {
@@ -1395,7 +1443,11 @@ int InitGraphicsSystem(uint32_t WinMode) {
    SDL_UpdateTexture(ObjWin.texPtr, NULL, ObjWin.framePtr, ObjWin.pitch); // copy Frame to Texture
    SDL_RenderCopy(renPtr, ObjWin.texPtr, NULL, &ObjWin.rect); // copy Texture to Renderer
 
-   MapWin.texPtr = SDL_CreateTexture(renPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTH, MAPWINHEIGHT);
+   if (dockMap==true) {
+      MapWin.texPtr = SDL_CreateTexture(renMapPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTH, MAPWINHEIGHT);
+   } else {
+      MapWin.texPtr = SDL_CreateTexture(renMapPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTHND, MAPWINHEIGHTND);
+   }
    if (MapWin.texPtr == NULL) {
       fprintf(stderr, "SDL_CreateTexture Error: %s\n", SDL_GetError());
       SDL_DestroyRenderer(renPtr);
@@ -1403,8 +1455,13 @@ int InitGraphicsSystem(uint32_t WinMode) {
       SDL_Quit();
       return 1;
    }
-   MapWin.pitch = MAPWINWIDTH * BYTESPERPIXEL;
-   MapWin.frameSize = MapWin.pitch * MAPWINHEIGHT;
+   if (dockMap==true) {
+      MapWin.pitch = MAPWINWIDTH * BYTESPERPIXEL;
+      MapWin.frameSize = MapWin.pitch * MAPWINHEIGHT;
+   } else {
+      MapWin.pitch = MAPWINWIDTHND * BYTESPERPIXEL;
+      MapWin.frameSize = MapWin.pitch * MAPWINHEIGHTND;
+   }
    MapWin.framePtr = malloc (MapWin.frameSize);
    if (MapWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
@@ -1418,32 +1475,42 @@ int InitGraphicsSystem(uint32_t WinMode) {
    MapWin.rect.y = MAPWINPOSY;
    MapWin.rect.w = MAPWINWIDTH;
    MapWin.rect.h = MAPWINHEIGHT;
+   if (dockMap==false) {
+      MapWin.rect.x = 0;
+      MapWin.rect.y = 0;
+      MapWin.rect.w = MAPWINWIDTHND;
+      MapWin.rect.h = MAPWINHEIGHTND;
+   }
    MapWin.CurrentPrintPosX = 0;
    MapWin.CurrentPrintPosY = 0;
    SDL_UpdateTexture(MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
-   SDL_RenderCopy(renPtr, MapWin.texPtr, NULL, &MapWin.rect); // copy Texture to Renderer
+   SDL_RenderCopy(renMapPtr, MapWin.texPtr, NULL, &MapWin.rect); // copy Texture to Renderer
    //SDL_RenderPresent(renPtr); // show empty canvas
    //SDL_Delay(delay); // ms
 
    // Load Game Map
    IMG_Init(IMG_INIT_PNG);
-   temp = IMG_Load(GAMEMAPFILENAME);
-   if (temp == NULL) {
+   if (dockMap==true) {
+      sfcPtr = IMG_Load(GAMEMAPFILENAME);
+   } else {
+      sfcPtr = IMG_Load(GAMEMAPFILENAMEND);
+   }
+   if (sfcPtr == NULL) {
        fprintf(stderr, "WL: ERROR in 'InitGraphicsSystem'. Unable to load '"GAMEMAPFILENAME"'\n");
        return (-1);
    }
-   GameMapSfcPtr = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_ARGB8888, 0);
-   SDL_FreeSurface(temp);
-   if (GameMapSfcPtr == NULL) {
+   MapSfcPtr = SDL_ConvertSurfaceFormat(sfcPtr, SDL_PIXELFORMAT_ARGB8888, 0);
+   SDL_FreeSurface(sfcPtr);
+   if (MapSfcPtr == NULL) {
       fprintf(stderr, "SDL_ConvertSurfaceFormat Error: %s\n", SDL_GetError());
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
       return 1;
    }
-   int GameMapFrameSize = GameMapSfcPtr->pitch * GameMapSfcPtr->h;
-   if (GameMapFrameSize != MapWin.frameSize) {
-      fprintf(stderr, "GameMapSfcPtr size:%u expected:%u\n", GameMapFrameSize, MapWin.frameSize);
+   int MapFrameSize = MapSfcPtr->pitch * MapSfcPtr->h;
+   if (MapFrameSize != MapWin.frameSize) {
+      fprintf(stderr, "MapSfcPtr size:%u expected:%u\n", MapFrameSize, MapWin.frameSize);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1546,6 +1613,7 @@ int main(int argc, char *argv[]) {
          helpLine();
       }
    }
+   dockMap=true;
 
    if (HV == -1) HV = V12; // default to V12
 
@@ -1609,6 +1677,7 @@ int main(int argc, char *argv[]) {
       exit(-1);
    }
 
+   dockMap=false;
    if (InitGraphicsSystem(WinMode)) {
       fprintf(stderr, "WL: ERROR initializing graphic system. Program aborted.\n");
       exit(-1);
@@ -1624,6 +1693,7 @@ int main(int argc, char *argv[]) {
    //SDL_RenderPresent(renPtr);
 
    SDLTWE_PrintCharTextWindow(&LogWin, '\f', &CharSet, SC_BLACK, SC_WHITE); // clear LOG
+   // ^^^^^^^^^^^^^ call SDL_UpdateTexture() and SDL_RenderCopy() for scrool
    //SDL_RenderPresent(renPtr);
    //SDL_Delay(delay); // ms
 
@@ -1650,18 +1720,22 @@ int main(int argc, char *argv[]) {
       WrZ80(i, b);
    }
    fclose(f);
-
    SDL_UpdateTexture(GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
    SDL_RenderCopy(renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
    //SDL_RenderPresent(renPtr);
-   //SDL_Delay(delay); // ms
 
    Help(&HelpWin, &CharSet);
    SDL_UpdateTexture(HelpWin.texPtr, NULL, HelpWin.framePtr, HelpWin.pitch); // copy Frame to Texture
    SDL_RenderCopy(renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
    //SDL_RenderPresent(renPtr);
 
-   //CurrentPressedCod = SDL_GetScancodeFromKey(SDLK_QUOTEDBL);
+   PrepareGameMap(); // empty map
+   DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
+
+   // show windows contents
+   SDL_RenderPresent(renPtr);    // update screen
+   if (dockMap==false) SDL_RenderPresent(renMapPtr); // update screen
+   SDL_Delay(1);
 
    RunMainLoop = 1;
 
@@ -1681,8 +1755,6 @@ int main(int argc, char *argv[]) {
       //SDL_Log("msTimer:%u", msTimer);
       FrameCount++;
 
-      //SDL_RenderClear(renPtr); // clear renderer: require redraw border,log,map
-
       #if CPUEMUL == eZ80
          ExecZ80 (&z80, TSTATES_PER_LOOP); // execute for about 140 kperiods
       #endif
@@ -1693,7 +1765,7 @@ int main(int argc, char *argv[]) {
       SDL_RenderCopy(renPtr, LogWin.texPtr, NULL, &LogWin.rect); // Texture to renderer
       SDL_UpdateTexture(GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
       SDL_RenderCopy(renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
-
+      // here the helpWin do not change
       PrintObjectsList(ObjectsIndexAddress, ObjectsAddress, &ObjWin, &CharSet, SC_BRYELLOW, SC_BRBLUE);
       SDL_UpdateTexture(ObjWin.texPtr, NULL, ObjWin.framePtr, ObjWin.pitch); // copy Frame to Texture
       SDL_RenderCopy(renPtr, ObjWin.texPtr, NULL, &ObjWin.rect); // OBJWIN texture to all Renderer
@@ -1703,13 +1775,12 @@ int main(int argc, char *argv[]) {
          FrameCount = 0;
          for (i = 0; i < ROOMS_NROF_MAX; i++) // 0x50=80
             ObjectsPerRoom[i] = 0;
-         PrepareGameMap();
-         PrepareAnimalPositions(MapWin.framePtr, &CharSet, ObjectsPerRoom);
-         //SDL_Delay(delay); // ms
-         DisplayGameMap();
-         //SDL_Delay(delay); // ms
+         PrepareGameMap(); // empty map as background
+         PrepareAnimalPositions(&MapWin, &CharSet, ObjectsPerRoom);
+         DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
       }
-      SDL_RenderPresent(renPtr); // needed update screen
+      SDL_RenderPresent(renPtr); // update screen
+      if (dockMap==false) SDL_RenderPresent(renMapPtr); // update screen
       //SDL_Delay(delay); // ms
 
       while (SDL_PollEvent(&event)!=0) {
@@ -1768,7 +1839,7 @@ int main(int argc, char *argv[]) {
    if (HelpWin.framePtr) free(HelpWin.framePtr);
    if (ObjWin.framePtr)  free(ObjWin.framePtr);
    if (MapWin.framePtr)  free(MapWin.framePtr);
-   if (GameMapSfcPtr)  SDL_FreeSurface(GameMapSfcPtr);
+   if (MapSfcPtr)  SDL_FreeSurface(MapSfcPtr);
    if (LogWin.texPtr)  SDL_DestroyTexture(LogWin.texPtr);
    if (GameWin.texPtr) SDL_DestroyTexture(GameWin.texPtr);
    if (HelpWin.texPtr) SDL_DestroyTexture(HelpWin.texPtr);

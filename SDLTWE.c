@@ -42,7 +42,7 @@ byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 * Draw a frame around a text window.                                         *
 * The caller is responsible for sensible values!                             *
 \****************************************************************************/
-void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct *TW, int BorderWidth, color_t Color) {
+void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct* TW, int BorderWidth, color_t Color) {
    uint8_t r;
    uint8_t g;
    uint8_t b;
@@ -66,7 +66,7 @@ void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct *TW, int BorderWidth, co
 * SDLTWE_Setpixel                                                            *
 *                                                                            *
 \****************************************************************************/
-void SDLTWE_SetPixel(struct TextWindowStruct *TW, int x, int y, color_t color) {
+void SDLTWE_SetPixel(struct TextWindowStruct* TW, int x, int y, color_t color) {
    if (x>=TW->rect.w) return;
    if (y>=TW->rect.h) return;
    TW->framePtr[y*(TW->rect.w) + x] = color;
@@ -77,7 +77,7 @@ void SDLTWE_SetPixel(struct TextWindowStruct *TW, int x, int y, color_t color) {
 * SDLTWE_VerticalScrollUpOneLine                                             *
 *                                                                            *
 \****************************************************************************/
-void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetStruct *CS, color_t paper) {
+void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct* TW, struct CharSetStruct* CS, color_t paper) {
    int x, y;
 
    //size_t plines = TW->rect.h - CS->Height; // pixel lines number - 1 char line
@@ -106,7 +106,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct *TW, struct CharSetS
 *   \f    (used as formfeed / CLS)                                           *
 *   \b    (used as backspace)                                                *
 \****************************************************************************/
-void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct CharSetStruct* CS, color_t ink, color_t paper) {
    int i, j;
    int CharIndex;
    byte mask;
@@ -185,7 +185,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct *TW, char a, struct Char
 * SDLTWE_PrintString                                                         *
 *                                                                            *
 \****************************************************************************/
-void SDLTWE_PrintString(struct TextWindowStruct *TW, char *ps, struct CharSetStruct *CS, color_t ink, color_t paper) {
+void SDLTWE_PrintString(struct TextWindowStruct* TW, char* ps, struct CharSetStruct* CS, color_t ink, color_t paper) {
    while (*ps)
       SDLTWE_PrintCharTextWindow(TW, *ps++, CS, ink, paper);
 }
@@ -200,7 +200,7 @@ void SDLTWE_PrintString(struct TextWindowStruct *TW, char *ps, struct CharSetStr
 *         CharSet = a place to store the data                                *
 * RETURN: pointer to data read OR NULL if error occured                      *
 \****************************************************************************/
-byte *SDLTWE_ReadCharSet(char *CharSetFilename, byte *CharSet) {
+byte* SDLTWE_ReadCharSet(char* CharSetFilename, byte* CharSet) {
    FILE *fp;
    long int FileLength;
    size_t BytesRead;
