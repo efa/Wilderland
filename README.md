@@ -4,7 +4,7 @@
                              A Hobbit Environment
 
                             (c) 2012-2019 by CH
-                    (c) Copyright 2019-2022 Valerio Messina
+                    (c) Copyright 2019-2023 Valerio Messina
 
                             wilderland AT aonDOTat
                                efa AT iol DOT it
@@ -159,6 +159,13 @@ $ make CPUEMUL=ez80emu   OR   $ make    # to use 'z80emu' emulator
 $ make CPUEMUL=eZ80                     # to use 'Z80'    emulator
 ```
 
+To create the distribution packages:
+```
+$ make rel  # to generate the release package
+$ WLpkg PKG # to package the built files
+            # PKG can be LIN32,LIN64,MGW32,MGW64,MXE32,MXE64,OSX64
+$ WLrel     # to generate the release packages for all target platforms
+```
 
 
 (4) - Obtaining the game files
@@ -192,7 +199,7 @@ Optionally you can generate the binary file stripping the tape headers:
 ===========================
 Run WL from the command line with the following command:
 ```
-   WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]
+   WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT|MAP] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]
    WL [-HELP]
 ```
 * '-V10', '-OWN' or '-V12' selects the game version (if binary is available)
@@ -200,6 +207,7 @@ Run WL from the command line with the following command:
 * -FULLSCREEN runs the game in fullscreen mode (only recommended for screens
    with 1280 x 1024 pixel native resolution)
 * -FIT runs the game in desktop resolution mode
+* -MAP runs the game with map undocked and sized 1870x725 (for fullHD)
 * -MAXSPEED runs the emulator with maximum speed (useful if you just want to
    see the NPCs roam around). Otherwise the Spectrum speed with an approximate
    30 seconds wait cycle is emulated.
@@ -343,4 +351,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.09 - 20220907
+README.txt Version 2.10b - 20230122

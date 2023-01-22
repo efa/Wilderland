@@ -3,10 +3,12 @@ Files packaged with Wilderland Version 2.09 - 20220904
 CharSetSpectrum8x8.bin        Binary: Spectrum character set
 Changelog.txt                 TXT: Versions history
 COPYING.txt                   TXT: License GNU GPL
-GameMap.png                   PNG: Hobbit game map
+GameMap.png                   PNG: Hobbit game map 1280x496 px
+GameMapHi.png                 PNG: Hobbit game map 1870x725 px
 HOBBIT.SCR                    SCR: Hobbit load screen
 HOBBIT12.SCR                  SCR: Hobbit 1.2 load screen
 README.txt                    TXT: help file
+README.md                     TXT: help file for github
 Makefile                      TXT: Makefile to build for Linux64bit on Linux using GNU toolchain
 Makefile32                    TXT: Makefile to build for Linux32bit on Linux using GNU toolchain
 MakefileG64                   TXT: Makefile to build for Win64 on Win using GNU toolchain (MinGw/MSYS2)
@@ -14,8 +16,8 @@ MakefileG32                   TXT: Makefile to build for Win32 on Win using GNU 
 MakefileM64                   TXT: Makefile to cross-build for Win64 on Linux using GNU toolchain (MXE)
 MakefileM32                   TXT: Makefile to cross-build for Win32 on Linux using GNU toolchain (MXE)
 MakefileO64                   TXT: Makefile to cross-build for macOS64 on Linux using CLang/LLVM (OSXCROSS)
-WLpkg                         TXT: script to generate the WL MinGW/MXE package
-WLrel                         TXT: script to generate the WL release files
+WLpkg                         TXT: script to generate a WL Lin/MinGW/MXE/Osx package
+WLrel                         TXT: script to generate all the WL release files (all platforms)
 dict_v12.txt                  TXT: list of words
 rooms_v12.txt                 TXT: list of rooms
 SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps

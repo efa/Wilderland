@@ -4,9 +4,9 @@
 *                                                                            *
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.09 - 20220907                                                          *
+* V 2.10b - 20230122                                                         *
 *                                                                            *
 *  WL.h is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -30,7 +30,7 @@
 
 #include "Spectrum.h"
 
-#define WLVER "2.09"
+#define WLVER "2.10b" // must be 5 chars M.mm_
 #define WL_DEBUG 0
 
 // tape related values

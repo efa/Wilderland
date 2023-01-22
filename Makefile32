@@ -105,7 +105,7 @@ bin: all cleanobj strip
 force: clean bin
 	rm -f *.o
 
-pkg:   # MinGw/MSYS2/Win only
+pkg:
 	@WLpkg $(PKG)
 
 rel: force pkg

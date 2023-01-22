@@ -5,7 +5,7 @@
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
 * (c) 2012-2019 by CH, Contact: wilderland@aon.at                            *
-* Copyright 2019-2022 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2023 Valerio Messina efa@iol.it                             *
 *                                                                            *
 * Simple Direct media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
 * Z80 emulator based on Marat Fayzullin's work from 2007 (fms.komkon.org)    *
@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.09 - 20220907                                                          *
+* V 2.10b - 20230122                                                         *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -63,7 +63,7 @@ int HV; //Hobbit version
 struct CharSetStruct CharSet;
 word DictionaryBaseAddress;
 word ObjectsIndexAddress, ObjectsAddress;
-bool dockMap; // when true the map is docked
+bool dockMap=true; // when false the map is undocked
 
 SDL_Window*   winPtr;
 SDL_Window*   winMapPtr;
@@ -886,9 +886,8 @@ void Go(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t i
 \****************************************************************************/
 void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
    char bitStr[20];
-   char str[65]="         WILDERLAND - A Hobbit Environment v"WLVER" "; // 45+WLVER(4)=49
-
-   sprintf(bitStr, "%u bit         ", bit); // 15
+   char str[65]="         WILDERLAND - A Hobbit Environment v"WLVER" "; // 45+WLVER(5)=50
+   sprintf(bitStr, "%u bit        ", bit); // 14
    if (strlen(str)+strlen(bitStr) <= 64) strcat(str, bitStr); // 64
 
    //                     "0000000001111111111222222222233333333334444444444555555555566666"
@@ -896,7 +895,7 @@ void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
  //SDLTWE_PrintString(TW, "            WILDERLAND - A Hobbit Environment v"WLVER"             ", CS, SC_BRWHITE, SC_BRBLACK);
    SDLTWE_PrintString(TW, str, CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
-   SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2022 V.Messina       ", CS, SC_WHITE, SC_BLACK);
+   SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2023 V.Messina       ", CS, SC_WHITE, SC_BLACK);
    ShowTextWindow(TW);
    #if CPUEMUL == eZ80
    SDLTWE_PrintString(TW, "           Using Z80 emulator: Z80 by Marat Fayzullin            ", CS, SC_BRWHITE, SC_BRBLACK);
@@ -933,7 +932,7 @@ void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
 \****************************************************************************/
 void Info(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
 
-   SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2022 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
+   SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2023 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
    SDLTWE_PrintString(TW, "\"The Hobbit\" (c) Melbourne House, 1982. Written by Philip\n", CS, SC_BRMAGENTA, SC_BRBLACK);
    ShowTextWindow(TW);
@@ -1273,7 +1272,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
          SDL_Quit();
          return 1;
       }
-      winMapPtr = SDL_CreateWindow("Wilderland - Map ", 40, 552, MAPWINWIDTHND, MAPWINHEIGHTND, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI); // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+      winMapPtr = SDL_CreateWindow("Wilderland - Map ", 40, MAPWINPOSY, MAPWINWIDTHND, MAPWINHEIGHTND, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI); // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
       if (winMapPtr == NULL) {
          fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
          SDL_Quit();
@@ -1527,7 +1526,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
 \****************************************************************************/
 void helpLine() {
    printf("Syntax:\n");
-   printf(" WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]\n");
+   printf(" WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT|MAP] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]\n");
    printf(" WL [-HELP]\n");
 }
 
@@ -1598,6 +1597,8 @@ int main(int argc, char *argv[]) {
          { WinMode = SDL_WINDOW_FULLSCREEN; fl = 1; }
       if (!strcmp(argv[i], "-fit") || !strcmp(argv[i], "-FIT"))
          { WinMode = SDL_WINDOW_FULLSCREEN_DESKTOP; fl = 1; }
+      if (!strcmp(argv[i], "-map") || !strcmp(argv[i], "-MAP"))
+         { dockMap=false; fl = 1; }
       if (!strcmp(argv[i], "-maxspeed") || !strcmp(argv[i], "-MAXSPEED"))
          { MaxSpeed = 1; fl = 1; }
       if (!strcmp(argv[i], "-noscanlines") || !strcmp(argv[i], "-NOSCANLINES"))
@@ -1613,7 +1614,6 @@ int main(int argc, char *argv[]) {
          helpLine();
       }
    }
-   dockMap=true;
 
    if (HV == -1) HV = V12; // default to V12
 
@@ -1677,7 +1677,6 @@ int main(int argc, char *argv[]) {
       exit(-1);
    }
 
-   dockMap=false;
    if (InitGraphicsSystem(WinMode)) {
       fprintf(stderr, "WL: ERROR initializing graphic system. Program aborted.\n");
       exit(-1);
@@ -1789,6 +1788,13 @@ int main(int argc, char *argv[]) {
             case SDL_QUIT:
                RunMainLoop = 0;
                //SDL_Log("SDL_QUIT");
+               break;
+            case SDL_WINDOWEVENT: // to catch close when dockMap=false;
+               //SDL_Log("SDL_WINDOWEVENT");
+               if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
+                  //SDL_Log("Window %d closed", event.window.windowID);
+                  RunMainLoop = 0;
+               }
                break;
             case SDL_KEYDOWN:
                SDL_Delay(1); // to avoid flickering

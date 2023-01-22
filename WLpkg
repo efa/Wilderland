@@ -122,6 +122,7 @@ cp WLrel $DSTPATH/$DST/$DMG
 echo "Copying assets ..."
 cp CharSetSpectrum8x8.bin $DSTPATH/$DST/$DMG
 cp GameMap.png $DSTPATH/$DST/$DMG
+cp GameMapHi.png $DSTPATH/$DST/$DMG
 cp HOBBIT.SCR $DSTPATH/$DST/$DMG
 cp HOBBIT12.SCR $DSTPATH/$DST/$DMG
 echo "Copying docs ..."

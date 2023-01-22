@@ -236,6 +236,9 @@ int Z80NonMaskableInterrupt (Z80_STATE *state, void *context) {
 int Z80Emulate (Z80_STATE *state, int number_cycles, void *context) {
    int elapsed_cycles, pc, opcode;
 
+   if(state->status == Z80_STATUS_FLAG_HALT) { // HALTed from prev call
+      return number_cycles;
+   }
    state->status = 0;
    elapsed_cycles = 0;
    pc = state->pc;
@@ -1191,11 +1194,9 @@ emulate_next_instruction:
 
          case HALT: {
 
-#ifdef Z80_CATCH_HALT
-
             state->status = Z80_STATUS_FLAG_HALT;
 
-#else
+#ifndef Z80_CATCH_HALT
 
             /* If an HALT instruction is executed, the Z80
              * keeps executing NOPs until an interrupt is

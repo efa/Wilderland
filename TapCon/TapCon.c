@@ -5,9 +5,9 @@
 * TAP/TZX format converter                                                   *
 *                                                                            *
 * (c) 2012 by CH. Contact: wilderland@aon.at                                 *
-* Copyright 2019-2022 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2023 Valerio Messina efa@iol.it                             *
 *                                                                            *
-* V 2.09 - 20220907                                                          *
+* V 2.10b - 20230122                                                         *
 *                                                                            *
 *  TapCon.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *

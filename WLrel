@@ -1,5 +1,8 @@
 #!/bin/bash
-# create the Build release for all target platforms
+# create the Build release packages for all target platforms
+echo "Build release packages for all target platforms"
+read -p "Proceed? A key to continue"
+echo ""
 os=`uname -o`
 
 if [[ "$os" = "GNU/Linux" ]]; then

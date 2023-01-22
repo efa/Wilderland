@@ -22,12 +22,12 @@ extern "C" {
 
 enum {
 
-   Z80_STATUS_HALT = 1,
-   Z80_STATUS_DI,
-   Z80_STATUS_EI,
-   Z80_STATUS_RETI,
-   Z80_STATUS_RETN,
-   Z80_STATUS_ED_UNDEFINED,
+   Z80_STATUS_FLAG_HALT = 1,
+   Z80_STATUS_FLAG_DI,
+   Z80_STATUS_FLAG_EI,
+   Z80_STATUS_FLAG_RETI,
+   Z80_STATUS_FLAG_RETN,
+   Z80_STATUS_FLAG_ED_UNDEFINED,
    Z80_STATUS_PREFIX
 
 };
@@ -139,9 +139,9 @@ typedef struct Z80_STATE {
 
    /* Register decoding tables. */
 
-   void  *register_table[16],
-    *dd_register_table[16],
-    *fd_register_table[16];
+   void *register_table[16],
+        *dd_register_table[16],
+        *fd_register_table[16];
 
 } Z80_STATE;
 

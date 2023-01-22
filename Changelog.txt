@@ -1,3 +1,24 @@
+2.10b - 20230122
+----------------
+Changed:
+- map resolution 1280x496 increased to 1870x725
+- option -MAP to undock map in a separate window
+  connect window X to close also with undocked map
+- switch to C99 fixed size types: Spectrum.h: Uint32 Uint16 Uint8,
+  WL.c: InitGraphicsSystem(Uint32 WinMode)
+  WL.c: main() Sint32
+- remove LockScreen(winPtr); UnLockScreen(winPtr); LockLevel;
+- removed some commented blocks
+- added WL.odg
+- renamed GLOBAL_VARS.h to GlobalVars.h and SPECTRUM.h to Spectrum.h
+- applied my coding style
+Bugfix:
+Modification to 'z80emu':
+- remember HALT state on different calls. Quit HALT by IRQ or NMI
+  z80emu.c: use state->status = Z80_STATUS_FLAG_HALT;
+- fix z80emu.h enum for Z80_STATE's status to support Z80_CATCH_*
+- documented I/O with 16 bit port address for z80emu
+
 2.09 - 20220907
 ---------------
 - show object/NPC property 4,5,6 variations in console to help hacking
