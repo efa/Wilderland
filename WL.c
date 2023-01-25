@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.10b - 20230122                                                         *
+* V 2.10b - 20230125                                                         *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -64,11 +64,12 @@ struct CharSetStruct CharSet;
 word DictionaryBaseAddress;
 word ObjectsIndexAddress, ObjectsAddress;
 bool dockMap=true; // when false the map is undocked
+int SeedRND = 0; // when 1 use Z80 refresh register to generate random numbers
 
 SDL_Window*   winPtr;
-SDL_Window*   winMapPtr;
+SDL_Window*   MapWinPtr;
 SDL_Renderer* renPtr;
-SDL_Renderer* renMapPtr;
+SDL_Renderer* MapRenPtr;
 SDL_Surface*  MapSfcPtr;
 struct TextWindowStruct LogWin;   // left frame
 struct TextWindowStruct GameWin;  // game frame
@@ -94,7 +95,6 @@ uint8_t bit = 8*sizeof(void*); // 32 or 64 bit
 SDL_Keycode CurrentPressedKey;  // used by InZ80()
 uint16_t    CurrentPressedMod;  // used by InZ80()
 
-int delay=12; // min 12 ms to avoid flickering
 char dp=0; // used to hack unknown property 04 and 06
 byte fou[OBJECTS_NR_MAX+1]; // used to hack unknown property 04
 byte fiv[OBJECTS_NR_MAX+1]; // used to hack unknown property 05
@@ -163,7 +163,6 @@ void PrintChar(struct TextWindowStruct* TW, struct CharSetStruct* cs, char a, in
          return;
       }
    }
-
 
    //ymul = MAPWINWIDTH; // scr->pitch / BYTESPERPIXEL;
    ymul = TW->rect.w;
@@ -295,7 +294,7 @@ void ShowTextWindow(struct TextWindowStruct* TW) {
    SDL_UpdateTexture(TW->texPtr, NULL, TW->framePtr, TW->pitch); // Frame to Texture
    SDL_RenderCopy(renPtr, TW->texPtr, NULL, &TW->rect); // Texture to Renderer
    SDL_RenderPresent(renPtr); // to screen
-   SDL_Delay(5); // to avoid flickering
+   SDL_Delay(delay); // to avoid flickering
 }
 
 
@@ -895,7 +894,7 @@ void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
  //SDLTWE_PrintString(TW, "            WILDERLAND - A Hobbit Environment v"WLVER"             ", CS, SC_BRWHITE, SC_BRBLACK);
    SDLTWE_PrintString(TW, str, CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
-   SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-2023 V.Messina       ", CS, SC_WHITE, SC_BLACK);
+   SDLTWE_PrintString(TW, "       (c) 2012-2019 by CH, Copyright 2019-"WLYEAR" V.Messina       ", CS, SC_WHITE, SC_BLACK);
    ShowTextWindow(TW);
    #if CPUEMUL == eZ80
    SDLTWE_PrintString(TW, "           Using Z80 emulator: Z80 by Marat Fayzullin            ", CS, SC_BRWHITE, SC_BRBLACK);
@@ -932,7 +931,7 @@ void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
 \****************************************************************************/
 void Info(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
 
-   SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, 2023 VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
+   SDLTWE_PrintString(TW, "\nWILDERLAND - A Hobbit Environment (c) 2012-2019 by CH, "WLYEAR" VM\n\n", CS, SC_BRWHITE, SC_BRBLACK);
    ShowTextWindow(TW);
    SDLTWE_PrintString(TW, "\"The Hobbit\" (c) Melbourne House, 1982. Written by Philip\n", CS, SC_BRMAGENTA, SC_BRBLACK);
    ShowTextWindow(TW);
@@ -1079,7 +1078,7 @@ void PrepareGameMap(void) {
 \****************************************************************************/
 void DisplayGameMap(void) {
    SDL_UpdateTexture(MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
-   SDL_RenderCopy(renMapPtr, MapWin.texPtr, NULL, &MapWin.rect);
+   SDL_RenderCopy(MapRenPtr, MapWin.texPtr, NULL, &MapWin.rect);
    //SDL_RenderPresent(renPtr);
 }
 
@@ -1118,8 +1117,57 @@ int InitSpectrum(void) {
          printf("read!\n");
    }
 
+   #if CPUEMUL == eZ80
+      printf("WL: Using CPU emulator: 'Z80' by Marat Fayzullin\n");
+      FileOfZ80 = sizeof(z80) - sizeof(void*) - ( ((void*)&(z80.User))-((void*)&(z80.Trace))-sizeof(z80.Trace) );
+      // 48: fixed size vars(bye,word,int), skip void pointer and 32/64 bit padding
+   #endif
+   #if CPUEMUL == ez80emu
+      printf("WL: Using CPU emulator: 'z80emu' by Lin Ke-Fong\n");
+      FileOfZ80 = sizeof(z80) - 3*16*sizeof(void*) - ( ((void*)&(z80.register_table[0]))-((void*)&(z80.im))-sizeof(z80.im) );
+      // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
+   #endif
+   //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
+   #if CPUEMUL == eZ80
+      ResetZ80(&z80);
+      switch (HV) {
+         case OWN:
+            z80.PC.W = L_START_OWN;
+            break;
+         case V10:
+            z80.PC.W = L_START_V10;
+            break;
+         case V12:
+            z80.PC.W = L_START_V12;
+            break;
+         default:
+            exit(-1);
+      }
+      if (SeedRND)
+          z80.R = (byte) SDL_GetTicks();
+   #endif
+   #if CPUEMUL == ez80emu
+      Z80Reset (&z80);
+      switch (HV) {
+         case OWN:
+            z80.pc = L_START_OWN;
+            break;
+         case V10:
+            z80.pc = L_START_V10;
+            break;
+         case V12:
+            z80.pc = L_START_V12;
+            break;
+         default:
+            exit(-1);
+      }
+      if (SeedRND)
+         z80.r = (byte) SDL_GetTicks();
+   #endif
+   //printZ80struct();
+
    return (0);
-}
+} // InitSpectrum()
 
 
 /****************************************************************************\
@@ -1243,7 +1291,7 @@ int InitGame(int hv) {
    }
    printf("WL: Code file:'%s' read successfully\n", GameFileName);
    return 0;
-}
+} // InitGame()
 
 
 /****************************************************************************\
@@ -1258,22 +1306,28 @@ int InitGraphicsSystem(uint32_t WinMode) {
       fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
       return 1;
    }
+   SDL_version compiled, linked;
+   SDL_VERSION(&compiled); // SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL
+   SDL_GetVersion(&linked);
+   printf("WL: Compile time SDL v.%u.%u.%u, link time SDL v.%u.%u.%u\n",
+            compiled.major, compiled.minor, compiled.patch,
+            linked.major, linked.minor, linked.patch);
 
    if (dockMap==true) {
-      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAINWINHEIGHT, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAINWINHEIGHT, WinMode | SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_OPENGL|SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
          fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
          SDL_Quit();
          return 1;
       }
-      winMapPtr = winPtr;
+      MapWinPtr = winPtr;
    } else {
-      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAPWINPOSY, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
+      if (!(winPtr = SDL_CreateWindow("Wilderland - A Hobbit Environment", 40, 24, MAINWINWIDTH, MAPWINPOSY, WinMode | SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI))) { // SDL_WINDOW_OPENGL|SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
          fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
          SDL_Quit();
          return 1;
       }
-      winMapPtr = SDL_CreateWindow("Wilderland - Map ", 40, MAPWINPOSY, MAPWINWIDTHND, MAPWINHEIGHTND, WinMode | SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI); // SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_CENTERED
-      if (winMapPtr == NULL) {
+      MapWinPtr = SDL_CreateWindow("Wilderland - Map", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAPWINWIDTHND, MAPWINHEIGHTND, WinMode | SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI); // SDL_WINDOW_OPENGL|SDL_WINDOW_VULKAN|SDL_WINDOW_FULLSCREEN_DESKTOP //SDL_WINDOWPOS_UNDEFINED
+      if (MapWinPtr == NULL) {
          fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
          SDL_Quit();
          return 1;
@@ -1288,9 +1342,15 @@ int InitGraphicsSystem(uint32_t WinMode) {
       SDL_Quit();
       return 1;
    }
-   renMapPtr = renPtr;
+   MapRenPtr = renPtr;
    if (dockMap==false) {
-      renMapPtr = SDL_CreateRenderer(winMapPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+      if (MapRenPtr == NULL){
+         fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+         SDL_DestroyWindow(MapWinPtr);
+         SDL_Quit();
+         return 1;
+      }
    }
 
    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear"); // nearest, linear, best
@@ -1301,18 +1361,15 @@ int InitGraphicsSystem(uint32_t WinMode) {
       SDL_SetWindowSize(winPtr, MAINWINWIDTH, MAPWINPOSY);
       SDL_RenderSetLogicalSize(renPtr, MAINWINWIDTH, MAPWINPOSY);
       
-      SDL_SetWindowSize(winMapPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
-      SDL_RenderSetLogicalSize(renMapPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
-      SDL_SetRenderDrawColor(renMapPtr, 0, 0, 0, 0); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
-      SDL_RenderClear(renMapPtr);
-      //SDL_RenderPresent(renMapPtr); // show BLACK background
+      SDL_SetWindowSize(MapWinPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
+      SDL_RenderSetLogicalSize(MapRenPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
+      SDL_SetRenderDrawColor(MapRenPtr, 0, 0, 0, 0); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+      SDL_RenderClear(MapRenPtr);
+      //SDL_RenderPresent(MapRenPtr); // show BLACK background
       //SDL_Delay(delay); // ms
    }
    SDL_SetRenderDrawColor(renPtr, components(SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
-   SDL_RenderClear(renPtr);
-   //SDL_RenderPresent(renPtr); // show CYAN background
-   //SDL_Delay(delay); // ms
-
+   SDL_RenderClear(renPtr); // clear renderer with CYAN background
 
    CharSet.Bitmap = malloc(SDLTWE_CHARSETLENGTH);
    if (!(CharSet.Bitmap)) {
@@ -1343,6 +1400,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    LogWin.framePtr = malloc (LogWin.frameSize);
    if (LogWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(LogWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1371,6 +1429,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    GameWin.framePtr = malloc (GameWin.frameSize);
    if (GameWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(GameWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1399,6 +1458,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    HelpWin.framePtr = malloc (HelpWin.frameSize);
    if (HelpWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(HelpWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1427,6 +1487,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    ObjWin.framePtr = malloc (ObjWin.frameSize);
    if (ObjWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(ObjWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1443,9 +1504,9 @@ int InitGraphicsSystem(uint32_t WinMode) {
    SDL_RenderCopy(renPtr, ObjWin.texPtr, NULL, &ObjWin.rect); // copy Texture to Renderer
 
    if (dockMap==true) {
-      MapWin.texPtr = SDL_CreateTexture(renMapPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTH, MAPWINHEIGHT);
+      MapWin.texPtr = SDL_CreateTexture(MapRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTH, MAPWINHEIGHT);
    } else {
-      MapWin.texPtr = SDL_CreateTexture(renMapPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTHND, MAPWINHEIGHTND);
+      MapWin.texPtr = SDL_CreateTexture(MapRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, MAPWINWIDTHND, MAPWINHEIGHTND);
    }
    if (MapWin.texPtr == NULL) {
       fprintf(stderr, "SDL_CreateTexture Error: %s\n", SDL_GetError());
@@ -1464,6 +1525,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    MapWin.framePtr = malloc (MapWin.frameSize);
    if (MapWin.framePtr == NULL) {
       fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(MapWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1483,7 +1545,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    MapWin.CurrentPrintPosX = 0;
    MapWin.CurrentPrintPosY = 0;
    SDL_UpdateTexture(MapWin.texPtr, NULL, MapWin.framePtr, MapWin.pitch); // copy Frame to Texture
-   SDL_RenderCopy(renMapPtr, MapWin.texPtr, NULL, &MapWin.rect); // copy Texture to Renderer
+   SDL_RenderCopy(MapRenPtr, MapWin.texPtr, NULL, &MapWin.rect); // copy Texture to Renderer
    //SDL_RenderPresent(renPtr); // show empty canvas
    //SDL_Delay(delay); // ms
 
@@ -1510,6 +1572,8 @@ int InitGraphicsSystem(uint32_t WinMode) {
    int MapFrameSize = MapSfcPtr->pitch * MapSfcPtr->h;
    if (MapFrameSize != MapWin.frameSize) {
       fprintf(stderr, "MapSfcPtr size:%u expected:%u\n", MapFrameSize, MapWin.frameSize);
+      SDL_FreeSurface(MapSfcPtr);
+      SDL_DestroyTexture(MapWin.texPtr);
       SDL_DestroyRenderer(renPtr);
       SDL_DestroyWindow(winPtr);
       SDL_Quit();
@@ -1518,6 +1582,132 @@ int InitGraphicsSystem(uint32_t WinMode) {
 
     return 0;
 } // InitGraphicsSystem()
+
+
+/****************************************************************************\
+* missGame                                                                   *
+*                                                                            *
+\****************************************************************************/
+int missGame(int hv) {
+   FILE* filePtr;
+   long int FileLength;
+   size_t BytesRead;
+   char* strPtr;
+   char* msgPtr;
+   char* endPtr;
+   // we need the config file for error messages with download links/URL
+   filePtr = fopen(WLCONFIG, "rb");
+   if (!filePtr) {
+      fprintf(stderr, "ERROR in WL.c: can't open config file '%s'\n", WLCONFIG);
+      return 1;
+   }
+   fseek(filePtr, 0, SEEK_END);
+   FileLength = ftell(filePtr);
+   strPtr=malloc(FileLength+1);
+   if (strPtr==NULL) {
+      fprintf(stderr, "missGame() ERROR: cannot malloc\n");
+      return 1;
+   }
+   fseek(filePtr, 0, SEEK_SET);
+   if (WL_DEBUG) {
+      printf("WL: Reading config file with %li byte from %s ... ", FileLength, WLCONFIG);
+   }
+   BytesRead = fread(strPtr, 1, FileLength, filePtr);
+   fclose(filePtr);
+   if (WL_DEBUG) {
+      if (FileLength != BytesRead)
+         printf("ERROR!\n");
+      else
+         printf("read!\n");
+   }
+   msgPtr=strstr(strPtr, "missGameMsg=\"");
+   if (msgPtr==NULL) {
+      fprintf(stderr, "'missGameMsg=' not found in config file\n");
+      return 1;
+   }
+   msgPtr=msgPtr+13;
+   endPtr=strstr(msgPtr, "\"");
+   if (endPtr!=NULL) *endPtr='\0';
+   printf("%s", msgPtr);
+
+   // create an SDL error dialog
+   SDL_Window* dlgWinPtr = SDL_CreateWindow("Wilderland - Error", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DIALOGWIDTH, DIALOGHEIGHT, SDL_WINDOW_SHOWN); // SDL_WINDOWPOS_UNDEFINED
+   if (dlgWinPtr == NULL) {
+      fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+      SDL_Quit();
+      return 1;
+   }
+   // Creating a Renderer (window, driver index, flags)
+   SDL_Renderer* dlgRenPtr = SDL_CreateRenderer(dlgWinPtr, -1, 0); /*SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC*/
+   if (dlgRenPtr == NULL){
+      fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
+   }
+   SDL_SetRenderDrawColor(dlgRenPtr, components(SDL_ALPHA_OPAQUE<<24|SC_BRWHITE)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+   SDL_RenderClear(dlgRenPtr);
+   struct TextWindowStruct dlgTxt; // dialog text window descriptor
+   dlgTxt.texPtr = SDL_CreateTexture(dlgRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, DIALOGWIDTH-DIALOGBORDER, DIALOGHEIGHT);
+   if (dlgTxt.texPtr == NULL) {
+      fprintf(stderr, "SDL_CreateTexture Error: %s\n", SDL_GetError());
+      SDL_DestroyRenderer(dlgRenPtr);
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
+   }
+   dlgTxt.pitch = (DIALOGWIDTH-DIALOGBORDER) * BYTESPERPIXEL;
+   dlgTxt.frameSize = dlgTxt.pitch * DIALOGHEIGHT;
+   dlgTxt.framePtr = malloc (dlgTxt.frameSize);
+   if (dlgTxt.framePtr == NULL) {
+      fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(dlgTxt.texPtr);
+      SDL_DestroyRenderer(dlgRenPtr);
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
+   }
+   memset (dlgTxt.framePtr, SC_BRWHITE, dlgTxt.frameSize); // White
+   dlgTxt.rect.x = DIALOGBORDER;
+   dlgTxt.rect.y = 0;
+   dlgTxt.rect.w = DIALOGWIDTH-DIALOGBORDER;
+   dlgTxt.rect.h = DIALOGHEIGHT;
+   dlgTxt.CurrentPrintPosX = 0;
+   dlgTxt.CurrentPrintPosY = 0;
+
+   // print error in dialog and show
+   SDLTWE_PrintString (&dlgTxt, msgPtr, &CharSet, SC_BLACK, SC_BRWHITE); // Black on White
+   SDL_UpdateTexture(dlgTxt.texPtr, NULL, dlgTxt.framePtr, dlgTxt.pitch); // copy Frame to Texture
+   SDL_RenderCopy(dlgRenPtr, dlgTxt.texPtr, NULL, &dlgTxt.rect); // copy Texture to Renderer
+   SDL_RenderPresent(dlgRenPtr); // show canvas
+
+   // now wait for dialog close
+   int RunLoop = 1;
+   SDL_Event event;
+   while (RunLoop) {
+      while (SDL_PollEvent(&event)!=0) {
+         switch (event.type) {
+            case SDL_QUIT: // never happen with other windows
+               RunLoop = 0;
+               break;
+            case SDL_WINDOWEVENT: // to catch close with other windows
+               if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
+                  RunLoop = 0;
+               }
+               break;
+            case SDL_KEYDOWN:
+               RunLoop = 0;
+               break;
+         } // switch
+      } // poll event
+   } // while (RunLoop)
+   free(dlgTxt.framePtr);
+   SDL_DestroyTexture(dlgTxt.texPtr);
+   SDL_DestroyRenderer(dlgRenPtr);
+   SDL_DestroyWindow(dlgWinPtr);
+
+   return 0;
+} // missGame()
 
 
 /****************************************************************************\
@@ -1571,7 +1761,6 @@ int main(int argc, char *argv[]) {
    byte b;
    FILE *f;
    uint32_t WinMode = 0; // window mode (vs. full screen);
-   int SeedRND    = 0;
    int MaxSpeed   = 0;
    uint32_t msTimer = 0;
    int32_t DeltaT  = 0;
@@ -1582,7 +1771,7 @@ int main(int argc, char *argv[]) {
    HV = -1;  // Hobbit version (global variable)
 
    printf("Wilderland - A Hobbit Environment v"WLVER" %ubit\n", bit);
-   printf("(c) 2012-2019 by CH, Copyright 2019-2022 Valerio Messina\n");
+   printf("(c) 2012-2019 by CH, Copyright 2019-"WLYEAR" Valerio Messina\n");
 
    // process command line arguments
    int fl=0;
@@ -1619,82 +1808,32 @@ int main(int argc, char *argv[]) {
 
    chDirBin(argv[0]); // to let find assets files
 
-   if (InitSpectrum()) {
-      fprintf(stderr, "WL: ERROR initializing spectrum. Program aborted.\n");
-      exit(-1);
-   }
-   #if CPUEMUL == eZ80
-      printf("WL: Using CPU emulator: 'Z80' by Marat Fayzullin\n");
-      FileOfZ80 = sizeof(z80) - sizeof(void*) - ( ((void*)&(z80.User))-((void*)&(z80.Trace))-sizeof(z80.Trace) );
-      // 48: fixed size vars(bye,word,int), skip void pointer and 32/64 bit padding
-   #endif
-   #if CPUEMUL == ez80emu
-      printf("WL: Using CPU emulator: 'z80emu' by Lin Ke-Fong\n");
-      FileOfZ80 = sizeof(z80) - 3*16*sizeof(void*) - ( ((void*)&(z80.register_table[0]))-((void*)&(z80.im))-sizeof(z80.im) );
-      // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
-   #endif
-   //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
-   #if CPUEMUL == eZ80
-      ResetZ80(&z80);
-      switch (HV) {
-         case OWN:
-            z80.PC.W = L_START_OWN;
-            break;
-         case V10:
-            z80.PC.W = L_START_V10;
-            break;
-         case V12:
-            z80.PC.W = L_START_V12;
-            break;
-         default:
-            exit(-1);
-      }
-      if (SeedRND)
-          z80.R = (byte) SDL_GetTicks();
-   #endif
-   #if CPUEMUL == ez80emu
-      Z80Reset (&z80);
-      switch (HV) {
-         case OWN:
-            z80.pc = L_START_OWN;
-            break;
-         case V10:
-            z80.pc = L_START_V10;
-            break;
-         case V12:
-            z80.pc = L_START_V12;
-            break;
-         default:
-            exit(-1);
-      }
-      if (SeedRND)
-         z80.r = (byte) SDL_GetTicks();
-   #endif
-   //printZ80struct();
-
-   if (InitGame(HV)) {
-      fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
-      exit(-1);
-   }
-
    if (InitGraphicsSystem(WinMode)) {
       fprintf(stderr, "WL: ERROR initializing graphic system. Program aborted.\n");
       exit(-1);
    }
 
-   //SDL_RenderClear(renPtr); // clear renderer
+   if (InitSpectrum()) {
+      fprintf(stderr, "WL: ERROR initializing Spectrum. Program aborted.\n");
+      exit(-1);
+   }
 
-   /*** start to drawn on the empty renderer ***/
+   if (InitGame(HV)) {
+      missGame(HV);
+      fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
+      exit(-1);
+   }
+
+   // game loaded, so can show windows
+   SDL_ShowWindow(winPtr);
+   if (dockMap==false) SDL_ShowWindow(MapWinPtr);
+   SDL_RaiseWindow(winPtr); // focus to main win
+
+   /*** start to draw on the empty renderer ***/
    SDLTWE_DrawTextWindowFrame(&LogWin , 4, BORDERGRAY);
    SDLTWE_DrawTextWindowFrame(&GameWin, 4, BORDERGRAY);
    SDLTWE_DrawTextWindowFrame(&HelpWin, 4, BORDERGRAY);
    SDLTWE_DrawTextWindowFrame(&ObjWin , 4, BORDERGRAY);
-   //SDL_RenderPresent(renPtr);
-
-   SDLTWE_PrintCharTextWindow(&LogWin, '\f', &CharSet, SC_BLACK, SC_WHITE); // clear LOG
-   // ^^^^^^^^^^^^^ call SDL_UpdateTexture() and SDL_RenderCopy() for scrool
-   //SDL_RenderPresent(renPtr);
-   //SDL_Delay(delay); // ms
 
    // Game title screen
    if (HV == V12) {
@@ -1721,20 +1860,19 @@ int main(int argc, char *argv[]) {
    fclose(f);
    SDL_UpdateTexture(GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
    SDL_RenderCopy(renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
-   //SDL_RenderPresent(renPtr);
-
-   Help(&HelpWin, &CharSet);
-   SDL_UpdateTexture(HelpWin.texPtr, NULL, HelpWin.framePtr, HelpWin.pitch); // copy Frame to Texture
-   SDL_RenderCopy(renPtr, HelpWin.texPtr, NULL, &HelpWin.rect); // HELPWIN texture to all Renderer
-   //SDL_RenderPresent(renPtr);
 
    PrepareGameMap(); // empty map
    DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
-
+   
    // show windows contents
-   SDL_RenderPresent(renPtr);    // update screen
-   if (dockMap==false) SDL_RenderPresent(renMapPtr); // update screen
-   SDL_Delay(1);
+   SDL_RenderPresent(renPtr);
+   if (dockMap==false) SDL_RenderPresent(MapRenPtr);
+   SDL_Delay(delay); // to avoid flickering
+
+   Help(&HelpWin, &CharSet); // call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent()
+
+   SDLTWE_PrintCharTextWindow(&LogWin, '\f', &CharSet, SC_BLACK, SC_WHITE); // clear LOG
+   // ^^^^^^^^^^^^^ call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent() only for scrool
 
    RunMainLoop = 1;
 
@@ -1779,7 +1917,7 @@ int main(int argc, char *argv[]) {
          DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
       }
       SDL_RenderPresent(renPtr); // update screen
-      if (dockMap==false) SDL_RenderPresent(renMapPtr); // update screen
+      if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
       //SDL_Delay(delay); // ms
 
       while (SDL_PollEvent(&event)!=0) {
@@ -1797,9 +1935,7 @@ int main(int argc, char *argv[]) {
                }
                break;
             case SDL_KEYDOWN:
-               SDL_Delay(1); // to avoid flickering
                //printf("key down\n");
-               //CurrentPressedCod = event.key.keysym.scancode;
                CurrentPressedKey = event.key.keysym.sym;
                CurrentPressedMod = event.key.keysym.mod;
                if (CurrentPressedKey == SDLK_BACKSPACE)

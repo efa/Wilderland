@@ -1,4 +1,4 @@
-Files packaged with Wilderland Version 2.09 - 20220904
+Files packaged with Wilderland Version 2.10 - 20230125
 ------------------------------------------------------
 CharSetSpectrum8x8.bin        Binary: Spectrum character set
 Changelog.txt                 TXT: Versions history
@@ -22,6 +22,7 @@ dict_v12.txt                  TXT: list of words
 rooms_v12.txt                 TXT: list of rooms
 SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps
 WLpackage.txt                 TXT: package file list
+WLconfig.txt                  TXT: file with configurations and error messages
 WL.ppj                        TXT: Pelles C Project files
 WL                            x64 Binary: Linux64 executable built with GCC
 WL32                          686 Binary: Linux32 executable built with GCC
@@ -94,6 +95,8 @@ TapCon/TapCon.c               C source: < stdio.h,stdlib.h,string.h WL.h
 
 Design/Map_V6_gross.png       PNG: Hobbit map hi-definition
 Design/Map_V6_W1000.png       PNG: Hobbit map
+Design/WL.odg                 OpenDocument: Drawing with includes and win size
+Design/WL.pdf                 PDF: Drawing with includes and win size
 
 output/                       386 COFF object files
 

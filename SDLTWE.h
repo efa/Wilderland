@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230122                                                         *
+* V 2.10b - 20230125                                                         *
 *                                                                            *
 *  SDLTWE.h is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -58,6 +58,7 @@ struct CharSetStruct {
    char CharSubstitute;
 };
 
+extern int delay; // to avoid flickering
 extern byte firstEditable; // column by SDLTWE_PrintCharTextWindow
 
 void SDLTWE_SetPixel(struct TextWindowStruct* TW, int x, int y, uint32_t color);

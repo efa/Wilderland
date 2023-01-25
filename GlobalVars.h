@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230122                                                         *
+* V 2.10b - 20230125                                                         *
 *                                                                            *
 *  GlobalVars.h is part of Wilderland - A Hobbit Environment                 *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -41,9 +41,9 @@ extern word ObjectsIndexAddress, ObjectsAddress;
 extern bool dockMap; // when true the map is docked
 
 extern SDL_Window*   winPtr;
-extern SDL_Window*   winMapPtr;
+extern SDL_Window*   MapWinPtr;
 extern SDL_Renderer* renPtr;
-extern SDL_Renderer* renMapPtr;
+extern SDL_Renderer* MapRenPtr;
 extern SDL_Surface*  MapSfcPtr;
 extern struct TextWindowStruct LogWin;
 extern struct TextWindowStruct GameWin;

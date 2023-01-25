@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230122                                                         *
+* V 2.10b - 20230125                                                         *
 *                                                                            *
 *  WL.h is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -31,6 +31,7 @@
 #include "Spectrum.h"
 
 #define WLVER "2.10b" // must be 5 chars M.mm_
+#define WLYEAR "2023" // must be 4 chars YYYY
 #define WL_DEBUG 0
 
 // tape related values
@@ -162,12 +163,16 @@
 #define MAPWINHEIGHTND  725
 #define INDICATOROFFSET 2
 
+#define DIALOGWIDTH     600
+#define DIALOGHEIGHT    120
+#define DIALOGBORDER    8
 #define SDLTWE_CHARSETLENGTH    (0x300)
 #define SDLTWE_CHARSETFILENAME  "CharSetSpectrum8x8.bin"
 #define GAMEMAPFILENAME         "GameMap.png"
 #define GAMEMAPFILENAMEND       "GameMapHi.png"
 #define TITLESCREEN10FILENAME   "HOBBIT.SCR"
 #define TITLESCREEN12FILENAME   "HOBBIT12.SCR"
+#define WLCONFIG                "WLconfig.txt"
 
 // Object Number Animals
 #define OBJNR_YOU              0x00

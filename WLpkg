@@ -1,5 +1,5 @@
 #!/bin/bash
-# WLpkg: Copyright 2019-2022 Valerio Messina efa@iol.it
+# WLpkg: Copyright 2019-2023 Valerio Messina efa@iol.it
 # WLpkg is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,6 +44,11 @@ fi
 if [[ "$1" = "" || "$1" != "LIN32" && "$1" != "LIN64" && "$1" != "MGW32" && "$1" != "MGW64" && "$1" != "MXE32" && "$1" != "MXE64" && "$1" != "OSX64" ]]; then
    echo "ERROR: miss/unsupported package type"
    echo "Syntax: $ WLpkg LIN32|LIN64|MGW32|MGW64|MXE32|MXE64|OSX64"
+   exit
+fi
+exist=`which osxcross-dmg 2> /dev/null`
+if (test "$1" = "OSX64" && test "" = "$exist") then
+   echo "ERROR: WLpkg depend on 'osxcross-dmg' to generate for macOS. Exit"
    exit
 fi
 
@@ -132,8 +137,11 @@ cp dict_v12.txt $DSTPATH/$DST/$DMG
 cp README.txt $DSTPATH/$DST/$DMG
 cp rooms_v12.txt $DSTPATH/$DST/$DMG
 cp WLpackage.txt $DSTPATH/$DST/$DMG
+cp WLconfig.txt  $DSTPATH/$DST/$DMG
 cp Design/Map_V6_gross.png $DSTPATH/$DST/$DMG/Design
 cp Design/Map_V6_W1000.png $DSTPATH/$DST/$DMG/Design
+cp Design/WL.odg $DSTPATH/$DST/$DMG/Design
+cp Design/WL.pdf $DSTPATH/$DST/$DMG/Design
 
 echo "Copying binary ..."
 if [[ "$PKG" = "LIN64" ]]; then
@@ -171,7 +179,6 @@ if [[ "$PKG" = "MXE32" ]]; then
    cp TapCon/TapConMxe32.exe $DSTPATH/$DST/TapCon
 fi
 if [[ "$PKG" = "OSX64" ]]; then
-   cp WLosxPkg/liblzma.5.dylib WLosxPkg/libzstd.1.dylib "$DSTPATH/$DST/$DMG"
    cp TapCon/TapConOsx $DSTPATH/$DST/$DMG/TapCon
    cp -a WLosx Wilderland.icns $DSTPATH/$DST
    cd $DSTPATH/$DST

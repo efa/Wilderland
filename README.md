@@ -30,7 +30,7 @@ CONTENT
 (0) - Legal Info
 ================
 
-WILDERLAND is (c) 2012 by CH, Copyright 2019-2022 Valerio Messina.
+WILDERLAND is (c) 2012 by CH, Copyright 2019-2023 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the authors
    at wilderland AT aonDOTat, efa AT iol DOT it
@@ -150,7 +150,7 @@ To build for Win64 on Linux use: ```make -f MakefileM64```, require [4]
 
 To build for Win32 on Linux use: ```make -f MakefileM32```, require [4]
 
-To build for macOS64 on Linux use:``` make -f MakefileO64```, require [5]
+To build for macOS64 on Linux use:```make -f MakefileO64```, require [5]
 
 On all builds, you can select the CPU emulator to be used with:
 
@@ -166,6 +166,7 @@ $ WLpkg PKG # to package the built files
             # PKG can be LIN32,LIN64,MGW32,MGW64,MXE32,MXE64,OSX64
 $ WLrel     # to generate the release packages for all target platforms
 ```
+
 
 
 (4) - Obtaining the game files

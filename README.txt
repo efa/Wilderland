@@ -30,7 +30,7 @@ CONTENT
 (0) - Legal Info
 ================
 
-WILDERLAND is (c) 2012 by CH, Copyright 2019-2022 Valerio Messina.
+WILDERLAND is (c) 2012 by CH, Copyright 2019-2023 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the authors
    at wilderland AT aonDOTat, efa AT iol DOT it
@@ -352,4 +352,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.10b - 20230122
+README.txt Version 2.10b - 20230125

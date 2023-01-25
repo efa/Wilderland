@@ -1,6 +1,10 @@
-2.10b - 20230122
+2.10b - 20230125
 ----------------
 Changed:
+- when missing 'The Hobbit' binary show download link and istructions
+- instructions loaded from config file WLCONFIG (file shown in the error)
+- when WL won't start for non SDL reason (eg. miss The Hobbit binary),
+  show a dialog box with error, as console errors cannot be seen
 - map resolution 1280x496 increased to 1870x725
 - option -MAP to undock map in a separate window
   connect window X to close also with undocked map
@@ -9,10 +13,14 @@ Changed:
   WL.c: main() Sint32
 - remove LockScreen(winPtr); UnLockScreen(winPtr); LockLevel;
 - removed some commented blocks
-- added WL.odg
+- read and show SDL version at compile and link time
+- added WL.odg with includes and windows size design
 - renamed GLOBAL_VARS.h to GlobalVars.h and SPECTRUM.h to Spectrum.h
+- use osxcross-dmg(ricorsive findobj) to collect dylib
 - applied my coding style
+- use WLYEAR for copyright
 Bugfix:
+- increased delay to 20 ms between SDLtext to avoid flicker on macOS
 Modification to 'z80emu':
 - remember HALT state on different calls. Quit HALT by IRQ or NMI
   z80emu.c: use state->status = Z80_STATUS_FLAG_HALT;

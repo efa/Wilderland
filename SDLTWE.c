@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230122                                                         *
+* V 2.10b - 20230125                                                         *
 *                                                                            *
 *  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -33,6 +33,7 @@
 #include "GlobalVars.h"
 
 
+int delay=20; // min 20 ms to avoid flickering
 byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
 
@@ -126,7 +127,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct Char
          SDL_UpdateTexture(TW->texPtr, NULL, TW->framePtr, TW->pitch); // copy Frame to Texture
          SDL_RenderCopy(renPtr, TW->texPtr, NULL, &TW->rect); // Texture to renderer
          SDL_RenderPresent(renPtr);
-         SDL_Delay(12); // at least 12 ms to avoid flickering
+         SDL_Delay(delay); // to avoid flickering
       }
       TW->CurrentPrintPosX = 0;
       TW->CurrentPrintPosY = 0;
