@@ -33,7 +33,7 @@
 #include "GlobalVars.h"
 
 
-int delay=20; // min 20 ms to avoid flickering
+int delay=5; // with SDL_RENDERER_ACCELERATED min 20 ms to avoid flickering
 byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
 
@@ -209,7 +209,7 @@ byte* SDLTWE_ReadCharSet(char* CharSetFilename, byte* CharSet) {
    fp = fopen(CharSetFilename, "rb");
    if (!fp) {
       fprintf(stderr, "ERROR in SDLWTE.c: can't open character set file '%s'\n", CharSetFilename);
-      return (NULL);
+      return NULL;
    }
 
    fseek(fp, 0, SEEK_END);
@@ -227,10 +227,10 @@ byte* SDLTWE_ReadCharSet(char* CharSetFilename, byte* CharSet) {
    if (FileLength != BytesRead) {
       if (WL_DEBUG)
          printf("ERROR!\n");
-      return (NULL);
+      return NULL;
    } else {
       if (WL_DEBUG)
          printf("read!\n");
-      return (CharSet);
+      return CharSet;
    }
 }

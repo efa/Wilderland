@@ -65,6 +65,9 @@ word DictionaryBaseAddress;
 word ObjectsIndexAddress, ObjectsAddress;
 bool dockMap=true; // when false the map is undocked
 int SeedRND = 0; // when 1 use Z80 refresh register to generate random numbers
+char* dlgMsgPtr; // keep the dialog box error message
+char* urlLnkPtr; // keep the Hobbit game download url
+char zipFileName[FILENAME_MAX]; // keep the Hobbit zip filename
 
 SDL_Window*   winPtr;
 SDL_Window*   MapWinPtr;
@@ -102,17 +105,17 @@ byte six[OBJECTS_NR_MAX+1]; // used to hack unknown property 06
 
 
 /****************************************************************************\
-* Setpixel on map                                                            *
+* WL_Setpixel on map                                                         *
 *                                                                            *
 \****************************************************************************/
-void SetPixel(struct TextWindowStruct* TW, int x, int y, color_t color) {
+void WL_SetPixel(struct TextWindowStruct* TW, int x, int y, color_t color) {
    int maxw = TW->rect.w;
    int maxh = TW->rect.h;
    
    if (x>=maxw) return; // MAPWINWIDTH
    if (y>=maxh) return; // MAPWINHEIGHT
    TW->framePtr[y*maxw + x] = color;
-}
+} // WL_SetPixel()
 
 
 /****************************************************************************\
@@ -138,12 +141,12 @@ void DrawLineRelative(struct TextWindowStruct* TW, int x, int y, int dx, int dy,
          ry--;
       if (dx > dy)
          for (x1 = 0; x1 < dx; x1++)
-            SetPixel(TW, x + sx * (x1 + (rx - 1)), sy * (y + ((int)(dy * x1 / dx)) + (ry - 1)), color);
+            WL_SetPixel(TW, x + sx * (x1 + (rx - 1)), sy * (y + ((int)(dy * x1 / dx)) + (ry - 1)), color);
       else
          for (y1 = 0; y1 < dy; y1++)
-            SetPixel(TW, x + sx * (((int)(dx * y1 / dy)) + (rx - 1)), y + sy * (y1 + (ry - 1)), color);
+            WL_SetPixel(TW, x + sx * (((int)(dx * y1 / dy)) + (rx - 1)), y + sy * (y1 + (ry - 1)), color);
    }
-}
+} // DrawLineRelative()
 
 
 /****************************************************************************\
@@ -177,7 +180,7 @@ void PrintChar(struct TextWindowStruct* TW, struct CharSetStruct* cs, char a, in
             *pixm = paper;
       }
    }
-}
+} // PrintChar()
 
 
 /****************************************************************************\
@@ -189,7 +192,7 @@ void PrintString(struct TextWindowStruct* TW, struct CharSetStruct* cs, char* ps
       PrintChar(TW, cs, *ps++, x, y, ink, paper);
       x += cs->Width;
    }
-}
+} // PrintString()
 
 
 /****************************************************************************\
@@ -204,8 +207,8 @@ word SearchByteWordTable(byte a, word address) {
       else
          address += 3;
    }
-   return (0);
-}
+   return 0;
+} // SearchByteWordTable()
 
 
 /****************************************************************************\
@@ -220,8 +223,8 @@ word GetObjectAttributePointer(byte a, byte attributeoffset) {
    if (OAP)
       return (OAP + attributeoffset);
    else
-      return (0);
-}
+      return 0;
+} // GetObjectAttributePointer()
 
 
 /****************************************************************************\
@@ -240,7 +243,7 @@ void DrawAnimalPosition(struct TextWindowStruct* TW, struct CharSetStruct* cs, b
       PrintString(TW, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRRED, 0x00000000ul);
    else
       PrintString(TW, cs, initials, x + 13, y + objectoffset*15 - 33, SC_BRGREEN, 0x00000000ul);
-}
+} // DrawAnimalPosition()
 
 
 /****************************************************************************\
@@ -269,7 +272,7 @@ void PrepareOneAnimalPosition(struct TextWindowStruct* TW, struct CharSetStruct*
          objectsperroom[CurrentAnimalRoom]++;
       }
    }
-}
+} // PrepareOneAnimalPosition()
 
 
 /****************************************************************************\
@@ -283,7 +286,7 @@ void PrepareAnimalPositions(struct TextWindowStruct* TW, struct CharSetStruct* c
 
    for(AnimalNr = OBJNR_DRAGON; AnimalNr <= OBJNR_DISGUSTINGGOBLIN; AnimalNr++)
       PrepareOneAnimalPosition(TW, cs, AnimalNr, objectsperroom);
-}
+} // PrepareAnimalPositions()
 
 
 /****************************************************************************\
@@ -295,14 +298,14 @@ void ShowTextWindow(struct TextWindowStruct* TW) {
    SDL_RenderCopy(renPtr, TW->texPtr, NULL, &TW->rect); // Texture to Renderer
    SDL_RenderPresent(renPtr); // to screen
    SDL_Delay(delay); // to avoid flickering
-}
+} // ShowTextWindow()
 
 
 /****************************************************************************\
 * printZ80struct                                                             *
 *                                                                            *
 \****************************************************************************/
-void printZ80struct () {
+void printZ80struct() {
    uintptr_t p;
    uintptr_t z = (uintptr_t)&z80;
    uintptr_t fo=98; // file offset, was 64 on filever1
@@ -411,14 +414,14 @@ void printZ80struct () {
    p=(uintptr_t)&z80.register_table[14]; printf("%03tu %03tu @:0x%16tX &HL :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[14]);
    p=(uintptr_t)&z80.register_table[15]; printf("%03tu %03tu @:0x%16tX &AF :0x%16tX\n", p-z+fo, p-z, p, (uintptr_t)z80.register_table[15]);
 #endif
-}
+} // printZ80struct()
 
 
 /****************************************************************************\
 * printZ80                                                                   *
 *                                                                            *
 \****************************************************************************/
-void printZ80 () {
+void printZ80() {
    unsigned int i;
    byte mem;
    printf("z80 size:%zu\n", SizeOfZ80);
@@ -429,7 +432,7 @@ void printZ80 () {
       //printf("z80[%03u]='%c'=0x%02X=%03u\n", i, mem, mem, mem );
       printf("z80[%03u]=0x%02X\n", i, mem );
    }
-}
+} // printZ80()
 
 
 /****************************************************************************\
@@ -482,7 +485,7 @@ void GetFileName(char* fnstr, struct TextWindowStruct* TW, struct CharSetStruct*
          }
       }
    }
-}
+} // GetFileName()
 
 /****************************************************************************\
 * SaveGame                                                                   *
@@ -534,7 +537,7 @@ void SaveGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
 
    SDLTWE_PrintString(TW, ".wls saved.\n\n", CS, ink, paper);
    ShowTextWindow(TW);
-}
+} // SaveGame()
 
 
 /****************************************************************************\
@@ -715,62 +718,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    #if CPUEMUL == ez80emu
       Z80ResetTable (&z80); // regenerate the register pointers to new address
    #endif
-}
-
-
-/****************************************************************************\
-* GetDictWord                                                                *
-*                                                                            *
-\****************************************************************************/
-void GetDictWord(word a, char* buf) {
-   word i = 1; // char count
-
-   a += DictionaryBaseAddress;
-
-   // the following line relies on evaluation from left to right
-   while (!(ZXmem[a] & 0x80) || (i == 2) || ((i == 3) && (ZXmem[a - 1] & 0x80))) {
-      if (ZXmem[a] & 0x1F) {
-         *buf++ = (ZXmem[a] & 0x1F) + 'A' - 1;
-      }
-      a++;
-      i++;
-   }
-   if (ZXmem[a] & 0x1F)
-      *buf++ = (ZXmem[a] & 0x1F) + 'A' - 1;
-   *buf = 0;
-}
-
-
-/****************************************************************************\
-* GetObjectFullName                                                          *
-*                                                                            *
-* +0A/0B: ADJECTIVE1, +0C/0D: ADJECTIVE2, +08/09: NOUN                       *
-\****************************************************************************/
-void GetObjectFullName(word oa, char* OFN) {
-   word wa;
-   char StringBuffer[25];
-
-   wa = ZXmem[oa + 0x0A] + 0x100 * ZXmem[oa + 0x0B];   // adjective 1
-   if (wa) {
-      GetDictWord(wa, StringBuffer);
-      strcat(OFN, StringBuffer);
-      strcat(OFN, " ");
-   }
-   wa = ZXmem[oa + 0x0C] + 0x100 * ZXmem[oa + 0x0D];   // adjective 2
-   if (wa) {
-      GetDictWord(wa, StringBuffer);
-      if (!strcmp(StringBuffer, "INSIGNIFICANT"))
-         strcpy(StringBuffer, "INSIGN.");
-      strcat(OFN, StringBuffer);
-      strcat(OFN, " ");
-   }
-   wa = ZXmem[oa + 0x08] + 0x100 * ZXmem[oa + 0x09];   // noun
-   if (wa & 0x0FFF) {
-      GetDictWord(wa & 0x0FFF, StringBuffer);
-      strcat(OFN, StringBuffer);
-   }
-
-}
+} // LoadGame()
 
 
 /****************************************************************************\
@@ -827,7 +775,7 @@ void GetHexByte(byte* b, struct TextWindowStruct* TW, struct CharSetStruct* CS, 
          }
       }
    }
-}
+} // GetHexByte()
 
 
 /****************************************************************************\
@@ -876,7 +824,7 @@ void Go(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t i
 
    SDLTWE_PrintString(TW, ". OK, you are now in this room.\n", CS, ink, paper);
    ShowTextWindow(TW);
-}
+} // Go()
 
 
 /****************************************************************************\
@@ -922,7 +870,7 @@ void Help(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
    SDLTWE_PrintString(TW, " Press 'n' as first key to play without graphics (not game 1.0) \n", CS, SC_RED, SC_BLACK);
    ShowTextWindow(TW);
 
-}
+} // Help()
 
 
 /****************************************************************************\
@@ -953,7 +901,63 @@ void Info(struct TextWindowStruct* TW, struct CharSetStruct* CS) {
    SDLTWE_PrintString(TW, "Contact: wilderland@aon.at, efa@iol.it\n", CS, SC_WHITE, SC_BLACK);
    ShowTextWindow(TW);
 
-}
+} // Info()
+
+
+/****************************************************************************\
+* GetDictWord                                                                *
+*                                                                            *
+\****************************************************************************/
+void GetDictWord(word a, char* buf) {
+   word i = 1; // char count
+
+   a += DictionaryBaseAddress;
+
+   // the following line relies on evaluation from left to right
+   while (!(ZXmem[a] & 0x80) || (i == 2) || ((i == 3) && (ZXmem[a - 1] & 0x80))) {
+      if (ZXmem[a] & 0x1F) {
+         *buf++ = (ZXmem[a] & 0x1F) + 'A' - 1;
+      }
+      a++;
+      i++;
+   }
+   if (ZXmem[a] & 0x1F)
+      *buf++ = (ZXmem[a] & 0x1F) + 'A' - 1;
+   *buf = 0;
+
+} // GetDictWord()
+
+
+/****************************************************************************\
+* GetObjectFullName                                                          *
+*                                                                            *
+* +0A/0B: ADJECTIVE1, +0C/0D: ADJECTIVE2, +08/09: NOUN                       *
+\****************************************************************************/
+void GetObjectFullName(word oa, char* OFN) {
+   word wa;
+   char StringBuffer[25];
+
+   wa = ZXmem[oa + 0x0A] + 0x100 * ZXmem[oa + 0x0B];   // adjective 1
+   if (wa) {
+      GetDictWord(wa, StringBuffer);
+      strcat(OFN, StringBuffer);
+      strcat(OFN, " ");
+   }
+   wa = ZXmem[oa + 0x0C] + 0x100 * ZXmem[oa + 0x0D];   // adjective 2
+   if (wa) {
+      GetDictWord(wa, StringBuffer);
+      if (!strcmp(StringBuffer, "INSIGNIFICANT"))
+         strcpy(StringBuffer, "INSIGN.");
+      strcat(OFN, StringBuffer);
+      strcat(OFN, " ");
+   }
+   wa = ZXmem[oa + 0x08] + 0x100 * ZXmem[oa + 0x09];   // noun
+   if (wa & 0x0FFF) {
+      GetDictWord(wa & 0x0FFF, StringBuffer);
+      strcat(OFN, StringBuffer);
+   }
+
+} // GetObjectFullName()
 
 
 /****************************************************************************\
@@ -970,7 +974,7 @@ void sbinprintf(char* buf, byte b) {
          *buf++ = '.';
    }
    *buf = 0;
-}
+} // sbinprintf()
 
 
 /****************************************************************************\
@@ -984,6 +988,11 @@ void PrintObject(word ai, struct TextWindowStruct* OW, struct CharSetStruct* CS,
    char ObjectStringBuffer[100];
 
    ObjectNumber = ZXmem[ai++];
+   if (ObjectNumber>OBJECTS_NR_MAX) {
+      printf("obj:0x%02X\n", ObjectNumber);
+      return;
+   }
+   //printf("obj:0x%02X\n", ObjectNumber);
    sprintf(ObjectPrintLine, "%02X ", ObjectNumber);
 
    oa = ZXmem[ai] + 0x100 * ZXmem[ai + 1];
@@ -1040,7 +1049,7 @@ void PrintObject(word ai, struct TextWindowStruct* OW, struct CharSetStruct* CS,
       else
          SDLTWE_PrintString(OW, ObjectPrintLine, CS, ink, paper);
    }
-}
+} // PrintObject()
 
 
 /****************************************************************************\
@@ -1055,12 +1064,12 @@ void PrintObjectsList(word OIA, word OA, struct TextWindowStruct* OW, struct Cha
    SDLTWE_PrintString(OW, "--------------------------------------------------------", CS, ink, paper);
    ai = OIA;
    while (ZXmem[ai] != 0xFF) {
-      if (ZXmem[ai] == 60)  // animals have object numbers >= 60
+      if (ZXmem[ai] == 0x3C)  // animals have object numbers >= 60
          SDLTWE_PrintString(OW, "--------------------------------------------------------", CS, ink, paper);
       PrintObject(ai, OW, CS, ink, paper - (ZXmem[ai] % 2 ? 0x00000040ul : 0)); // with alternate background
       ai += 3;
    }
-}
+} // PrintObjectsList()
 
 
 /****************************************************************************\
@@ -1084,90 +1093,181 @@ void DisplayGameMap(void) {
 
 
 /****************************************************************************\
-* InitSpectrum                                                               *
+* missGame                                                                   *
 *                                                                            *
 \****************************************************************************/
-int InitSpectrum(void) {
-   int i;
-   FILE *fp;
-   long int FileLength;
-   size_t BytesRead;
+int missGame() {
 
-   for (i = 0; i < SL_SCREENSTART; i++)
-      ZXmem[i] = 0xC9;  /* = RET in ROM, just in case... */
+   printf("%s", dlgMsgPtr);
 
-   // we need the character set for the lower window
-   fp = fopen(SDLTWE_CHARSETFILENAME, "rb");
-   if (!fp) {
-      fprintf(stderr, "ERROR in WL.c: can't open character set file '%s'\n", SDLTWE_CHARSETFILENAME);
-      return (1);
+   // create an SDL error dialog
+   SDL_Window* dlgWinPtr = SDL_CreateWindow("Wilderland - Error", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DIALOGWIDTH, DIALOGHEIGHT, SDL_WINDOW_SHOWN); // SDL_WINDOWPOS_UNDEFINED
+   if (dlgWinPtr == NULL) {
+      fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+      SDL_Quit();
+      return 1;
    }
-   fseek(fp, 0, SEEK_END);
-   FileLength = ftell(fp);
-   fseek(fp, 0, SEEK_SET);
-   if (WL_DEBUG) {
-      printf("WL: Reading character set with %li byte from %s ... ", FileLength, SDLTWE_CHARSETFILENAME);
+   // Creating a Renderer (window, driver index, flags)
+   SDL_Renderer* dlgRenPtr = SDL_CreateRenderer(dlgWinPtr, -1, 0); /*SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC*/
+   if (dlgRenPtr == NULL){
+      fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
    }
-   BytesRead = fread(ZXmem + SL_CHARSET - 1, 1, FileLength, fp);
-   fclose(fp);
-   if (WL_DEBUG) {
-      if (FileLength != BytesRead)
-         printf("ERROR!\n");
-      else
-         printf("read!\n");
+   SDL_SetRenderDrawColor(dlgRenPtr, components(SDL_ALPHA_OPAQUE<<24|SC_BRWHITE)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+   SDL_RenderClear(dlgRenPtr);
+   struct TextWindowStruct dlgTxt; // dialog text window descriptor
+   dlgTxt.texPtr = SDL_CreateTexture(dlgRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, DIALOGWIDTH-DIALOGBORDER, DIALOGHEIGHT);
+   if (dlgTxt.texPtr == NULL) {
+      fprintf(stderr, "SDL_CreateTexture Error: %s\n", SDL_GetError());
+      SDL_DestroyRenderer(dlgRenPtr);
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
    }
+   dlgTxt.pitch = (DIALOGWIDTH-DIALOGBORDER) * BYTESPERPIXEL;
+   dlgTxt.frameSize = dlgTxt.pitch * DIALOGHEIGHT;
+   dlgTxt.framePtr = malloc (dlgTxt.frameSize);
+   if (dlgTxt.framePtr == NULL) {
+      fprintf(stderr, "malloc Error\n");
+      SDL_DestroyTexture(dlgTxt.texPtr);
+      SDL_DestroyRenderer(dlgRenPtr);
+      SDL_DestroyWindow(dlgWinPtr);
+      SDL_Quit();
+      return 1;
+   }
+   memset (dlgTxt.framePtr, SC_BRWHITE, dlgTxt.frameSize); // White
+   dlgTxt.rect.x = DIALOGBORDER;
+   dlgTxt.rect.y = 0;
+   dlgTxt.rect.w = DIALOGWIDTH-DIALOGBORDER;
+   dlgTxt.rect.h = DIALOGHEIGHT;
+   dlgTxt.CurrentPrintPosX = 0;
+   dlgTxt.CurrentPrintPosY = 0;
 
-   #if CPUEMUL == eZ80
-      printf("WL: Using CPU emulator: 'Z80' by Marat Fayzullin\n");
-      FileOfZ80 = sizeof(z80) - sizeof(void*) - ( ((void*)&(z80.User))-((void*)&(z80.Trace))-sizeof(z80.Trace) );
-      // 48: fixed size vars(bye,word,int), skip void pointer and 32/64 bit padding
-   #endif
-   #if CPUEMUL == ez80emu
-      printf("WL: Using CPU emulator: 'z80emu' by Lin Ke-Fong\n");
-      FileOfZ80 = sizeof(z80) - 3*16*sizeof(void*) - ( ((void*)&(z80.register_table[0]))-((void*)&(z80.im))-sizeof(z80.im) );
-      // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
-   #endif
-   //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
-   #if CPUEMUL == eZ80
-      ResetZ80(&z80);
-      switch (HV) {
-         case OWN:
-            z80.PC.W = L_START_OWN;
-            break;
-         case V10:
-            z80.PC.W = L_START_V10;
-            break;
-         case V12:
-            z80.PC.W = L_START_V12;
-            break;
-         default:
-            exit(-1);
-      }
-      if (SeedRND)
-          z80.R = (byte) SDL_GetTicks();
-   #endif
-   #if CPUEMUL == ez80emu
-      Z80Reset (&z80);
-      switch (HV) {
-         case OWN:
-            z80.pc = L_START_OWN;
-            break;
-         case V10:
-            z80.pc = L_START_V10;
-            break;
-         case V12:
-            z80.pc = L_START_V12;
-            break;
-         default:
-            exit(-1);
-      }
-      if (SeedRND)
-         z80.r = (byte) SDL_GetTicks();
-   #endif
-   //printZ80struct();
+   // print error in dialog and show
+   SDLTWE_PrintString (&dlgTxt, dlgMsgPtr, &CharSet, SC_BLACK, SC_BRWHITE); // Black on White
+   SDL_UpdateTexture(dlgTxt.texPtr, NULL, dlgTxt.framePtr, dlgTxt.pitch); // copy Frame to Texture
+   SDL_RenderCopy(dlgRenPtr, dlgTxt.texPtr, NULL, &dlgTxt.rect); // copy Texture to Renderer
+   SDL_RenderPresent(dlgRenPtr); // show canvas
 
-   return (0);
-} // InitSpectrum()
+   // now wait for dialog close
+   int RunLoop = 1;
+   SDL_Event event;
+   while (RunLoop) {
+      while (SDL_PollEvent(&event)!=0) {
+         switch (event.type) {
+            case SDL_QUIT: // never happen with other windows
+               RunLoop = 0;
+               break;
+            case SDL_WINDOWEVENT: // to catch close with other windows
+               if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
+                  RunLoop = 0;
+               }
+               break;
+            case SDL_KEYDOWN: // any key to exit
+               RunLoop = 0;
+               break;
+         } // switch
+      } // poll event
+   } // while (RunLoop)
+   free(dlgTxt.framePtr);
+   SDL_DestroyTexture(dlgTxt.texPtr);
+   SDL_DestroyRenderer(dlgRenPtr);
+   SDL_DestroyWindow(dlgWinPtr);
+
+   return 0;
+} // missGame()
+
+
+#ifndef NODL
+#include <zip.h>
+/****************************************************************************\
+* unzipGame                                                                  *
+*                                                                            *
+\****************************************************************************/
+int unzipGame(int hv) {
+   //Open the ZIP archive
+   int err = 0;
+   struct zip* zipPtr = zip_open(zipFileName, 0, &err);
+   if (zipPtr == NULL) {
+      //fprintf(stderr, "WL: WARN cannot open zip file\n");
+      return -1;
+   }
+   //Search for the file of given name
+   char namePtr[FILENAME_MAX];
+   if (hv==V10) {
+      strcpy(namePtr, V10_TAP_NAME);
+   }
+   if (hv==V12) {
+      strcpy(namePtr, V12_TAP_NAME);
+   }
+   struct zip_stat zipStat;
+   zip_stat_init(&zipStat);
+   zip_stat(zipPtr, namePtr, 0, &zipStat);
+   //Alloc memory for uncompressed contents
+   uint64_t size=zipStat.size * sizeof(char);
+   char* unzippedPtr = malloc(size);
+   if (unzippedPtr == NULL) {
+      fprintf(stderr, "WL: cannot allocate\n");
+      return -1;
+   }
+   //Read the compressed file
+   struct zip_file* zipFilePtr = zip_fopen(zipPtr, namePtr, 0);
+   zip_fread(zipFilePtr, unzippedPtr, zipStat.size);
+   zip_fclose(zipFilePtr);
+   //And close the archive
+   zip_close(zipPtr);
+   // write the uncompressed file
+   FILE* filePtr=fopen(namePtr, "wb");
+   uintmax_t cnt=fwrite(unzippedPtr, 1, zipStat.size, filePtr);
+   if (cnt != zipStat.size) {
+      fprintf(stderr, "WL: file is:%ju but truncated to:%ju Bytes\n", (uintmax_t)zipStat.size, cnt);
+      return -1;
+   }
+   printf("WL: unzipped file:'%s' sized:%ju Bytes\n", namePtr, cnt);
+   fclose(filePtr);
+   free(unzippedPtr);
+
+   return 0;
+} // unzipGame()
+
+
+#include <curl/curl.h>
+/****************************************************************************\
+* downloadGame                                                               *
+*                                                                            *
+\****************************************************************************/
+int downloadGame(int hv) {
+   CURL* curlPtr;
+   FILE* filePtr;
+   CURLcode res;
+   //char* urlLnkPtr = "https://www.worldofspectrum.org/pub/sinclair/games/h/HobbitTheV1.2.tap.zip";
+   //char zipFileName[FILENAME_MAX]; // = "HobbitTheV1.2.tap.zip";
+
+   if (hv==OWN) return 1; // cannot download OWN version
+   curlPtr = curl_easy_init();
+   if (curlPtr==NULL) {
+      fprintf(stderr, "WL: cannot init libcurl\n");
+      return 1;
+   }
+   filePtr = fopen(zipFileName,"wb");
+   curl_easy_setopt(curlPtr, CURLOPT_URL, urlLnkPtr);
+   curl_easy_setopt(curlPtr, CURLOPT_FOLLOWLOCATION, 1L);
+   curl_easy_setopt(curlPtr, CURLOPT_WRITEFUNCTION, NULL);
+   curl_easy_setopt(curlPtr, CURLOPT_WRITEDATA, filePtr);
+   res = curl_easy_perform(curlPtr);
+   if (res!=0) {
+      fprintf(stderr, "WL: download of 'The Hobbit' failed:%d\n", res);
+      return 1;
+   }
+   printf ("WL: downloaded filename:'%s'\n", zipFileName);
+   curl_easy_cleanup(curlPtr);
+   fclose(filePtr);
+
+   return 0;
+} // downloadGame()
+#endif
 
 
 /****************************************************************************\
@@ -1175,8 +1275,9 @@ int InitSpectrum(void) {
 *                                                                            *
 \****************************************************************************/
 int InitGame(int hv) {
-   char GameFileName[100];
-   char TapFileName[100], TzxFileName[100];
+   char GameFileName[FILENAME_MAX];
+   char TapFileName[FILENAME_MAX];
+   char TzxFileName[FILENAME_MAX];
    word GameStartAddress, GameLength;
    word TapLength, TzxLength;
    word TapStart, TzxStart;
@@ -1246,7 +1347,7 @@ int InitGame(int hv) {
          fp = fopen(TzxFileName, "rb");
          if (!fp) {
             fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", TzxFileName);
-            return (-1);
+            return 1;
          }
          fseek(fp, 0, SEEK_END);
          FileLength = ftell(fp);
@@ -1258,10 +1359,11 @@ int InitGame(int hv) {
                printf("WL: Tape file:'%s' read successfully\n", TzxFileName);
                return 0;
             } else {
-               printf("Read length error in '%s'\n", TzxFileName);
+               fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", TzxFileName, TzxLength, BytesRead, GameLength);
                return -1;
             }
          }
+         return -1;
       }
       fseek(fp, 0, SEEK_END);
       FileLength = ftell(fp);
@@ -1273,7 +1375,7 @@ int InitGame(int hv) {
             printf("WL: Tape file:'%s' read successfully\n", TapFileName);
             return 0;
          } else {
-            printf("Read length error in '%s'\n", TapFileName);
+            fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", TapFileName, TapLength, BytesRead, GameLength);
             return -1;
          }
       }
@@ -1281,17 +1383,108 @@ int InitGame(int hv) {
    }
    fseek(fp, 0, SEEK_END);
    FileLength = ftell(fp);
-   fseek(fp, 0, SEEK_SET);
-   if (WL_DEBUG) printf("WL: Reading game file '%s' with %i byte ... \n", GameFileName, FileLength);
-   BytesRead = fread(ZXmem + GameStartAddress, 1, FileLength, fp);
-   fclose(fp);
-   if (BytesRead != GameLength) {
-      fprintf(stderr, "WL: ERROR 'InitGame': Number of bytes read doesn't match filelength.\n");
-      return -1;
+   if  (FileLength == GameLength) {
+      fseek(fp, 0, SEEK_SET);
+      if (WL_DEBUG) printf("WL: Reading game file '%s' with %i byte ... \n", GameFileName, FileLength);
+      BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
+      fclose(fp);
+      if (BytesRead == GameLength) {
+         printf("WL: Code file:'%s' read successfully\n", GameFileName);
+         return 0;
+      } else {
+         fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", GameFileName, GameLength, BytesRead, GameLength);
+         return -1;
+      }
    }
-   printf("WL: Code file:'%s' read successfully\n", GameFileName);
-   return 0;
+   return -1;
 } // InitGame()
+
+
+/****************************************************************************\
+* InitSpectrum                                                               *
+*                                                                            *
+\****************************************************************************/
+int InitSpectrum(void) {
+   int i;
+   FILE *fp;
+   long int FileLength;
+   size_t BytesRead;
+
+   for (i = 0; i < SL_SCREENSTART; i++)
+      ZXmem[i] = 0xC9;  /* = RET in ROM, just in case... */
+
+   // we need the character set for the lower window
+   fp = fopen(SDLTWE_CHARSETFILENAME, "rb");
+   if (!fp) {
+      fprintf(stderr, "ERROR in WL.c: can't open character set file '%s'\n", SDLTWE_CHARSETFILENAME);
+      return 1;
+   }
+   fseek(fp, 0, SEEK_END);
+   FileLength = ftell(fp);
+   fseek(fp, 0, SEEK_SET);
+   if (WL_DEBUG) {
+      printf("WL: Reading character set with %li byte from %s ... ", FileLength, SDLTWE_CHARSETFILENAME);
+   }
+   BytesRead = fread(ZXmem + SL_CHARSET - 1, 1, FileLength, fp);
+   fclose(fp);
+   if (WL_DEBUG) {
+      if (FileLength != BytesRead)
+         printf("ERROR!\n");
+      else
+         printf("read!\n");
+   }
+
+   #if CPUEMUL == eZ80
+      printf("WL: Using CPU emulator: 'Z80' by Marat Fayzullin\n");
+      FileOfZ80 = sizeof(z80) - sizeof(void*) - ( ((void*)&(z80.User))-((void*)&(z80.Trace))-sizeof(z80.Trace) );
+      // 48: fixed size vars(bye,word,int), skip void pointer and 32/64 bit padding
+   #endif
+   #if CPUEMUL == ez80emu
+      printf("WL: Using CPU emulator: 'z80emu' by Lin Ke-Fong\n");
+      FileOfZ80 = sizeof(z80) - 3*16*sizeof(void*) - ( ((void*)&(z80.register_table[0]))-((void*)&(z80.im))-sizeof(z80.im) );
+      // 52: fixed size vars(char,short,int), skip register pointers area and 32/64 bit padding
+   #endif
+   //printf("SizeOfZ80:0x%zX FileOfZ80:0x%zX\n", SizeOfZ80, FileOfZ80);
+   #if CPUEMUL == eZ80
+      ResetZ80(&z80);
+      switch (HV) {
+         case OWN:
+            z80.PC.W = L_START_OWN;
+            break;
+         case V10:
+            z80.PC.W = L_START_V10;
+            break;
+         case V12:
+            z80.PC.W = L_START_V12;
+            break;
+         default:
+            exit(-1);
+      }
+      if (SeedRND)
+          z80.R = (byte) SDL_GetTicks();
+   #endif
+   #if CPUEMUL == ez80emu
+      Z80Reset (&z80);
+      switch (HV) {
+         case OWN:
+            z80.pc = L_START_OWN;
+            break;
+         case V10:
+            z80.pc = L_START_V10;
+            break;
+         case V12:
+            z80.pc = L_START_V12;
+            break;
+         default:
+            exit(-1);
+      }
+      if (SeedRND)
+         z80.r = (byte) SDL_GetTicks();
+   #endif
+   //printZ80struct();
+
+   return 0;
+} // InitSpectrum()
 
 
 /****************************************************************************\
@@ -1335,7 +1528,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
 
    // Creating a Renderer (window, driver index, flags: HW accelerated + vsync)
-   renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+   renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
    if (renPtr == NULL){
       fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
       SDL_DestroyWindow(winPtr);
@@ -1344,7 +1537,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
    MapRenPtr = renPtr;
    if (dockMap==false) {
-      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
       if (MapRenPtr == NULL){
          fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
          SDL_DestroyWindow(MapWinPtr);
@@ -1558,7 +1751,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
    if (sfcPtr == NULL) {
        fprintf(stderr, "WL: ERROR in 'InitGraphicsSystem'. Unable to load '"GAMEMAPFILENAME"'\n");
-       return (-1);
+       return -1;
    }
    MapSfcPtr = SDL_ConvertSurfaceFormat(sfcPtr, SDL_PIXELFORMAT_ARGB8888, 0);
    SDL_FreeSurface(sfcPtr);
@@ -1585,129 +1778,96 @@ int InitGraphicsSystem(uint32_t WinMode) {
 
 
 /****************************************************************************\
-* missGame                                                                   *
+* readCfg                                                                    *
 *                                                                            *
 \****************************************************************************/
-int missGame(int hv) {
+int readCfg() {
    FILE* filePtr;
-   long int FileLength;
-   size_t BytesRead;
-   char* strPtr;
-   char* msgPtr;
-   char* endPtr;
-   // we need the config file for error messages with download links/URL
+   long int fileLength;
+   size_t bytesRead;
+   char* strPtr; // all config file from the beginning
+   char* msgPtr; // begin of config param value
+   char* endPtr; // end of config param value
+   char prmStrPtr[128];
+   size_t len;
+
+   // read the config file for error messages and download links/URL
    filePtr = fopen(WLCONFIG, "rb");
    if (!filePtr) {
       fprintf(stderr, "ERROR in WL.c: can't open config file '%s'\n", WLCONFIG);
       return 1;
    }
    fseek(filePtr, 0, SEEK_END);
-   FileLength = ftell(filePtr);
-   strPtr=malloc(FileLength+1);
+   fileLength = ftell(filePtr);
+   strPtr=malloc(fileLength);
    if (strPtr==NULL) {
-      fprintf(stderr, "missGame() ERROR: cannot malloc\n");
+      fprintf(stderr, "readCfg() ERROR: cannot malloc\n");
       return 1;
    }
    fseek(filePtr, 0, SEEK_SET);
    if (WL_DEBUG) {
-      printf("WL: Reading config file with %li byte from %s ... ", FileLength, WLCONFIG);
+      printf("WL: Reading config file with %li byte from %s ... ", fileLength, WLCONFIG);
    }
-   BytesRead = fread(strPtr, 1, FileLength, filePtr);
+   bytesRead = fread(strPtr, 1, fileLength, filePtr);
    fclose(filePtr);
    if (WL_DEBUG) {
-      if (FileLength != BytesRead)
+      if (fileLength != bytesRead)
          printf("ERROR!\n");
       else
          printf("read!\n");
    }
-   msgPtr=strstr(strPtr, "missGameMsg=\"");
+
+   strcpy(prmStrPtr, "missGameStr=\"");
+   len=strlen(prmStrPtr);
+   msgPtr=strstr(strPtr, prmStrPtr); // look for param name
    if (msgPtr==NULL) {
-      fprintf(stderr, "'missGameMsg=' not found in config file\n");
+      fprintf(stderr, "'%s' not found in config file\n", prmStrPtr);
       return 1;
    }
-   msgPtr=msgPtr+13;
-   endPtr=strstr(msgPtr, "\"");
-   if (endPtr!=NULL) *endPtr='\0';
-   printf("%s", msgPtr);
+   msgPtr=msgPtr+len; // skip param name
+   endPtr=strstr(msgPtr, "\""); // look for end of value
+   if (endPtr==NULL) {
+      fprintf(stderr, "'\"' not found in config file\n");
+      return 1;
+   }
+   len=endPtr-msgPtr; // size of value
+   dlgMsgPtr=malloc(len+1);
+   strncpy(dlgMsgPtr, msgPtr, len);
+   *(dlgMsgPtr+len)='\0';
+   //printf("dlgMsg:'%s'\n", dlgMsgPtr);
 
-   // create an SDL error dialog
-   SDL_Window* dlgWinPtr = SDL_CreateWindow("Wilderland - Error", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, DIALOGWIDTH, DIALOGHEIGHT, SDL_WINDOW_SHOWN); // SDL_WINDOWPOS_UNDEFINED
-   if (dlgWinPtr == NULL) {
-      fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
-      SDL_Quit();
+   strcpy(prmStrPtr, "linkGame12Str=\"");
+   if (HV==V10) strcpy(prmStrPtr, "linkGame10Str=\"");
+   len=strlen(prmStrPtr);
+   msgPtr=strstr(strPtr, prmStrPtr); // look for param name
+   if (msgPtr==NULL) {
+      fprintf(stderr, "'%s' not found in config file\n", prmStrPtr);
       return 1;
    }
-   // Creating a Renderer (window, driver index, flags)
-   SDL_Renderer* dlgRenPtr = SDL_CreateRenderer(dlgWinPtr, -1, 0); /*SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC*/
-   if (dlgRenPtr == NULL){
-      fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
-      SDL_DestroyWindow(dlgWinPtr);
-      SDL_Quit();
+   msgPtr=msgPtr+len; // skip param name
+   endPtr=strstr(msgPtr, "\""); // look for end of value
+   if (endPtr==NULL) {
+      fprintf(stderr, "'\"' not found in config file\n");
       return 1;
    }
-   SDL_SetRenderDrawColor(dlgRenPtr, components(SDL_ALPHA_OPAQUE<<24|SC_BRWHITE)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
-   SDL_RenderClear(dlgRenPtr);
-   struct TextWindowStruct dlgTxt; // dialog text window descriptor
-   dlgTxt.texPtr = SDL_CreateTexture(dlgRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, DIALOGWIDTH-DIALOGBORDER, DIALOGHEIGHT);
-   if (dlgTxt.texPtr == NULL) {
-      fprintf(stderr, "SDL_CreateTexture Error: %s\n", SDL_GetError());
-      SDL_DestroyRenderer(dlgRenPtr);
-      SDL_DestroyWindow(dlgWinPtr);
-      SDL_Quit();
-      return 1;
-   }
-   dlgTxt.pitch = (DIALOGWIDTH-DIALOGBORDER) * BYTESPERPIXEL;
-   dlgTxt.frameSize = dlgTxt.pitch * DIALOGHEIGHT;
-   dlgTxt.framePtr = malloc (dlgTxt.frameSize);
-   if (dlgTxt.framePtr == NULL) {
-      fprintf(stderr, "malloc Error\n");
-      SDL_DestroyTexture(dlgTxt.texPtr);
-      SDL_DestroyRenderer(dlgRenPtr);
-      SDL_DestroyWindow(dlgWinPtr);
-      SDL_Quit();
-      return 1;
-   }
-   memset (dlgTxt.framePtr, SC_BRWHITE, dlgTxt.frameSize); // White
-   dlgTxt.rect.x = DIALOGBORDER;
-   dlgTxt.rect.y = 0;
-   dlgTxt.rect.w = DIALOGWIDTH-DIALOGBORDER;
-   dlgTxt.rect.h = DIALOGHEIGHT;
-   dlgTxt.CurrentPrintPosX = 0;
-   dlgTxt.CurrentPrintPosY = 0;
+   len=endPtr-msgPtr; // size of value
+   urlLnkPtr=malloc(len+1);
+   strncpy(urlLnkPtr, msgPtr, len);
+   *(urlLnkPtr+len)='\0';
+   //printf("urlLnk:'%s'\n", urlLnkPtr);
 
-   // print error in dialog and show
-   SDLTWE_PrintString (&dlgTxt, msgPtr, &CharSet, SC_BLACK, SC_BRWHITE); // Black on White
-   SDL_UpdateTexture(dlgTxt.texPtr, NULL, dlgTxt.framePtr, dlgTxt.pitch); // copy Frame to Texture
-   SDL_RenderCopy(dlgRenPtr, dlgTxt.texPtr, NULL, &dlgTxt.rect); // copy Texture to Renderer
-   SDL_RenderPresent(dlgRenPtr); // show canvas
+//strcpy(zipFileName, "HobbitTheV1.2.tap.zip");
+//printf("zipFileName:'%s'\n", zipFileName);
+   endPtr=urlLnkPtr+strlen(urlLnkPtr);
+   char* p;
+   for (p=endPtr; *p!='/'; p--) {} // look for last '/'
+   p++; // first char of filename
+   strcpy(zipFileName, p);
+   //printf("zipFileName:'%s'\n", zipFileName);
 
-   // now wait for dialog close
-   int RunLoop = 1;
-   SDL_Event event;
-   while (RunLoop) {
-      while (SDL_PollEvent(&event)!=0) {
-         switch (event.type) {
-            case SDL_QUIT: // never happen with other windows
-               RunLoop = 0;
-               break;
-            case SDL_WINDOWEVENT: // to catch close with other windows
-               if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
-                  RunLoop = 0;
-               }
-               break;
-            case SDL_KEYDOWN:
-               RunLoop = 0;
-               break;
-         } // switch
-      } // poll event
-   } // while (RunLoop)
-   free(dlgTxt.framePtr);
-   SDL_DestroyTexture(dlgTxt.texPtr);
-   SDL_DestroyRenderer(dlgRenPtr);
-   SDL_DestroyWindow(dlgWinPtr);
-
+   free(strPtr);
    return 0;
-} // missGame()
+} // readCfg()
 
 
 /****************************************************************************\
@@ -1718,7 +1878,7 @@ void helpLine() {
    printf("Syntax:\n");
    printf(" WL [-V10|-OWN|-V12] [-FULLSCREEN|FIT|MAP] [-MAXSPEED] [-NOSCANLINES] [-SEEDRND]\n");
    printf(" WL [-HELP]\n");
-}
+} // helpLine()
 
 
 /****************************************************************************\
@@ -1742,8 +1902,9 @@ void chDirBin(char* argList) {
    }
    //printf("absPath()='%s'\n", absPath);
    chdir(absPath);
+   free(cwdPath);
    return;
-}
+} // chDirBin()
 
 
 /****************************************************************************\
@@ -1806,7 +1967,8 @@ int main(int argc, char *argv[]) {
 
    if (HV == -1) HV = V12; // default to V12
 
-   chDirBin(argv[0]); // to let find assets files
+   chDirBin(argv[0]); // go to binary path to let find assets files
+   readCfg(); // read configuration parameters
 
    if (InitGraphicsSystem(WinMode)) {
       fprintf(stderr, "WL: ERROR initializing graphic system. Program aborted.\n");
@@ -1818,13 +1980,45 @@ int main(int argc, char *argv[]) {
       exit(-1);
    }
 
-   if (InitGame(HV)) {
-      missGame(HV);
+   int ret=InitGame(HV);
+   if (ret!=0) { // try call downloadGame(), unzipGame()
+      #ifndef NODL
+         ret=unzipGame(HV);
+         if (ret!=0) {
+            fprintf(stderr, "WL: WARN unzip of 'The Hobbit' failed\n");
+            ret=downloadGame(HV);
+            if (ret!=0) {
+               fprintf(stderr, "WL: download of 'The Hobbit' failed\n");
+               missGame();
+               fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
+               exit(-1);
+            }
+            ret=unzipGame(HV);
+            if (ret!=0) {
+               fprintf(stderr, "WL: unzip of 'The Hobbit' failed\n");
+               missGame();
+               fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
+               exit(-1);
+            }
+         }
+         ret=InitGame(HV);
+         if (ret!=0) {
+            missGame();
+            fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
+            exit(-1);
+         }
+         goto initdone;
+      #endif
+      missGame();
       fprintf(stderr, "WL: ERROR initializing game. Program aborted.\n");
       exit(-1);
    }
 
-   // game loaded, so can show windows
+#ifndef NODL
+initdone:
+#endif
+   printf("WL: init done, starting ...\n");
+   // game loaded, so can show (empty) windows
    SDL_ShowWindow(winPtr);
    if (dockMap==false) SDL_ShowWindow(MapWinPtr);
    SDL_RaiseWindow(winPtr); // focus to main win
@@ -1863,7 +2057,7 @@ int main(int argc, char *argv[]) {
 
    PrepareGameMap(); // empty map
    DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
-   
+
    // show windows contents
    SDL_RenderPresent(renPtr);
    if (dockMap==false) SDL_RenderPresent(MapRenPtr);

@@ -20,6 +20,8 @@
 
 # To use z80emu emulator build with: $ make CPUEMUL=ez80emu   OR   $ make
 # To use Z80    emulator build with: $ make CPUEMUL=eZ80
+# To avoid include and link libcurl and libzip build with: $ make NODL=1
+# To build for debug use: $ make BUILD=debug
 
 PKG = LIN64
 CPU = $(shell uname -m)
@@ -58,13 +60,29 @@ ifeq ($(CPUEMUL),ez80emu)
    CPUIF=z80emu/z80emu.h
    CPUOBJ=z80emu.o
 endif
+BUILD?=release
+ifeq ($(BUILD),debug)
+   COPT=-O1 -g -fsanitize=address
+   LOPT=-fsanitize=address
+else
+   OPTS=-O3
+endif
 
 CC = gcc
 LD = $(CC)
 STRIP = strip
-CFLAGS = -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+CFLAGS = -std=c99 -Wall $(COPT) -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
 SDLCFLAGS = $(shell pkg-config $(PARS) --cflags SDL2_image)
-LDFLAGS = $(shell pkg-config $(PARS) --libs SDL2_image)
+LDFLAGS = $(shell pkg-config $(PARS) --libs SDL2_image) $(LOPT)
+ifndef NODL
+   CFLAGS += $(shell pkg-config --cflags libcurl)
+   CFLAGS += $(shell pkg-config --cflags libzip)
+   #LDFLAGS += -lcurl -lzip -lz
+   LDFLAGS += $(shell pkg-config --libs libcurl)
+   LDFLAGS += $(shell pkg-config --libs libzip)
+else
+   CFLAGS += -DNODL
+endif
 FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)
@@ -110,6 +128,8 @@ cleanbin:
 	rm -f $(TARGET) $(TAPCON)
 
 clean: cleanobj cleanbin
+
+debug: clean all cleanobj
 
 bin: all cleanobj strip
 

@@ -1,4 +1,4 @@
-missGameMsg="
+missGameStr="
 WILDERLAND ERROR: 'The Hobbit' binary is missing
 
 INFO: You can download 'The Hobbit' binary with the following steps:
@@ -6,12 +6,17 @@ INFO: You can download 'The Hobbit' binary with the following steps:
 2) Select 'Archive' - 'Text Adventures' - 'TOGGLE FILTER' -
 3) in Title type 'Hobbit' - select 'The Hobbit' Melbourne House 1982
 4) Expand Files section, download:
-5) 'HobbitTheV1.2.tap.zip' OR 'HobbitTheV1.2.tzx.zip'
-6) Unzip the downloaded file, put 'HOBBIT12.TAP' OR 'The Hobbit v1.2.tzx'
-7) file into the Wilderland directory next to binary.
+5) V1.0: 'HobbitTheV1.0.tap.zip' OR 'HobbitTheV1.0.tzx.zip'
+   V1.2: 'HobbitTheV1.2.tap.zip' OR 'HobbitTheV1.2.tzx.zip'
+6) Unzip the downloaded file, put game binary file:
+   V1.0: 'HOBBIT.TAP'   OR 'The Hobbit v1.0.tzx'
+   V1.2: 'HOBBIT12.TAP' OR 'The Hobbit v1.2.tzx'
+7) into the Wilderland directory next to binary/executable 'WL'.
 
 This error message is read from 'WLconfig.txt' file
 
 "
 
-url="https://www.worldofspectrum.org/pub/sinclair/games/h/HobbitTheV1.2.tap.zip"
+linkGame10Str="https://www.worldofspectrum.org/pub/sinclair/games/h/HobbitTheV1.0.tap.zip"
+
+linkGame12Str="https://www.worldofspectrum.org/pub/sinclair/games/h/HobbitTheV1.2.tap.zip"

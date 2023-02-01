@@ -36,6 +36,7 @@
 
 // tape related values
 //#define V10_CODE_SIZE     0x9400 // 37888, see CODE_LENGTH_V10
+//#define V10_TAP_ZIPNAME   "HobbitTheV1.0.tap.zip"
 #define V10_TAP_NAME      "HOBBIT.TAP"
 #define V10_TAP_LENGTH    0xB00A // 45066
 #define V10_TAP_START     0x1C09 // 7177
@@ -52,6 +53,7 @@
 #define OWN_TZX_START     0x1C43 // 7235
 
 //#define V12_CODE_SIZE     0x9C40 // 40000, see CODE_LENGTH_V12
+//#define V12_TAP_ZIPNAME   "HobbitTheV1.2.tap.zip"
 #define V12_TAP_NAME      "HOBBIT12.TAP"
 #define V12_TAP_LENGTH    0xB84A // 47178
 #define V12_TAP_START     0x1C09 // 7177
@@ -66,9 +68,9 @@
 #define FN_OWN            "HOB_OWN.bin"
 #define FN_V10            "HOB_V10.bin"
 #define FN_V12            "HOB_V12.bin"
-#define STARTADR_OWN            0x6000
-#define STARTADR_V10            0x6000
-#define STARTADR_V12            0x6000
+#define STARTADR_OWN            0x6000 // 24576
+#define STARTADR_V10            0x6000 // 24576
+#define STARTADR_V12            0x6000 // 24576
 #define CODE_LENGTH_OWN         0x9C40 // 40000
 #define CODE_LENGTH_V10         0x9400 // 37888
 #define CODE_LENGTH_V12         0x9C40 // 40000
@@ -164,7 +166,7 @@
 #define INDICATOROFFSET 2
 
 #define DIALOGWIDTH     600
-#define DIALOGHEIGHT    120
+#define DIALOGHEIGHT    140
 #define DIALOGBORDER    8
 #define SDLTWE_CHARSETLENGTH    (0x300)
 #define SDLTWE_CHARSETFILENAME  "CharSetSpectrum8x8.bin"

@@ -20,6 +20,8 @@
 
 # To use z80emu emulator build with: $ make CPUEMUL=ez80emu   OR   $ make
 # To use Z80 emulator    build with: $ make CPUEMUL=eZ80
+# To avoid include and link libcurl and libzip build with: $ make NODL=1
+# To build for debug use: $ make BUILD=debug
 
 PKG = MXE32
 CPU = i686
@@ -40,6 +42,13 @@ ifeq ($(CPUEMUL),ez80emu)
    CPUIF=z80emu/z80emu.h
    CPUOBJ=z80emu.o
 endif
+BUILD?=release
+ifeq ($(BUILD),debug)
+   COPT=-O1 -g -fsanitize=address
+   LOPT=-fsanitize=address
+else
+   OPTS=-O3
+endif
 
 # MHOST   cross-compiler target
 # MCROSS  cross-toolchain prefix
@@ -55,10 +64,18 @@ CC = $(MCROSS)gcc
 LD = $(MCROSS)gcc
 STRIP = $(MCROSS)strip
 PKG_CONFIG=$(MCROSS)pkg-config
-CFLAGS = -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1 -m32 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+CFLAGS = -std=c99 -Wall $(COPT) -D__USE_MINGW_ANSI_STDIO=1 -m32 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
 SDLCFLAGS = $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --cflags SDL2_image)
 SDLMINGWLDFLAGS = -mconsole # on MinGW + SDL force console for debug
-LDFLAGS = $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --libs SDL2_image) $(SDLMINGWLDFLAGS) -m32
+LDFLAGS = $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --libs SDL2_image) $(SDLMINGWLDFLAGS) -m32 $(LOPT)
+ifndef NODL
+   CFLAGS += $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --cflags libcurl)
+   CFLAGS += $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --cflags libzip)
+   LDFLAGS += $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --libs libcurl)
+   LDFLAGS += $(shell PKG_CONFIG_PATH_i686_w64_mingw32_static=$(MXEROOT)/usr/i686-w64-mingw32.static/lib/pkgconfig: $(MXE)/$(PKG_CONFIG) --libs libzip)
+else
+   CFLAGS += -DNODL
+endif
 FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)mxe32.exe
@@ -103,6 +120,8 @@ cleanbin:
 	rm -f $(TARGET) $(TAPCON)
 
 clean: cleanobj cleanbin
+
+debug: clean all cleanobj
 
 bin: all cleanobj strip
 

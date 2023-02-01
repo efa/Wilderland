@@ -1,18 +1,23 @@
-2.10b - 20230125
+2.10b - 20230131
 ----------------
 Changed:
-- when missing 'The Hobbit' binary show download link and istructions
+- if not found locally, download 'The Hobbit' binary, using libcurl
+- get download link from WLconfig.txt config file
+- unzip downloaded file, using libzip
+- make NODL=1 to avoid include and link download and unzip function
+- when still missing 'The Hobbit' binary show download link and instructions
 - instructions loaded from config file WLCONFIG (file shown in the error)
 - when WL won't start for non SDL reason (eg. miss The Hobbit binary),
   show a dialog box with error, as console errors cannot be seen
 - map resolution 1280x496 increased to 1870x725
 - option -MAP to undock map in a separate window
   connect window X to close also with undocked map
-- switch to C99 fixed size types: Spectrum.h: Uint32 Uint16 Uint8,
+- switch to C99 fixed size types: uint32_t, uint16_t, uint8_t, int32_t 
+  Spectrum.h: Uint32 Uint16 Uint8
   WL.c: InitGraphicsSystem(Uint32 WinMode)
   WL.c: main() Sint32
 - remove LockScreen(winPtr); UnLockScreen(winPtr); LockLevel;
-- removed some commented blocks
+- removed some commented unused blocks
 - read and show SDL version at compile and link time
 - added WL.odg with includes and windows size design
 - renamed GLOBAL_VARS.h to GlobalVars.h and SPECTRUM.h to Spectrum.h
@@ -20,7 +25,8 @@ Changed:
 - applied my coding style
 - use WLYEAR for copyright
 Bugfix:
-- increased delay to 20 ms between SDLtext to avoid flicker on macOS
+- try increased delay to 20 ms between SDLtext to avoid flicker on macOS
+- switched to software rendering as on macOS flicker with red background
 Modification to 'z80emu':
 - remember HALT state on different calls. Quit HALT by IRQ or NMI
   z80emu.c: use state->status = Z80_STATUS_FLAG_HALT;

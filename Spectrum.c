@@ -140,7 +140,7 @@ void PrintObjNrActingAnimal(byte onaa) {
 *                                                                            *
 \****************************************************************************/
 byte RdZ80(word A) {
-   return (ZXmem[A]);
+   return ZXmem[A];
 }
 
 
@@ -203,7 +203,7 @@ void WrwZ80(word a, word w) {
 byte InZ80(word P) {
    if ((P & 0xFF) != 0xFE) { // we only support the keyboard port 0xFE
       printf("Spectrum.c: InZ80() tried to read from unsupported port %04X.\n", P);
-      return (0xFF);
+      return 0xFF;
    }
 
    if (P == 0x00FE) { // all keyboard rows at once (the upper 8 bit select the half row)
@@ -272,10 +272,10 @@ byte InZ80(word P) {
                return (0xFF - 0x10);
             default:
                CurrentPressedKey=0;
-               return (0xFF);
+               return 0xFF;
          }
       } else {
-         return (0xFF);  //no key pressed
+         return 0xFF;  //no key pressed
       }
    }
 
@@ -523,10 +523,10 @@ byte InZ80(word P) {
          break;
 
       default:
-         return (0xFF);
+         return 0xFF;
    }
 
-   return (0xFF);
+   return 0xFF;
 }
 #ifdef __LCC__
 #pragma optimize(time)
