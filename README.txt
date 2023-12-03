@@ -116,11 +116,13 @@ bit is also available. The package includes source files and compiled versions:
 * 'WLmxe32.exe' Win32 binary cross-built with MXE.static [4] link on Linux64
 * 'WLpc.exe'    Win32 binary built with Pelles C/LCC on Win32
 * 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
-* 'Wilderland2.10b.dmg' macOS64 standard package
-* 'Wilderland_Linux_x86_64_64bit.AppImage' Linux64 portable package
+* 'Wilderland2.10b.dmg'                         macOS64 standard package
+* 'Wilderland2.10b_Linux_x86_64_64bit.AppImage' Linux64 portable package
 
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
 can be installed opening it and dragging to Applications.
+On Linux the portable package AppImage should be saved in a writable directory,
+make it executable with: ```$ chmod +x Wilderland*.AppImage```
 
 The sources was ported to SDLv2.0, added the support for a free Z80 emulator:
 'z80emu' by Lin Ke-Fong [6] now the default, and some improvements, see
@@ -128,15 +130,15 @@ Changelog.txt
 
 To build sources on Linux, install dependencies with:
 
-```$ sudo apt install build-essential libsdl2-dev libsdl2-image-dev```
-```$ sudo apt install libcurl4 libzip4```
+```$ sudo apt install build-essential libsdl2-dev libsdl2-image-dev
+$ sudo apt install libcurl4 libzip4```
 
 then just run ```make```.
 
 To buid @32bit on 64 bit Linux use ```make -f Makefile32```, this require:
 
-```$ sudo apt install build-essential libsdl2-dev:i386 libsdl2-image-dev:i386```
-```$ sudo apt install libcurl4:i386 libzip4:i386```
+```$ sudo apt install build-essential libsdl2-dev:i386 libsdl2-image-dev:i386
+$ sudo apt install libcurl4:i386 libzip4:i386```
 
 On Windows you can build a native Win version using MinGW/MSYS2 [3]:
 

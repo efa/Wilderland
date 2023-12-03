@@ -33,6 +33,8 @@ WLmxe32.exe                   686 Binary: Win32 executable cross-built with MXE 
 WLpc.exe                      386 Binary: Win32 executable built with Pelles C/LCC on Win32
 SDL.dll                       386 Binary: Win32 dynamic library for SDLv1.2
 WLosx                         x64 Binary: macOS64 executable cross-built with OSXcross
+Wilderland2.10b.dmg                         macOS64 standard package
+Wilderland2.10b_Linux_x86_64_64bit.AppImage Linux64 portable package
 WL.ppx                        XML: IDE/Widgets settings???
 WL.tag                        SQLite: ???
 Wilderland.ico                ICO: 128x128x16 icon file for Windows
