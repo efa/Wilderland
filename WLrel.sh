@@ -8,20 +8,23 @@ os=`uname -o`
 if [[ "$os" = "GNU/Linux" ]]; then
    echo "Build release for Linux64 ..."
    make rel
+   echo "-----------------------------------"
    echo ""
    echo "Build release for Linux32 ..."
    make -f Makefile32 rel
+   echo "-----------------------------------"
    echo ""
-
    echo "Cross-Build release for Win64 ..."
    make -f MakefileM64 rel
+   echo "-----------------------------------"
    echo ""
    echo "Cross-Build release for Win32 ..."
    make -f MakefileM32 rel
+   echo "-----------------------------------"
    echo ""
-
    echo "Cross-Build release for macOS64 ..."
    make -f MakefileO64 rel
+   echo "-----------------------------------"
    echo ""
 fi
 

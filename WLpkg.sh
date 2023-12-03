@@ -32,7 +32,7 @@ echo "WLpkg: create a Linux|MinGW|MXE|OSX package for Wilderland ..."
 
 # check for external dependency compliance
 flag=0
-for extCmd in 7z cp cut grep mkdir mv rm tar uname ; do
+for extCmd in 7z cp cut date grep mkdir mv pwd rm tar uname ; do
    exist=`which $extCmd 2> /dev/null`
    if (test "" = "$exist") then
       echo "Required external dependency: "\"$extCmd\"" unsatisfied!"
@@ -62,6 +62,10 @@ BIT=64
 if [[ "$PKG" = "LIN32" || "$PKG" = "MGW32" || "$PKG" = "MXE32" ]]; then
    BIT=32
 fi
+if [[ "$BIT" = "32" && "$CPU" = "x86_64" ]]; then
+   CPU=i686
+fi
+
 OS=`uname -o`  # Msys or GNU/Linux
 VER=`grep WLVER WL.h | cut -d'"' -f2` # M.mm
 DATE=`date -I`
@@ -76,7 +80,7 @@ if [[ "$OS" = "Msys" ]]; then
       DEPSRC=$DEPSPATHMGW32
    fi
 fi
-UPP=""
+UPP="" # Uncompressed Package Path
 if [[ "$PKG" = "LIN32" || "$PKG" = "LIN64" ]]; then
    TGT=Linux
    UPP="usr/bin"
@@ -120,6 +124,10 @@ if [[ -d "AppDir" ]]; then
    echo "Removing old AppDir ..."
    rm -rf "AppDir"
 fi
+if [[ -d $DST ]]; then
+   echo "Removing old DST ..."
+   rm -rf "$DST"
+fi
 mkdir -p "AppDir/$UPP"
 mkdir -p "AppDir/$UPP/Design"
 mkdir -p "AppDir/$UPP/TapCon"
@@ -141,6 +149,7 @@ cp -a GameMapHi.png AppDir/$UPP
 cp -a HOBBIT.SCR AppDir/$UPP
 cp -a HOBBIT12.SCR AppDir/$UPP
 cp -a Wilderland.png AppDir/$UPP
+cp -a Wilderland.desktop AppDir/$UPP
 echo "Copying docs ..."
 cp -a Changelog.txt AppDir/$UPP
 cp -a COPYING.txt AppDir/$UPP
@@ -226,17 +235,22 @@ fi
 
 echo "Compressing package ..."
 if [[ "$PKG" = "OSX64" ]]; then
+   cp -a WLosx Wilderland.icns AppDir
    cd AppDir
    osxcross-dmg -rw WLosx Wilderland $VER
    rm uncompressed.dmg WLosx Wilderland.icns
    mv Wilderland$VER.dmg ..
+   cd ..
+   mv Wilderland$VER.dmg $DSTPATH/Wilderland$VER.dmg
    echo "Release file: '$DSTPATH/Wilderland$VER.dmg'"
    echo Done
    exit
 fi
-cwd=`pwd`
-cd "AppDir/$UPP/.."
-mv bin $DST
+mkdir $DST
+cp -Ra AppDir/$UPP/* $DST/
+if [[ -f $DST.tgz ]]; then
+   rm $DST.tgz
+fi
 if [[ -f $DST.7z ]]; then
    rm $DST.7z
 fi
@@ -255,8 +269,7 @@ if [[ "$PKG" = "MXE64" || "$PKG" = "MXE32" ]]; then
    7z a -m0=lzma -mx=9 -r $DST.7z $DST > /dev/null
    file=$DST.7z
 fi
-mv $DST bin
-cd "$cwd"
-mv "AppDir/$UPP/../$file" $DSTPATH
+rm -rf $DST
+mv $file $DSTPATH
 echo "Release file: '$DSTPATH/$file'"
 echo Done
