@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230125                                                         *
+* V 2.10b - 20231203                                                         *
 *                                                                            *
 *  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -32,8 +32,8 @@
 #include "SDLTWE.h"
 #include "GlobalVars.h"
 
-
-int delay=5; // with SDL_RENDERER_ACCELERATED min 20 ms to avoid flickering
+/*** GLOBAL VARIABLES *******************************************************/
+int delay=20; // with SDL_RENDERER_ACCELERATED min 20 ms to avoid flickering
 byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
 
@@ -60,7 +60,7 @@ void SDLTWE_DrawTextWindowFrame(struct TextWindowStruct* TW, int BorderWidth, co
       SDL_RenderDrawRect(renPtr, &rect);
    }
    SDL_SetRenderDrawColor(renPtr, r, g, b, a); // restore prev color
-}
+} // SDLTWE_DrawTextWindowFrame()
 
 
 /****************************************************************************\
@@ -71,7 +71,7 @@ void SDLTWE_SetPixel(struct TextWindowStruct* TW, int x, int y, color_t color) {
    if (x>=TW->rect.w) return;
    if (y>=TW->rect.h) return;
    TW->framePtr[y*(TW->rect.w) + x] = color;
-}
+} // SDLTWE_SetPixel()
 
 
 /****************************************************************************\
@@ -94,7 +94,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct* TW, struct CharSetS
    for (y = 0; y < CS->Height; y++) // fill last char line with paper
       for (x = 0; x < TW->rect.w; x++)
          SDLTWE_SetPixel(TW, x, TW->rect.h - CS->Height + y, paper);
-}
+} // SDLTWE_VerticalScrollUpOneLine()
 
 
 /****************************************************************************\
@@ -179,7 +179,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct Char
       TW->CurrentPrintPosX = 0;
       TW->CurrentPrintPosY += CS->Height;
    }
-}
+} // SDLTWE_PrintCharTextWindow()
 
 
 /****************************************************************************\
@@ -189,7 +189,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct Char
 void SDLTWE_PrintString(struct TextWindowStruct* TW, char* ps, struct CharSetStruct* CS, color_t ink, color_t paper) {
    while (*ps)
       SDLTWE_PrintCharTextWindow(TW, *ps++, CS, ink, paper);
-}
+} // SDLTWE_PrintString()
 
 
 /****************************************************************************\
@@ -233,4 +233,4 @@ byte* SDLTWE_ReadCharSet(char* CharSetFilename, byte* CharSet) {
          printf("read!\n");
       return CharSet;
    }
-}
+} // SDLTWE_ReadCharSet()

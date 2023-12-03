@@ -1,10 +1,12 @@
-2.10b - 20230131
+2.10b - 20231203
 ----------------
-Changed:
+Changed
+- put WLS files in 'wls' directory, create it if missing
 - if not found locally, download 'The Hobbit' binary, using libcurl
 - get download link from WLconfig.txt config file
 - unzip downloaded file, using libzip
 - make NODL=1 to avoid include and link download and unzip function
+- support for Linux AppImage: save/unzip The Hobbit binary in writable dir
 - when still missing 'The Hobbit' binary show download link and instructions
 - instructions loaded from config file WLCONFIG (file shown in the error)
 - when WL won't start for non SDL reason (eg. miss The Hobbit binary),
@@ -32,6 +34,8 @@ Modification to 'z80emu':
   z80emu.c: use state->status = Z80_STATUS_FLAG_HALT;
 - fix z80emu.h enum for Z80_STATE's status to support Z80_CATCH_*
 - documented I/O with 16 bit port address for z80emu
+
+Note: the package WL2.10b_Z80_WinMxe32.7z is generated linked with Z80 CPU emulator, this is for compatibility with old WL1.x snapshot files, but those snapshots won't work with 64 bit binaries, and are incompatible with current default binary and snapshots, generated with z80emu CPU emulator of all other packages
 
 2.09 - 20220907
 ---------------

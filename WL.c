@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.10b - 20230125                                                         *
+* V 2.10b - 20231203                                                         *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -38,11 +38,13 @@
 #define _DEFAULT_SOURCE // realpath()
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h> // PATH_MAX,NAME_MAX
+#include <limits.h>     // PATH_MAX,NAME_MAX
 #include <string.h>
-#include <unistd.h> // getcwd(),chdir()
-#include <SDL.h>    // SDL2
-#include <SDL_image.h>
+#include <unistd.h>     // getcwd(),chdir()
+#include <errno.h>      // errno
+#include <sys/stat.h>   // mkdir()
+#include <SDL.h>        // SDL2
+#include <SDL_image.h>  // png support
 
 #include "WL.h"
 #include "SDLTWE.h"
@@ -68,6 +70,10 @@ int SeedRND = 0; // when 1 use Z80 refresh register to generate random numbers
 char* dlgMsgPtr; // keep the dialog box error message
 char* urlLnkPtr; // keep the Hobbit game download url
 char zipFileName[FILENAME_MAX]; // keep the Hobbit zip filename
+char binPath[PATH_MAX]=""; // path of binary files
+char cfgPath[PATH_MAX]=""; // path of config files
+char savPath[PATH_MAX]=""; // path where save and unzip TAP/TZX
+char wlsPath[PATH_MAX]=""; // path where save/load WLS
 
 SDL_Window*   winPtr;
 SDL_Window*   MapWinPtr;
@@ -503,11 +509,13 @@ void SaveGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    firstEditable = 0;
    if (fn[0] != '\0') strcat(fn, ".wls");
 
+   chdir(wlsPath); // go to WLS path to let read/write screenshot files
    f = fopen(fn, "wb");
    if (!f) {
       fprintf(stderr, "WL: ERROR - Can't open file '%s' for saving game.\n", fn);
       SDLTWE_PrintString(TW, "Can't open file for saving\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -537,6 +545,7 @@ void SaveGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
 
    SDLTWE_PrintString(TW, ".wls saved.\n\n", CS, ink, paper);
    ShowTextWindow(TW);
+   chdir(cfgPath); // back to config path to let find assets files
 } // SaveGame()
 
 
@@ -560,11 +569,13 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    firstEditable = 0;
    strcat(fn, ".wls");
 
+   chdir(wlsPath); // go to WLS path to let read/write screenshot files
    f = fopen(fn, "rb");
    if (!f) {
       fprintf(stderr, "WL: ERROR - Can't open file '%s' for loading game.\n", fn);
       SDLTWE_PrintString(TW, ".wls not found!\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -573,11 +584,13 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
       printf("ret:%d gamever:%d\n", ret, gameversion);
       SDLTWE_PrintString(TW, "\nError: GAMEVERSION not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
    if (gameversion != hv) {
       SDLTWE_PrintString(TW, "\nError: Wrong game version.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -586,32 +599,37 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
       printf("ERROR: FILEVERSION not found.\n");
       SDLTWE_PrintString(TW, "\nError: FILEVERSION not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
    if (fileversion < 1 || fileversion > 2) {
       printf("ret:%d filever:%d\n", ret, fileversion);
       SDLTWE_PrintString(TW, "\nError: Unsupported Fileversion.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
    if (fileversion == 2) { // compare z80 emulator
-       if (fscanf(f, "Z80VERSION=%i\r\n", &z80version) != 1) {
-          printf("ERROR: Z80VERSION not found.\n");
-          SDLTWE_PrintString(TW, "\nError: Z80VERSION not found.\n\n", CS, ink, paper);
-          ShowTextWindow(TW);
-          return;
-       }
-       if (z80version != CPUEMUL) {
-          SDLTWE_PrintString(TW, "\nError: Wrong z80 emulator version.\n\n", CS, ink, paper);
-          ShowTextWindow(TW);
-          return;
-       }
+      if (fscanf(f, "Z80VERSION=%i\r\n", &z80version) != 1) {
+         printf("ERROR: Z80VERSION not found.\n");
+         SDLTWE_PrintString(TW, "\nError: Z80VERSION not found.\n\n", CS, ink, paper);
+         ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
+         return;
+      }
+      if (z80version != CPUEMUL) {
+         SDLTWE_PrintString(TW, "\nError: Wrong z80 emulator version.\n\n", CS, ink, paper);
+         ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
+         return;
+      }
    }
 
    if (fscanf(f, "SIZE(Z80)=%05zX\r\n", &sizeOfZ80) != 1) {
       SDLTWE_PrintString(TW, "\nError: SIZE(Z80) not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
    if (sizeOfZ80 != SizeOfZ80) {
@@ -631,6 +649,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
          }
          SDLTWE_PrintString(TW, "\nError: Z80-structure sizes do not match.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
          return;
       } else // on filever=2 will use and check FileOfZ80
          bitDiffer:
@@ -641,12 +660,14 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
       if (fscanf(f, "FILE(Z80)=%04zX\r\n", &fileOfZ80) != 1) {
          SDLTWE_PrintString(TW, "\nError: FILE(Z80) not found.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
          return;
       }
       if (fileOfZ80 != FileOfZ80) {
          printf("ERROR: z80file:%zu mem:%zu\n", fileOfZ80, FileOfZ80);
          SDLTWE_PrintString(TW, "\nError: Z80-structure File sizes do not match.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
          return;
       }
    }
@@ -663,6 +684,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    #endif
       SDLTWE_PrintString(TW, "\nError: PC address not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -670,6 +692,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    if (ret != 0) { // so is EOF=-1
       SDLTWE_PrintString(TW, "\nError: ***Z80*** not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -679,6 +702,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
       if (fscanf(f, "%c", ( ((byte*)&z80) + i) ) != 1) {
          SDLTWE_PrintString(TW, "\nError: Z80struct:%%c does not match format.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
          return;
       }
    }
@@ -698,6 +722,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    if (ret != 0) { // so is EOF=-1
       SDLTWE_PrintString(TW, "\nError: ***MEMORY*** not found.\n\n", CS, ink, paper);
       ShowTextWindow(TW);
+      chdir(cfgPath); // back to config path to let find assets files
       return;
    }
 
@@ -705,6 +730,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
       if (fscanf(f, "%c", ZXmem + i) != 1) {
          SDLTWE_PrintString(TW, "\nError: MEMORY:%%c does not match format.\n\n", CS, ink, paper);
          ShowTextWindow(TW);
+         chdir(cfgPath); // back to config path to let find assets files
          return;
       }
    fclose(f);
@@ -718,6 +744,7 @@ void LoadGame(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, col
    #if CPUEMUL == ez80emu
       Z80ResetTable (&z80); // regenerate the register pointers to new address
    #endif
+   chdir(cfgPath); // back to config path to let find assets files
 } // LoadGame()
 
 
@@ -1189,9 +1216,11 @@ int missGame() {
 int unzipGame(int hv) {
    //Open the ZIP archive
    int err = 0;
+   chdir(savPath); // go to save path to let write zip/tap/tzx files
    struct zip* zipPtr = zip_open(zipFileName, 0, &err);
    if (zipPtr == NULL) {
       //fprintf(stderr, "WL: WARN cannot open zip file\n");
+      chdir(cfgPath); // back to config path to let find assets files
       return -1;
    }
    //Search for the file of given name
@@ -1210,6 +1239,7 @@ int unzipGame(int hv) {
    char* unzippedPtr = malloc(size);
    if (unzippedPtr == NULL) {
       fprintf(stderr, "WL: cannot allocate\n");
+      chdir(cfgPath);
       return -1;
    }
    //Read the compressed file
@@ -1223,11 +1253,13 @@ int unzipGame(int hv) {
    uintmax_t cnt=fwrite(unzippedPtr, 1, zipStat.size, filePtr);
    if (cnt != zipStat.size) {
       fprintf(stderr, "WL: file is:%ju but truncated to:%ju Bytes\n", (uintmax_t)zipStat.size, cnt);
+      chdir(cfgPath);
       return -1;
    }
    printf("WL: unzipped file:'%s' sized:%ju Bytes\n", namePtr, cnt);
    fclose(filePtr);
    free(unzippedPtr);
+   chdir(cfgPath); // back to config path to let find assets files
 
    return 0;
 } // unzipGame()
@@ -1249,8 +1281,10 @@ int downloadGame(int hv) {
    curlPtr = curl_easy_init();
    if (curlPtr==NULL) {
       fprintf(stderr, "WL: cannot init libcurl\n");
+      chdir(cfgPath);
       return 1;
    }
+   chdir(savPath); // go to save path to let write zip/tap/tzx files
    filePtr = fopen(zipFileName,"wb");
    curl_easy_setopt(curlPtr, CURLOPT_URL, urlLnkPtr);
    curl_easy_setopt(curlPtr, CURLOPT_FOLLOWLOCATION, 1L);
@@ -1259,11 +1293,13 @@ int downloadGame(int hv) {
    res = curl_easy_perform(curlPtr);
    if (res!=0) {
       fprintf(stderr, "WL: download of 'The Hobbit' failed:%d\n", res);
+      chdir(cfgPath);
       return 1;
    }
    printf ("WL: downloaded filename:'%s'\n", zipFileName);
    curl_easy_cleanup(curlPtr);
    fclose(filePtr);
+   chdir(cfgPath); // back to config path to let find assets files
 
    return 0;
 } // downloadGame()
@@ -1336,6 +1372,7 @@ int InitGame(int hv) {
    }
 
    // try to open .bin file
+   chdir(savPath); // go to save path to let read zip/tap/tzx files
    fp = fopen(GameFileName, "rb");
    if (!fp) {
       fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", GameFileName);
@@ -1347,55 +1384,65 @@ int InitGame(int hv) {
          fp = fopen(TzxFileName, "rb");
          if (!fp) {
             fprintf(stderr, "WL: WARN 'InitGame': Can't open game file '%s'\n", TzxFileName);
+            chdir(cfgPath); // back to config path to let find assets files
             return 1;
          }
          fseek(fp, 0, SEEK_END);
          FileLength = ftell(fp);
-         if  (FileLength == TzxLength) {
+         if (FileLength == TzxLength) {
             fseek(fp, TzxStart, SEEK_SET);
             BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
             fclose(fp);
             if (BytesRead == GameLength) {
                printf("WL: Tape file:'%s' read successfully\n", TzxFileName);
+               chdir(cfgPath); // back to config path to let find assets files
                return 0;
             } else {
                fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", TzxFileName, TzxLength, BytesRead, GameLength);
+               chdir(cfgPath); // back to config path to let find assets files
                return -1;
             }
          }
+         chdir(cfgPath); // back to config path to let find assets files
          return -1;
       }
       fseek(fp, 0, SEEK_END);
       FileLength = ftell(fp);
-      if  (FileLength == TapLength) {
+      if (FileLength == TapLength) {
          fseek(fp, TapStart, SEEK_SET);
          BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
          fclose(fp);
          if (BytesRead == GameLength) {
             printf("WL: Tape file:'%s' read successfully\n", TapFileName);
+            chdir(cfgPath); // back to config path to let find assets files
             return 0;
          } else {
             fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", TapFileName, TapLength, BytesRead, GameLength);
+            chdir(cfgPath); // back to config path to let find assets files
             return -1;
          }
       }
+      chdir(cfgPath); // back to config path to let find assets files
       return -1;
    }
    fseek(fp, 0, SEEK_END);
    FileLength = ftell(fp);
-   if  (FileLength == GameLength) {
+   if (FileLength == GameLength) {
       fseek(fp, 0, SEEK_SET);
       if (WL_DEBUG) printf("WL: Reading game file '%s' with %i byte ... \n", GameFileName, FileLength);
       BytesRead = fread(ZXmem + GameStartAddress, 1, GameLength, fp);
       fclose(fp);
       if (BytesRead == GameLength) {
          printf("WL: Code file:'%s' read successfully\n", GameFileName);
+         chdir(cfgPath); // back to config path to let find assets files
          return 0;
       } else {
          fprintf(stderr, "WL ERROR: File:'%s' len:%u read:%u expected:%u Bytes\n", GameFileName, GameLength, BytesRead, GameLength);
+         chdir(cfgPath); // back to config path to let find assets files
          return -1;
       }
    }
+   chdir(cfgPath); // back to config path to let find assets files
    return -1;
 } // InitGame()
 
@@ -1495,7 +1542,7 @@ int InitSpectrum(void) {
 int InitGraphicsSystem(uint32_t WinMode) {
    SDL_Surface* sfcPtr;
 
-   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+   if (SDL_Init(0) < 0) { // SDL_INIT_VIDEO
       fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
       return 1;
    }
@@ -1527,7 +1574,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
       }
    }
 
-   // Creating a Renderer (window, driver index, flags: HW accelerated + vsync)
+   // Creating a Renderer (window, driver index, flags: SW|HW accelerated|vsync)
    renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
    if (renPtr == NULL){
       fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
@@ -1553,7 +1600,6 @@ int InitGraphicsSystem(uint32_t WinMode) {
    } else {
       SDL_SetWindowSize(winPtr, MAINWINWIDTH, MAPWINPOSY);
       SDL_RenderSetLogicalSize(renPtr, MAINWINWIDTH, MAPWINPOSY);
-      
       SDL_SetWindowSize(MapWinPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
       SDL_RenderSetLogicalSize(MapRenPtr, MAPWINWIDTHND, MAPWINHEIGHTND);
       SDL_SetRenderDrawColor(MapRenPtr, 0, 0, 0, 0); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
@@ -1563,6 +1609,19 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
    SDL_SetRenderDrawColor(renPtr, components(SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
    SDL_RenderClear(renPtr); // clear renderer with CYAN background
+   SDL_Delay(delay); // to avoid flickering
+
+#if 0
+SDL_ShowWindow(winPtr);
+if (dockMap==false) SDL_ShowWindow(MapWinPtr);
+SDL_RaiseWindow(winPtr); // focus to main win
+SDL_RenderPresent(renPtr);
+if (dockMap==false) SDL_RenderPresent(MapRenPtr);
+SDL_Delay(delay); // to avoid flickering
+SDL_Delay(4000);
+//SDL_Quit();
+//exit(1);
+#endif
 
    CharSet.Bitmap = malloc(SDLTWE_CHARSETLENGTH);
    if (!(CharSet.Bitmap)) {
@@ -1882,29 +1941,63 @@ void helpLine() {
 
 
 /****************************************************************************\
-* change current working directory to WL binary path                         *
+* create directory to save/load WLS files                                    *
 *                                                                            *
 \****************************************************************************/
-void chDirBin(char* argList) {
-   char* cwdPath;
-   char absPath[PATH_MAX];
-   cwdPath=malloc(PATH_MAX);
-   cwdPath=getcwd(cwdPath, PATH_MAX);
-   //printf("cwdPath='%s'\n", cwdPath);
-   realpath(argList, absPath);
-   //printf("realpath()='%s'\n", absPath);
-   int len=strlen(absPath);
+void mkWlsDir() {
+   chdir(savPath); // go to save path where can write files
+#ifndef _WIN32 // all but Windows
+   mode_t mode=S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH; // 0755
+   int ret=mkdir("wls", mode);
+#else // MinGW/Windows
+   int ret=mkdir("wls");
+#endif
+   //printf("WL: ret:%d returned by 'mkdir wls'\n", ret);
+   if(ret && errno != EEXIST) {
+      fprintf(stderr, "WL: ERROR trying to create 'wls' directory\n");
+      exit(-1);
+   }
+   //if(ret!=0) fprintf(stderr, "WL: 'wls' directory already exist, continue\n");
+   chdir(cfgPath); // back to config path to let find assets files
+   return;
+} // mkWlsDir()
+
+
+/****************************************************************************\
+* from current working directory evaluate Config/Save files path             *
+*                                                                            *
+\****************************************************************************/
+void readDirs(char* arg0) {
+   realpath(arg0, savPath);
+   //printf("realpath(arg0)='%s'\n", savPath);
+   int len=strlen(savPath);
    for (int l=len; l>0; l--) {
-      if (absPath[l]=='/' || absPath[l]=='\\') {
-         absPath[l]='\0';
+      if (savPath[l]=='/' || savPath[l]=='\\') {
+         savPath[l]='\0';
          break;
       }
    }
-   //printf("absPath()='%s'\n", absPath);
-   chdir(absPath);
-   free(cwdPath);
+   //printf("savPath   ='%s'\n", savPath);
+   char* appDirPtr;
+   appDirPtr=getenv("APPDIR"); // to support Linux AppImage
+   //printf("$APPDIR   ='%s'\n", appDirPtr);
+   if (appDirPtr==NULL) {
+      //printf("not AppImage\n");
+      strcpy(binPath, savPath);
+   } else { // support for Linux AppImage
+      //printf("is AppImage\n");
+      strcpy(binPath, appDirPtr);
+      strcat(binPath, "/usr/bin");
+   }
+   strcpy(cfgPath, binPath); // as now RO config path = bin path
+   strcpy(wlsPath, savPath); // as now RO config path = bin path
+   strcat(wlsPath, "/wls");
+   //printf("binPath='%s'\n", binPath); // AppImage can exec  binPath
+   //printf("cfgPath='%s'\n", cfgPath); // AppImage can read  cfgPath
+   //printf("savPath='%s'\n", savPath); // AppImage can write savPath
+   //printf("wlsPath='%s'\n", wlsPath); // AppImage can write wlsPath
    return;
-} // chDirBin()
+} // readDirs()
 
 
 /****************************************************************************\
@@ -1922,9 +2015,9 @@ int main(int argc, char *argv[]) {
    byte b;
    FILE *f;
    uint32_t WinMode = 0; // window mode (vs. full screen);
-   int MaxSpeed   = 0;
-   uint32_t msTimer = 0;
-   int32_t DeltaT  = 0;
+   int MaxSpeed = 0;
+   uint32_t msTimer = 0; // time/tickstamp of prev loop
+   int32_t DeltaT = 0;   // time spent in the loop
    int FrameCount = 0;
 
    static byte ObjectsPerRoom[ROOMS_NROF_MAX]; // 0x50=80
@@ -1967,7 +2060,9 @@ int main(int argc, char *argv[]) {
 
    if (HV == -1) HV = V12; // default to V12
 
-   chDirBin(argv[0]); // go to binary path to let find assets files
+   readDirs(argv[0]); // this is OK for Linux(AppImage too), Win, macOS
+   mkWlsDir(); // create WLS directory
+   chdir(cfgPath); // go to config path to let find assets files
    readCfg(); // read configuration parameters
 
    if (InitGraphicsSystem(WinMode)) {
@@ -2017,11 +2112,21 @@ int main(int argc, char *argv[]) {
 #ifndef NODL
 initdone:
 #endif
-   printf("WL: init done, starting ...\n");
    // game loaded, so can show (empty) windows
+   printf("WL: init done, starting GUI ...\n");
    SDL_ShowWindow(winPtr);
    if (dockMap==false) SDL_ShowWindow(MapWinPtr);
    SDL_RaiseWindow(winPtr); // focus to main win
+   SDL_Delay(delay); // to avoid flickering
+
+#if 0
+SDL_Delay(1000);
+SDL_RenderPresent(renPtr);
+if (dockMap==false) SDL_RenderPresent(MapRenPtr);
+//SDL_Delay(1000);
+//SDL_Quit();
+//exit(1);
+#endif
 
    /*** start to draw on the empty renderer ***/
    SDLTWE_DrawTextWindowFrame(&LogWin , 4, BORDERGRAY);
@@ -2068,23 +2173,29 @@ initdone:
    SDLTWE_PrintCharTextWindow(&LogWin, '\f', &CharSet, SC_BLACK, SC_WHITE); // clear LOG
    // ^^^^^^^^^^^^^ call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent() only for scrool
 
-   RunMainLoop = 1;
+#if 0
+SDL_Log("out\n");
+SDL_Delay(4000);
+#endif
+
+while(SDL_PollEvent(&event)) {} // discard prev queue
 
    /****************************** MAIN LOOP ******************************/
+   RunMainLoop = 1;
    while (RunMainLoop) {
 
       // we run the main loop with FPS Hz
-      DeltaT = SDL_GetTicks() - msTimer;  // on my Intel Core2 Duo E6850@3GHz ca. 5 ms
-      //SDL_Log("FrameCount:%02u DeltaT:%d", FrameCount, DeltaT);
+      DeltaT = SDL_GetTicks() - msTimer;  // on Intel Core2 Duo E6850@3GHz about 5 ms
+      //SDL_Log("FrameCount:%02u DeltaT:%d msTimer:%u", FrameCount, DeltaT, msTimer);
       if (DeltaT < DELAY_MS) {
          if (!MaxSpeed)
             SDL_Delay(DELAY_MS - DeltaT); // wait to finish the 40 ms
          else
             SDL_Delay(1); // try to avoid flicker
-      }
-      msTimer = SDL_GetTicks();
-      //SDL_Log("msTimer:%u", msTimer);
+      } // else DeltaT = DELAY_MS;
+      msTimer = SDL_GetTicks(); // start stopwatch
       FrameCount++;
+      //SDL_Log("FrameCount:%02u DeltaT:%02d msTimer:%u", FrameCount, DeltaT, msTimer);
 
       #if CPUEMUL == eZ80
          ExecZ80 (&z80, TSTATES_PER_LOOP); // execute for about 140 kperiods
@@ -2110,63 +2221,79 @@ initdone:
          PrepareAnimalPositions(&MapWin, &CharSet, ObjectsPerRoom);
          DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
       }
+#if 0
+SDL_Log("post map\n");
+SDL_Delay(2000);
+#endif
       SDL_RenderPresent(renPtr); // update screen
-      if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
-      //SDL_Delay(delay); // ms
+#if 0
+SDL_Log("between\n");
+SDL_Delay(2000);
+#endif
+      //if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
+      SDL_Delay(delay); // ms
 
-      while (SDL_PollEvent(&event)!=0) {
+      while (SDL_PollEvent(&event)!=0) { // poll until all events are handled
+#if 0
+SDL_Log("here\n");
+#endif
 
          switch (event.type) {
-            case SDL_QUIT:
+         case SDL_QUIT:
+            RunMainLoop = 0;
+            //SDL_Log("SDL_QUIT");
+            break;
+         case SDL_WINDOWEVENT: // to catch close when dockMap=false;
+            //SDL_Log("SDL_WINDOWEVENT");
+            if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
+               //SDL_Log("Window %d closed", event.window.windowID);
                RunMainLoop = 0;
-               //SDL_Log("SDL_QUIT");
-               break;
-            case SDL_WINDOWEVENT: // to catch close when dockMap=false;
-               //SDL_Log("SDL_WINDOWEVENT");
-               if (event.window.event==SDL_WINDOWEVENT_CLOSE) {
-                  //SDL_Log("Window %d closed", event.window.windowID);
+            }
+            break;
+         case SDL_KEYDOWN:
+            //printf("key down\n");
+            CurrentPressedKey = event.key.keysym.sym;
+            CurrentPressedMod = event.key.keysym.mod;
+            if (CurrentPressedKey == SDLK_BACKSPACE)
+               CurrentPressedKey = SDLK_0; // '0' used as backspace
+            if (CurrentPressedMod&KMOD_CAPS || CurrentPressedMod&KMOD_SHIFT) { // capital
+               if (CurrentPressedKey == SDLK_q) // 'Q' quit
                   RunMainLoop = 0;
+               if (CurrentPressedKey == SDLK_s) { // 'S' save
+                  SaveGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
+                  CurrentPressedKey = 0;
                }
-               break;
-            case SDL_KEYDOWN:
-               //printf("key down\n");
-               CurrentPressedKey = event.key.keysym.sym;
-               CurrentPressedMod = event.key.keysym.mod;
-               if (CurrentPressedKey == SDLK_BACKSPACE)
-                  CurrentPressedKey = SDLK_0; // '0' used as backspace
-               if (CurrentPressedMod&KMOD_CAPS || CurrentPressedMod&KMOD_SHIFT) { // capital
-                  if (CurrentPressedKey == SDLK_q) // 'Q' quit
-                     RunMainLoop = 0;
-                  if (CurrentPressedKey == SDLK_s) { // 'S' save
-                     SaveGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
-                     CurrentPressedKey = 0;
-                  }
-                  if (CurrentPressedKey == SDLK_l) { // 'L' load
-                     LoadGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
-                     CurrentPressedKey = 0;
-                  }
-                  if (CurrentPressedKey == SDLK_h) { // 'H' help
-                     Help(&HelpWin, &CharSet);
-                     CurrentPressedKey = 0;
-                  }
-                  if (CurrentPressedKey == SDLK_i) { // 'I' info
-                     Info(&HelpWin, &CharSet);
-                     CurrentPressedKey = 0;
-                  }
-                  if (CurrentPressedKey == SDLK_g) { // 'G' goRoom
-                     Go(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
-                     CurrentPressedKey = 0;
-                  }
+               if (CurrentPressedKey == SDLK_l) { // 'L' load
+                  LoadGame(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
+                  CurrentPressedKey = 0;
                }
-               while(SDL_PollEvent(&event)) {} // discard keys queue
-               break;
-            case SDL_KEYUP:
-               //printf("key up\n");
-               CurrentPressedKey = 0;
-               break;
+               if (CurrentPressedKey == SDLK_h) { // 'H' help
+                  Help(&HelpWin, &CharSet);
+                  CurrentPressedKey = 0;
+               }
+               if (CurrentPressedKey == SDLK_i) { // 'I' info
+                  Info(&HelpWin, &CharSet);
+                  CurrentPressedKey = 0;
+               }
+               if (CurrentPressedKey == SDLK_g) { // 'G' goRoom
+                  Go(&HelpWin, &CharSet, HV, SC_BRGREEN, SC_BRBLACK);
+                  CurrentPressedKey = 0;
+               }
+            }
+            while(SDL_PollEvent(&event)) {} // discard (keys) queue
+            break;
+         case SDL_KEYUP:
+            //printf("key up\n");
+            CurrentPressedKey = 0;
+            break;
          } // switch
 
       } // poll event
+
+#if 0
+//printf("\n");
+//if (FrameCount == 1) { SDL_Delay(4000); RunMainLoop = 0; }
+#endif
 
    } // while (RunMainLoop)
 

@@ -52,10 +52,10 @@ ifeq ($(CPUEMUL),ez80emu)
 endif
 BUILD?=release
 ifeq ($(BUILD),debug)
-   COPT=-O1 -g -fsanitize=address
+   COPT=-O1 -g -fsanitize=address -fno-omit-frame-pointer
    LOPT=-fsanitize=address
 else
-   OPTS=-O3
+   COPT=-O3
 endif
 
 CC = gcc
@@ -125,6 +125,6 @@ force: clean bin
 	rm -f *.o
 
 pkg:
-	@WLpkg $(PKG)
+	@WLpkg.sh $(PKG) $(BIT)
 
 rel: force pkg

@@ -25,10 +25,12 @@
 
 PKG = LIN64
 CPU = $(shell uname -m)
-BIT = 64
+BIT = $(shell getconf LONG_BIT)
 ifeq ($(CPU),i686)
    PKG = LIN32
-   BIT = 32
+endif
+ifeq ($(CPU),armv7l)
+   PKG = LIN32
 endif
 OS = $(shell uname -o)
 
@@ -65,7 +67,10 @@ ifeq ($(BUILD),debug)
    COPT=-O1 -g -fsanitize=address
    LOPT=-fsanitize=address
 else
-   OPTS=-O3
+   COPT=-O3
+endif
+ifeq ($(CPU),armv7l)   # Raspberry Pi @32bit
+   COPT += -mfpu=neon
 endif
 
 CC = gcc
@@ -137,6 +142,6 @@ force: clean bin
 	rm -f *.o
 
 pkg:
-	@WLpkg $(PKG)
+	@WLpkg.sh $(PKG) $(BIT)
 
 rel: force pkg

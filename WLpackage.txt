@@ -1,4 +1,4 @@
-Files packaged with Wilderland Version 2.10 - 20230125
+Files packaged with Wilderland Version 2.10 - 20231203
 ------------------------------------------------------
 CharSetSpectrum8x8.bin        Binary: Spectrum character set
 Changelog.txt                 TXT: Versions history
@@ -16,12 +16,12 @@ MakefileG32                   TXT: Makefile to build for Win32 on Win using GNU 
 MakefileM64                   TXT: Makefile to cross-build for Win64 on Linux using GNU toolchain (MXE)
 MakefileM32                   TXT: Makefile to cross-build for Win32 on Linux using GNU toolchain (MXE)
 MakefileO64                   TXT: Makefile to cross-build for macOS64 on Linux using CLang/LLVM (OSXCROSS)
-WLpkg                         TXT: script to generate a WL Lin/MinGW/MXE/Osx package
-WLrel                         TXT: script to generate all the WL release files (all platforms)
+WLpkg.sh                      TXT: script to generate a WL Lin/MinGW/MXE/Osx package
+WLrel.sh                      TXT: script to generate all the WL release files (all platforms)
 dict_v12.txt                  TXT: list of words
 rooms_v12.txt                 TXT: list of rooms
 SDL*.dll                      x64 Binary: Win64 dynamic library for SDLv2.0 and deps
-WLpackage.txt                 TXT: package file list
+WLpackage.txt                 TXT: this package file list
 WLconfig.txt                  TXT: file with configurations and error messages
 WL.ppj                        TXT: Pelles C Project files
 WL                            x64 Binary: Linux64 executable built with GCC
@@ -37,6 +37,8 @@ WL.ppx                        XML: IDE/Widgets settings???
 WL.tag                        SQLite: ???
 Wilderland.ico                ICO: 128x128x16 icon file for Windows
 Wilderland.icns               ICNS: 32x32-1024x1024x32bit icon file for macOS
+Wilderland.png                Icon file for Linux
+Wilderland.desktop            Desktop file for Linux
 GlobalVars.h                  C header: -
 MapCoordinates.h              C header: -
 SDLTWE.h                      C header: < SDL/SDL.h

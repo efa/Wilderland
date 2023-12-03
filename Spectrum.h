@@ -6,7 +6,7 @@
 *                                                                            *
 * (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20230125                                                         *
+* V 2.10b - 20231203                                                         *
 *                                                                            *
 *  Spectrum.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *

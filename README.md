@@ -15,7 +15,6 @@
 
 CONTENT
 =======
-
 * (0) Legal Info
 * (1) Introduction
 * (2) Game Versions
@@ -29,7 +28,6 @@ CONTENT
 
 (0) - Legal Info
 ================
-
 WILDERLAND is (c) 2012 by CH, Copyright 2019-2023 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the authors
@@ -59,7 +57,6 @@ YOU ARE NOT ALLOWED TO DISTRIBUTE 'WILDERLAND' TOGETHER WITH HOBBIT BINARIES!
 
 (1) - Introduction
 ==================
-
 WILDERLAND (WL) allows you to see what's REALLY going on in this wonderful
 world created by Veronika Megler and Philip Mitchell in 1982 at Melbourne
 House. It runs the original game code in a rudimentary Spectrum emulator,
@@ -95,7 +92,6 @@ The following game versions are supported in WL:
 
 (3) - Installing WL
 ===================
-
 (3.1) - Windows
 
 Just unzip all files to a directory. The package includes the source files
@@ -120,6 +116,7 @@ bit is also available. The package includes source files and compiled versions:
 * 'WLmxe32.exe' Win32 binary cross-built with MXE.static [4] link on Linux64
 * 'WLpc.exe'    Win32 binary built with Pelles C/LCC on Win32
 * 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
+* 'Wilderland_Linux_x86_64_64bit.AppImage' 
 
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
 can be installed opening it and dragging to Applications.
@@ -161,10 +158,10 @@ $ make CPUEMUL=eZ80                     # to use 'Z80'    emulator
 
 To create the distribution packages:
 ```
-$ make rel  # to generate the release package
-$ WLpkg PKG # to package the built files
-            # PKG can be LIN32,LIN64,MGW32,MGW64,MXE32,MXE64,OSX64
-$ WLrel     # to generate the release packages for all target platforms
+$ make rel     # to generate the release package
+$ WLpkg.sh PKG # to package the built files
+               # PKG can be LIN32,LIN64,MGW32,MGW64,MXE32,MXE64,OSX64
+$ WLrel.sh     # to generate the release packages for all target platforms
 ```
 
 
@@ -172,8 +169,12 @@ $ WLrel     # to generate the release packages for all target platforms
 (4) - Obtaining the game files
 ==============================
 The actual game files (ZX Spectrum binaries) you need to run WL are NOT
-included in the WL download package for copyright reasons. You may get
-them from various abandonware websites like 'World of Spectrum' [2].
+included in the WL download package for copyright reasons.
+Current Wilderland look for a local Hobbit binary, if cannot find it, will
+try to download from the web address configured in WLconfig.txt
+
+Optionally you may get them from various abandonware websites like
+'World of Spectrum' [2].
 I hereby explicitly prohibit the distribution of 'Wilderland' together with
 the Hobbit binaries!
 
@@ -352,4 +353,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.10b - 20230125
+README.txt Version 2.10b - 20231203
