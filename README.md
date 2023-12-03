@@ -130,15 +130,13 @@ Changelog.txt
 
 To build sources on Linux, install dependencies with:
 
-```$ sudo apt install build-essential libsdl2-dev libsdl2-image-dev
-$ sudo apt install libcurl4 libzip4```
+```$ sudo apt install build-essential libsdl2-image-dev libcurl4 libzip4```
 
 then just run ```make```.
 
 To buid @32bit on 64 bit Linux use ```make -f Makefile32```, this require:
 
-```$ sudo apt install build-essential libsdl2-dev:i386 libsdl2-image-dev:i386
-$ sudo apt install libcurl4:i386 libzip4:i386```
+```$ sudo apt install build-essential libsdl2-image-dev:i386 libcurl4:i386 libzip4:i386```
 
 On Windows you can build a native Win version using MinGW/MSYS2 [3]:
 
