@@ -57,6 +57,9 @@
 #ifdef _WIN32
    #define realpath(N,R) _fullpath((R),(N),PATH_MAX)
 #endif
+#ifndef SDL_HINT_VIDEODRIVER // support for SDL < 2.0.22
+   #define SDL_HINT_VIDEODRIVER "SDL_VIDEO_DRIVER"
+#endif
 
 #define MAXNAMELEN 100
 

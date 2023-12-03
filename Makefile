@@ -26,10 +26,7 @@
 PKG = LIN64
 CPU = $(shell uname -m)
 BIT = $(shell getconf LONG_BIT)
-ifeq ($(CPU),i686)
-   PKG = LIN32
-endif
-ifeq ($(CPU),armv7l)
+ifeq ($(CPU),$(filter $(CPU),i686 armv7l))
    PKG = LIN32
 endif
 OS = $(shell uname -o)
