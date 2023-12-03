@@ -35,6 +35,13 @@ Modification to 'z80emu':
 - fix z80emu.h enum for Z80_STATE's status to support Z80_CATCH_*
 - documented I/O with 16 bit port address for z80emu
 
+Note: .tgz packages require to install dependencies libs. On Debian12 the command is:
+$ sudo apt install libsdl2-image-2.0-0 libcurl4 libzip4
+Note: the package WL2.10b_Lin32_armv7l.tgz is for Raspberry Pi 3B+ @ 32bit, is built with -mfpu=neon optimization and so is not compatible with Raspberry Pi 1 and 2
+Note: the package WL2.10b_Lin64_aarch64.tgz is for Raspberry Pi 3B+ @ 64bit. Both packages for Raspberry Pi work only locally like Windows version, so do not work remotely via X protocol/SSH tunnels.
+Note: the package WL2.10b_Linux_riscv64_64bit.tgz for StarFive VisionFive2
+RISC-V @ 64bit work via x11 but is really slow as the GPU support for RISC-V is
+in development
 Note: the package WL2.10b_Z80_WinMxe32.7z is generated linked with Z80 CPU emulator, this is for compatibility with old WL1.x snapshot files, but those snapshots won't work with 64 bit binaries, and are incompatible with current default binary and snapshots, generated with z80emu CPU emulator of all other packages
 
 2.09 - 20220907

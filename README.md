@@ -108,15 +108,16 @@ based on Marat Fayzullin's work from 2007 (fms.komkon.org) under Windows XP.
 In 2019 Valerio Messina (efa AT iol DOT it) from Italy ported WL to Linux.
 The files are available on the Wilderland homepage, too. A binary for macOS 64
 bit is also available. The package includes source files and compiled versions:
-* 'WL'          Linux64 binary built with GCC 10.2.1 on Linux64
-* 'WL32'        Linux32 binary built with GCC 10.2.1 on Linux64
+* 'WL'          Linux64 binary built with GCC 12.2.0 on Linux64
+* 'WL32'        Linux32 binary built with GCC 12.2.0 on Linux64
 * 'WLmgw.exe'   Win64 binary built with MinGW/MSYS2 [3] on Win64
 * 'WLmgw32.exe' Win32 binary built with MinGW/MSYS2 [3] on Win64
 * 'WLmxe.exe'   Win64 binary cross-built with MXE.static [4] link on Linux64
 * 'WLmxe32.exe' Win32 binary cross-built with MXE.static [4] link on Linux64
 * 'WLpc.exe'    Win32 binary built with Pelles C/LCC on Win32
 * 'WLosx'       macOS64 binary cross-built with OSXcross/CLang/LLVM [5] on Linux
-* 'Wilderland_Linux_x86_64_64bit.AppImage' 
+* 'Wilderland2.10b.dmg' macOS64 standard package
+* 'Wilderland_Linux_x86_64_64bit.AppImage' Linux64 portable package
 
 Just unzip all files to a directory. On macOS the standard Wilderland.dmg file
 can be installed opening it and dragging to Applications.
@@ -128,12 +129,14 @@ Changelog.txt
 To build sources on Linux, install dependencies with:
 
 ```$ sudo apt install build-essential libsdl2-dev libsdl2-image-dev```
+```$ sudo apt install libcurl4 libzip4```
 
 then just run ```make```.
 
 To buid @32bit on 64 bit Linux use ```make -f Makefile32```, this require:
 
 ```$ sudo apt install build-essential libsdl2-dev:i386 libsdl2-image-dev:i386```
+```$ sudo apt install libcurl4:i386 libzip4:i386```
 
 On Windows you can build a native Win version using MinGW/MSYS2 [3]:
 
