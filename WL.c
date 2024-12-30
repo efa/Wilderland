@@ -5,7 +5,7 @@
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
 * (c) 2012-2019 by CH, Contact: wilderland@aon.at                            *
-* Copyright 2019-2023 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2024 Valerio Messina efa@iol.it                             *
 *                                                                            *
 * Simple Direct media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
 * Z80 emulator based on Marat Fayzullin's work from 2007 (fms.komkon.org)    *
@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.10b - 20231203                                                         *
+* V 2.10 - 20241230                                                          *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -760,7 +760,7 @@ void GetHexByte(byte* b, struct TextWindowStruct* TW, struct CharSetStruct* CS, 
    SDL_Event event;
    int nibble_count = 0;
 
-   *b = 0;
+   *b = 0; // returned value
 
    while (1) {
       if (SDL_PollEvent(&event)) {
@@ -781,13 +781,14 @@ void GetHexByte(byte* b, struct TextWindowStruct* TW, struct CharSetStruct* CS, 
                   s |= 0x20;
                   *b <<= 4;
                   *b += (s - 'a' + 0x0a);
+                  s += 'A' - 'a'; // to upper case
                   nibble_count++;
                   SDLTWE_PrintCharTextWindow(TW, s, CS, ink, paper);
                   ShowTextWindow(TW);
                   break;
                }
                if (s == SDLK_BACKSPACE) {
-                  printf("backspace\n");
+                  //printf("backspace\n");
                   if (nibble_count>0) {
                      *b >>= 4;
                      nibble_count--;
@@ -852,7 +853,10 @@ void Go(struct TextWindowStruct* TW, struct CharSetStruct* CS, int hv, color_t i
       }
    }
 
-   SDLTWE_PrintString(TW, ". OK, you are now in this room.\n", CS, ink, paper);
+   SDLTWE_PrintString(TW, ". OK, you are now in room: 0x", CS, ink, paper);
+   char rnStr[4];
+   sprintf(rnStr, "%02X\n", rn);
+   SDLTWE_PrintString(TW, rnStr, CS, ink, paper);
    ShowTextWindow(TW);
 } // Go()
 
@@ -1145,7 +1149,7 @@ int missGame() {
       SDL_Quit();
       return 1;
    }
-   SDL_SetRenderDrawColor(dlgRenPtr, components(SDL_ALPHA_OPAQUE<<24|SC_BRWHITE)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+   SDL_SetRenderDrawColor(dlgRenPtr, components((unsigned)SDL_ALPHA_OPAQUE<<24|SC_BRWHITE)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
    SDL_RenderClear(dlgRenPtr);
    struct TextWindowStruct dlgTxt; // dialog text window descriptor
    dlgTxt.texPtr = SDL_CreateTexture(dlgRenPtr, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, DIALOGWIDTH-DIALOGBORDER, DIALOGHEIGHT);
@@ -1578,7 +1582,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
 
    // Creating a Renderer (window, driver index, flags: SW|HW accelerated|vsync)
-   renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+   renPtr = SDL_CreateRenderer(winPtr, -1, 0); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
    if (renPtr == NULL){
       fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
       SDL_DestroyWindow(winPtr);
@@ -1587,7 +1591,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
    MapRenPtr = renPtr;
    if (dockMap==false) {
-      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, 0); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
       if (MapRenPtr == NULL){
          fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
          SDL_DestroyWindow(MapWinPtr);
@@ -1610,7 +1614,7 @@ int InitGraphicsSystem(uint32_t WinMode) {
       //SDL_RenderPresent(MapRenPtr); // show BLACK background
       //SDL_Delay(delay); // ms
    }
-   SDL_SetRenderDrawColor(renPtr, components(SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+   SDL_SetRenderDrawColor(renPtr, components((unsigned)SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
    SDL_RenderClear(renPtr); // clear renderer with CYAN background
    SDL_Delay(delay); // to avoid flickering
 
@@ -1993,7 +1997,7 @@ void readDirs(char* arg0) {
       strcat(binPath, "/usr/bin");
    }
    strcpy(cfgPath, binPath); // as now RO config path = bin path
-   strcpy(wlsPath, savPath); // as now RO config path = bin path
+   strcpy(wlsPath, savPath); // as now RW WLS path = Save path
    strcat(wlsPath, "/wls");
    //printf("binPath='%s'\n", binPath); // AppImage can exec  binPath
    //printf("cfgPath='%s'\n", cfgPath); // AppImage can read  cfgPath
@@ -2051,7 +2055,9 @@ int main(int argc, char *argv[]) {
          { NoScanLines = 1; fl = 1; }
       if (!strcmp(argv[i], "-seedrnd") || !strcmp(argv[i], "-SEEDRND"))
          { SeedRND = 1; fl = 1; }
-      if (!strcmp(argv[i], "-help") || !strcmp(argv[i], "-HELP")) {
+      if (!strcmp(argv[i], "-help") || !strcmp(argv[i], "-HELP") ||
+          !strcmp(argv[i], "--help") || !strcmp(argv[i], "--HELP") ||
+          !strcmp(argv[i], "-h") || !strcmp(argv[i], "-H")) {
          helpLine();
          exit (0);
       }
@@ -2233,7 +2239,7 @@ SDL_Delay(2000);
 SDL_Log("between\n");
 SDL_Delay(2000);
 #endif
-      //if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
+      if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
       SDL_Delay(delay); // ms
 
       while (SDL_PollEvent(&event)!=0) { // poll until all events are handled

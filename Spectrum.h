@@ -4,9 +4,9 @@
 *                                                                            *
 * Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20231203                                                         *
+* V 2.10 - 20241230                                                          *
 *                                                                            *
 *  Spectrum.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -119,14 +119,14 @@ typedef enum SHR { // keyboard half rows
 typedef enum SHRP { // keyboard half row port addresses
    //   43210 : keys bit number
    //  108421 : keys bit weight hex
-   SHRP_VCXZc = 0xFE,
+   SHRP_VCXZc = 0xFE, // c=CAPS SHIFT
    SHRP_GFDSA = 0xFD,
    SHRP_TREWQ = 0xFB,
    SHRP_54321 = 0xF7,
    SHRP_67890 = 0xEF,
    SHRP_YUIOP = 0xDF,
-   SHRP_HJKLe = 0xBF,
-   SHRP_BNMas = 0x7F
+   SHRP_HJKLe = 0xBF, // e=ENTER
+   SHRP_BNMas = 0x7F  // a=SYMBOL SHIFT, s=SPACE
 } SHRP;
 
 // Prototypes

@@ -1,6 +1,6 @@
-# Makefile: Copyright 2019-2023 Valerio Messina efa@iol.it
+# MakefileG64: Copyright 2019-2024 Valerio Messina efa@iol.it
 #
-# Makefile is part of Wilderland - A Hobbit Environment
+# MakefileG64 is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
@@ -21,7 +21,7 @@
 # To use z80emu emulator build with: $ make CPUEMUL=ez80emu   OR   $ make
 # To use Z80    emulator build with: $ make CPUEMUL=eZ80
 # To avoid include and link libcurl and libzip build with: $ make NODL=1
-# To build for debug use: $ make BUILD=debug
+# To build for debug use: $ make debug
 
 PKG = MGW64
 CPU = $(shell uname -m)
@@ -42,23 +42,16 @@ ifeq ($(CPUEMUL),ez80emu)
    CPUIF=z80emu/z80emu.h
    CPUOBJ=z80emu.o
 endif
-BUILD?=release
-ifeq ($(BUILD),debug)
-   COPT=-O1 -g -fsanitize=address -fno-omit-frame-pointer
-   LOPT=-fsanitize=address
-else
-   COPT=-O3
-endif
 
-CC = gcc
+CC ?= gcc
 LD = $(CC)
 STRIP = strip
-CFLAGS = -std=c99 -Wall $(COPT) -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+CFLAGS = -std=c99 -Wall -O3 -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
 SDLCFLAGS = $(shell pkg-config --cflags SDL2_image)
 ifeq ($(OS),Msys) # on MINGW + SDL force console for debug
    SDLMINGWLDFLAGS = -mconsole
 endif
-LDFLAGS = $(shell pkg-config --libs SDL2_image) $(SDLMINGWLDFLAGS) $(LOPT)
+LDFLAGS = $(shell pkg-config --libs SDL2_image) $(SDLMINGWLDFLAGS)
 ifndef NODL
    CFLAGS += $(shell pkg-config --cflags libcurl)
    CFLAGS += $(shell pkg-config --cflags libzip)
@@ -67,6 +60,7 @@ ifndef NODL
 else
    CFLAGS += -DNODL
 endif
+
 FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)

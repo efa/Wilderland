@@ -4,9 +4,9 @@
 *                                                                            *
 * Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20231203                                                         *
+* V 2.10 - 20241230                                                          *
 *                                                                            *
 *  Spectrum.c is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -220,7 +220,7 @@ byte InZ80(word P) {
             CurrentPressedKey!=SDLK_LALT   && CurrentPressedKey!=SDLK_RALT   && \
             CurrentPressedKey!=SDLK_CAPSLOCK && \
             CurrentPressedKey!=232 && CurrentPressedKey!=242 && CurrentPressedKey!=249) \
-               printf("P==0x00FE CurrentPressedKey:%d\n", CurrentPressedKey);
+               printf("P==0x00FE CurrentPressedKey:0x%08X unhandled\n", CurrentPressedKey);
          switch (CurrentPressedKey) {
             case 'a':
             case 'q':

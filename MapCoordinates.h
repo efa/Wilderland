@@ -4,9 +4,9 @@
 *                                                                            *
 * Map Coordinates for WL - Wilderland V 10                                   *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20231203                                                         *
+* V 2.10 - 20241230                                                          *
 *                                                                            *
 *  MapCoordinates.h is part of Wilderland - A Hobbit Environment             *
 *  Wilderland is free software: you can redistribute it and/or modify        *

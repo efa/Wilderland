@@ -4,9 +4,9 @@
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2023 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
 *                                                                            *
-* V 2.10b - 20231203                                                         *
+* V 2.10 - 20241230                                                          *
 *                                                                            *
 *  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -98,6 +98,30 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct* TW, struct CharSetS
 
 
 /****************************************************************************\
+* SDLTWE_PrintRawCharTextWindow                                              *
+*                                                                            *
+* Prints a raw character to a text window.                                   *
+\****************************************************************************/
+void SDLTWE_PrintRawCharTextWindow(struct TextWindowStruct* TW, char a, struct CharSetStruct* CS, color_t ink, color_t paper) {
+   int i, j;
+   int CharIndex;
+   byte mask;
+   uint32_t pixm;
+   for (i = 0; i <= 7; i++) { // print char from CharSetStruct
+      mask = 0x80;
+      CharIndex = (a - CS->CharMin) * CS->Height;
+      for (j = 0; j <= 7; j++, mask >>= 1) {
+         if (CS->Bitmap[CharIndex + i] & mask)
+            pixm = ink;
+         else
+            pixm = paper;
+         TW->framePtr[(TW->CurrentPrintPosY + i) * TW->rect.w + TW->CurrentPrintPosX + j] = pixm;
+      }
+   }
+} // SDLTWE_PrintRawCharTextWindow()
+
+
+/****************************************************************************\
 * SDLTWE_PrintCharTextWindow                                                 *
 *                                                                            *
 * Prints a character to a text window. The print coordinates are updated and *
@@ -108,10 +132,7 @@ void SDLTWE_VerticalScrollUpOneLine(struct TextWindowStruct* TW, struct CharSetS
 *   \b    (used as backspace)                                                *
 \****************************************************************************/
 void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct CharSetStruct* CS, color_t ink, color_t paper) {
-   int i, j;
-   int CharIndex;
-   byte mask;
-   uint32_t pixm;
+   int i;
    byte bs=0;
 
    if (WL_DEBUG) {
@@ -148,6 +169,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct Char
 
    if (a == '\b') { // Backspace 0x08
       if (TW->CurrentPrintPosX > firstEditable*CS->Width) {
+         SDLTWE_PrintRawCharTextWindow(TW, ' ', CS, ink, paper); // del char to the right
          TW->CurrentPrintPosX -= CS->Width;
          a=0; // will be substituted
       } else return;
@@ -162,17 +184,7 @@ void SDLTWE_PrintCharTextWindow(struct TextWindowStruct* TW, char a, struct Char
          return;
    }
 
-   for (i = 0; i <= 7; i++) { // print char from CharSetStruct
-      mask = 0x80;
-      CharIndex = (a - CS->CharMin) * CS->Height;
-      for (j = 0; j <= 7; j++, mask >>= 1) {
-         if (CS->Bitmap[CharIndex + i] & mask)
-            pixm = ink;
-         else
-            pixm = paper;
-         TW->framePtr[(TW->CurrentPrintPosY + i) * TW->rect.w + TW->CurrentPrintPosX + j] = pixm;
-      }
-   }
+   SDLTWE_PrintRawCharTextWindow(TW, a, CS, ink, paper);
 
    if (bs==0) TW->CurrentPrintPosX += CS->Width;
    if (TW->CurrentPrintPosX >= TW->rect.w) {

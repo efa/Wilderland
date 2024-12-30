@@ -4,7 +4,7 @@
                              A Hobbit Environment
 
                             (c) 2012-2019 by CH
-                    (c) Copyright 2019-2023 Valerio Messina
+                    (c) Copyright 2019-2024 Valerio Messina
 
                             wilderland AT aonDOTat
                                efa AT iol DOT it
@@ -28,7 +28,7 @@ CONTENT
 
 (0) - Legal Info
 ================
-WILDERLAND is (c) 2012 by CH, Copyright 2019-2023 Valerio Messina.
+WILDERLAND is (c) 2012 by CH, Copyright 2019-2024 Valerio Messina.
    You may use/modify it for private use; if you
    want to distribute a program based on WILDERLAND, please contact the authors
    at wilderland AT aonDOTat, efa AT iol DOT it
@@ -130,13 +130,13 @@ Changelog.txt
 
 To build sources on Linux, install dependencies with:
 
-```$ sudo apt install build-essential libsdl2-image-dev libcurl4 libzip4```
+```$ sudo apt install build-essential libsdl2-image-dev libcurl4-openssl-dev libzip-dev```
 
 then just run ```make```.
 
 To buid @32bit on 64 bit Linux use ```make -f Makefile32```, this require:
 
-```$ sudo apt install build-essential libsdl2-image-dev:i386 libcurl4:i386 libzip4:i386```
+```$ sudo apt install build-essential libsdl2-image-dev:i386 libcurl4-openssl-dev:i386 libzip-dev:i386```
 
 On Windows you can build a native Win version using MinGW/MSYS2 [3]:
 
@@ -356,4 +356,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.10b - 20231203
+README.txt Version 2.10 - 20241230

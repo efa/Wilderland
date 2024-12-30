@@ -1,4 +1,4 @@
-Files packaged with Wilderland Version 2.10 - 20231203
+Files packaged with Wilderland Version 2.10 - 20241230
 ------------------------------------------------------
 CharSetSpectrum8x8.bin        Binary: Spectrum character set
 Changelog.txt                 TXT: Versions history

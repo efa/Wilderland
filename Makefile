@@ -1,4 +1,4 @@
-# Makefile: Copyright 2019-2023 Valerio Messina efa@iol.it
+# Makefile: Copyright 2019-2024 Valerio Messina efa@iol.it
 #
 # Makefile is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
@@ -21,7 +21,8 @@
 # To use z80emu emulator build with: $ make CPUEMUL=ez80emu   OR   $ make
 # To use Z80    emulator build with: $ make CPUEMUL=eZ80
 # To avoid include and link libcurl and libzip build with: $ make NODL=1
-# To build for debug use: $ make BUILD=debug
+# To build for debug and sanitize=address use: $ make debug
+# Note: sanitize can be also $ make SAN=thread|memory debug
 
 PKG = LIN64
 CPU = $(shell uname -m)
@@ -59,23 +60,16 @@ ifeq ($(CPUEMUL),ez80emu)
    CPUIF=z80emu/z80emu.h
    CPUOBJ=z80emu.o
 endif
-BUILD?=release
-ifeq ($(BUILD),debug)
-   COPT=-O1 -g -fsanitize=address
-   LOPT=-fsanitize=address
-else
-   COPT=-O3
-endif
-ifeq ($(CPU),armv7l)   # Raspberry Pi @32bit
-   COPT += -mfpu=neon
-endif
 
-CC = gcc
+CC ?= gcc
 LD = $(CC)
 STRIP = strip
-CFLAGS = -std=c99 -Wall $(COPT) -D__USE_MINGW_ANSI_STDIO=1 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+CFLAGS = -std=c99 -Wall -O3 -DCPUEMUL=$(CPUEMUL) -fomit-frame-pointer
+ifeq ($(CPU),armv7l)   # Raspberry Pi @32bit
+   CFLAGS += -mfpu=neon
+endif
 SDLCFLAGS = $(shell pkg-config $(PARS) --cflags SDL2_image)
-LDFLAGS = $(shell pkg-config $(PARS) --libs SDL2_image) $(LOPT)
+LDFLAGS = $(shell pkg-config $(PARS) --libs SDL2_image)
 ifndef NODL
    CFLAGS += $(shell pkg-config --cflags libcurl)
    CFLAGS += $(shell pkg-config --cflags libzip)
@@ -85,6 +79,17 @@ ifndef NODL
 else
    CFLAGS += -DNODL
 endif
+
+SAN?=address
+CFLAGS_address = -fsanitize=address -fno-omit-frame-pointer
+LDFLAGS_address = -fsanitize=address
+CFLAGS_thread = -fsanitize=thread
+LDFLAGS_thread = -fsanitize=thread
+ifeq ($(CC),clang)
+  CFLAGS_memory = -fsanitize=memory -fPIE -fno-omit-frame-pointer -fsanitize-memory-track-origins
+  LDFLAGS_memory = -fsanitize=memory -fPIE -pie
+endif
+
 FILE = WL
 SOURCE = $(FILE)
 TARGET = $(FILE)
@@ -131,6 +136,8 @@ cleanbin:
 
 clean: cleanobj cleanbin
 
+debug: CFLAGS += -O2 -g -fsanitize=undefined $(CFLAGS_$(SAN))
+debug: LDFLAGS += -fsanitize=undefined $(LDFLAGS_$(SAN))
 debug: clean all cleanobj
 
 bin: all cleanobj strip
