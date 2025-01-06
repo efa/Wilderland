@@ -1,22 +1,24 @@
-2.10 - 20241230
+2.10 - 20250106
 ---------------
 Changed:
 - show help with --help and -h too
 - Load/Save/Go input backspace without multiple ?
 - Go to room in capital HEX
+- added US:- or IT:' to input double quote "
 - better sanitize in Makefiles
 Bugfix:
 - with option -MAP missed NPC positions on map
+- portability ifdef for SDL_CreateRenderer(,,SDL_RendererFlags) on macOS and Raspberry
 - auto select rendering to work with Raspberry Pi via X protocol/SSH tunnels
+- reduced frequency of CYAN border drawn as BLACK, maybe related to 2 SDL_RenderPresent() call below SDL_Delay(20) ms
+- accept 'n' as first key to skip graphics with v1.2
 
 **Note:** .tgz packages require to install dependencies libs. On Debian12 the command is:
-'$ sudo apt install libsdl2-image-2.0-0 libcurl4 libzip4'
-**Note:** the package **WL2.10b_Lin32_armv7l.tgz** is for Raspberry Pi 3B+ @ 32bit, is built with -mfpu=neon optimization and so is not compatible with Raspberry Pi 1 and 2
-**Note:** the package **WL2.10b_Lin64_aarch64.tgz** is for Raspberry Pi 3B+ @ 64bit. Both packages for Raspberry Pi work locally and remotely via X protocol/SSH tunnels.
-**Note:** the package **WL2.10b_Linux_riscv64_64bit.tgz** for StarFive VisionFive2
-RISC-V @ 64bit work via x11 but is really slow as the GPU support for RISC-V is
-in development
-**Note:** the package **WL2.10b_Z80_WinMxe32.7z** is generated linked with **Z80** CPU emulator, this is for compatibility with old WL1.x snapshot files, but those snapshots won't work with 64 bit binaries, and are incompatible with current default binary and snapshots, generated with **z80emu** CPU emulator of all other packages
+       '$ sudo apt install libsdl2-image-2.0-0 libcurl4 libzip4'
+**Note:** the package **WL2.10_Linux32_armv7l.tgz** is for Raspberry Pi 3B+ @ 32bit, is built with -mfpu=neon optimization and so is not compatible with Raspberry Pi 1 and 2
+**Note:** the package **WL2.10_Linux64_aarch64.tgz** is for Raspberry Pi 3B+ @ 64bit. Both packages for Raspberry Pi work locally and remotely via X protocol/SSH tunnels.
+**Note:** the package **WL2.10_Linux_riscv64_64bit.tgz** for StarFive VisionFive2 RISC-V @ 64bit work via x11 but is really slow as the GPU support for RISC-V is in development
+**Note:** the package **WL2.10_Z80_WinMxe32.7z** is generated linked with **Z80** CPU emulator, this is for compatibility with old WL1.x snapshot files, but those snapshots won't work with 64 bit binaries, and are incompatible with current default binary and snapshots, generated with **z80emu** CPU emulator of all other packages
 
 2.10b - 20231203
 ----------------

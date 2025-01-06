@@ -5,7 +5,7 @@
 * Wilderland - A Hobbit Environment                                          *
 *                                                                            *
 * (c) 2012-2019 by CH, Contact: wilderland@aon.at                            *
-* Copyright 2019-2024 Valerio Messina efa@iol.it                             *
+* Copyright 2019-2025 Valerio Messina efa@iol.it                             *
 *                                                                            *
 * Simple Direct media Layer library (SDL 2.0) from www.libsdl.org (LGPL)     *
 * Z80 emulator based on Marat Fayzullin's work from 2007 (fms.komkon.org)    *
@@ -15,7 +15,7 @@
 * Compiler: Pelles C for Windows 6.5.80 with 'Microsoft Extensions' enabled, *
 *           GCC, MinGW/Msys2, Clang/LLVM                                     *
 *                                                                            *
-* V 2.10 - 20241230                                                          *
+* V 2.10 - 20250106                                                          *
 *                                                                            *
 *  WL.c is part of Wilderland - A Hobbit Environment                         *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -1581,8 +1581,17 @@ int InitGraphicsSystem(uint32_t WinMode) {
       }
    }
 
-   // Creating a Renderer (window, driver index, flags: SW|HW accelerated|vsync)
+   // Creating a Renderer (window, driver index, flags: SW|HW accelerated|vsync|texture)
+#ifdef __MACH__ // macOS
+   renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+#endif
+#if defined __gnu_linux__ || defined _WIN32
+#if defined __arm__ || defined __thumb__ || defined __aarch64__   // should be for Linux/Raspberry Pi only
    renPtr = SDL_CreateRenderer(winPtr, -1, 0); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+#else // Linux and Windows
+   renPtr = SDL_CreateRenderer(winPtr, -1, SDL_RENDERER_ACCELERATED); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+#endif
+#endif
    if (renPtr == NULL){
       fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
       SDL_DestroyWindow(winPtr);
@@ -1591,7 +1600,16 @@ int InitGraphicsSystem(uint32_t WinMode) {
    }
    MapRenPtr = renPtr;
    if (dockMap==false) {
-      MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, 0); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+      #ifdef __MACH__
+         MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_SOFTWARE); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+      #endif
+      #if defined __gnu_linux__ || defined _WIN32
+      #if defined __arm__ || defined __thumb__ || defined __aarch64__   // should be for Linux only
+         MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, 0); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+      #else
+         MapRenPtr = SDL_CreateRenderer(MapWinPtr, -1, SDL_RENDERER_ACCELERATED); // SDL_RENDERER_SOFTWARE|SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_TARGETTEXTURE
+      #endif
+      #endif
       if (MapRenPtr == NULL){
          fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
          SDL_DestroyWindow(MapWinPtr);
@@ -1614,7 +1632,9 @@ int InitGraphicsSystem(uint32_t WinMode) {
       //SDL_RenderPresent(MapRenPtr); // show BLACK background
       //SDL_Delay(delay); // ms
    }
-   SDL_SetRenderDrawColor(renPtr, components((unsigned)SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Alpha=full:SDL_ALPHA_OPAQUE, Black:R,G,B=0
+
+   //SDL_SetRenderDrawColor(renPtr, components((uint32_t)SDL_ALPHA_OPAQUE<<24|SC_CYAN)); // Black:R,G,B=0, Alpha=full:SDL_ALPHA_OPAQUE
+   SDL_SetRenderDrawColor(renPtr, 0x00, 0xC0, 0xC0, 0x00); // Black:R,G,B=0, Alpha=full:SDL_ALPHA_OPAQUE
    SDL_RenderClear(renPtr); // clear renderer with CYAN background
    SDL_Delay(delay); // to avoid flickering
 
@@ -2168,34 +2188,45 @@ if (dockMap==false) SDL_RenderPresent(MapRenPtr);
    fclose(f);
    SDL_UpdateTexture(GameWin.texPtr, NULL, GameWin.framePtr, GameWin.pitch); // copy Frame to Texture
    SDL_RenderCopy(renPtr, GameWin.texPtr, NULL, &GameWin.rect); // GAMEWIN texture to all Renderer
+   SDL_Delay(delay); // to avoid cyan border sometime missing
 
    PrepareGameMap(); // empty map
    DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
+   SDL_Delay(delay); // to avoid cyan border sometime missing
 
    // show windows contents
    SDL_RenderPresent(renPtr);
    if (dockMap==false) SDL_RenderPresent(MapRenPtr);
-   SDL_Delay(delay); // to avoid flickering
+   SDL_Delay(delay); // to avoid cyan border sometime missing
 
    Help(&HelpWin, &CharSet); // call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent()
+   SDL_Delay(delay); // to avoid cyan border sometime missing
 
    SDLTWE_PrintCharTextWindow(&LogWin, '\f', &CharSet, SC_BLACK, SC_WHITE); // clear LOG
-   // ^^^^^^^^^^^^^ call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent() only for scrool
+   // ^^^^^^^^^^^^^ call SDL_UpdateTexture(),SDL_RenderCopy(),SDL_RenderPresent() only for scrool effect
+   SDL_Delay(delay); // to avoid cyan border sometime missing
 
 #if 0
-SDL_Log("out\n");
-SDL_Delay(4000);
+//SDL_Log("out\n");
+SDL_Delay(100);
+exit(0);
 #endif
 
-while(SDL_PollEvent(&event)) {} // discard prev queue
+   while(SDL_PollEvent(&event)) {} // discard prev queue
 
    /****************************** MAIN LOOP ******************************/
    RunMainLoop = 1;
    while (RunMainLoop) {
 
       // we run the main loop with FPS Hz
-      DeltaT = SDL_GetTicks() - msTimer;  // on Intel Core2 Duo E6850@3GHz about 5 ms
+      DeltaT = SDL_GetTicks() - msTimer;  // time spent on one loop. On Intel Core2 Duo E6850@3GHz about 5 ms
       //SDL_Log("FrameCount:%02u DeltaT:%d msTimer:%u", FrameCount, DeltaT, msTimer);
+#if 0
+      if (MaxSpeed) {
+         if (FrameCount == FPS-1) SDL_Log("spent time DeltaT:%d/40 ms running at %.2fx original speed", DeltaT, (float)DELAY_MS/DeltaT); // DELAY_MS = 40 ms/frame
+      } else
+         SDL_Log("spent time DeltaT:%d/40 ms", DeltaT); // DELAY_MS = 40 ms/frame
+#endif
       if (DeltaT < DELAY_MS) {
          if (!MaxSpeed)
             SDL_Delay(DELAY_MS - DeltaT); // wait to finish the 40 ms
@@ -2222,7 +2253,7 @@ while(SDL_PollEvent(&event)) {} // discard prev queue
       SDL_RenderCopy(renPtr, ObjWin.texPtr, NULL, &ObjWin.rect); // OBJWIN texture to all Renderer
       dp=1; // used to hack unknown property 04 and 06
 
-      if (FrameCount > FPS) { // update map only once every 25 frame
+      if (FrameCount >= FPS) { // update map only once every 25 frame
          FrameCount = 0;
          for (i = 0; i < ROOMS_NROF_MAX; i++) // 0x50=80
             ObjectsPerRoom[i] = 0;
@@ -2230,22 +2261,11 @@ while(SDL_PollEvent(&event)) {} // discard prev queue
          PrepareAnimalPositions(&MapWin, &CharSet, ObjectsPerRoom);
          DisplayGameMap(); // SDL_UpdateTexture() and SDL_RenderCopy()
       }
-#if 0
-SDL_Log("post map\n");
-SDL_Delay(2000);
-#endif
       SDL_RenderPresent(renPtr); // update screen
-#if 0
-SDL_Log("between\n");
-SDL_Delay(2000);
-#endif
       if (dockMap==false) SDL_RenderPresent(MapRenPtr); // update screen
       SDL_Delay(delay); // ms
 
       while (SDL_PollEvent(&event)!=0) { // poll until all events are handled
-#if 0
-SDL_Log("here\n");
-#endif
 
          switch (event.type) {
          case SDL_QUIT:
@@ -2263,6 +2283,7 @@ SDL_Log("here\n");
             //printf("key down\n");
             CurrentPressedKey = event.key.keysym.sym;
             CurrentPressedMod = event.key.keysym.mod;
+            //printf("key:%d mod:%d\n", CurrentPressedKey, CurrentPressedMod);
             if (CurrentPressedKey == SDLK_BACKSPACE)
                CurrentPressedKey = SDLK_0; // '0' used as backspace
             if (CurrentPressedMod&KMOD_CAPS || CurrentPressedMod&KMOD_SHIFT) { // capital
@@ -2292,17 +2313,12 @@ SDL_Log("here\n");
             while(SDL_PollEvent(&event)) {} // discard (keys) queue
             break;
          case SDL_KEYUP:
-            //printf("key up\n");
+            //printf("key up\n\n");
             CurrentPressedKey = 0;
             break;
          } // switch
 
       } // poll event
-
-#if 0
-//printf("\n");
-//if (FrameCount == 1) { SDL_Delay(4000); RunMainLoop = 0; }
-#endif
 
    } // while (RunMainLoop)
 

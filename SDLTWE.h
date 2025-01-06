@@ -4,9 +4,9 @@
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2025 Valerio Messina                   *
 *                                                                            *
-* V 2.10 - 20241230                                                          *
+* V 2.10 - 20250106                                                          *
 *                                                                            *
 *  SDLTWE.h is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -32,10 +32,10 @@
 
 
 // input as ARGB8888, generate comma separated RGBA components for SetRenderDrawColor:
-#define compA(color) ((color>>24)&0xFF)
-#define compR(color) ((color>>16)&0xFF)
-#define compG(color) ((color>>8)&0xFF)
-#define compB(color) ((color>>0)&0xFF)
+#define compA(color) ((((uint32_t)color)>>24)&0xFF) // need cast or return 00
+#define compR(color) ((((uint32_t)color)>>16)&0xFF)
+#define compG(color) ((((uint32_t)color)>> 8)&0xFF)
+#define compB(color) ((((uint32_t)color)>> 0)&0xFF)
 #define components(color) compR(color),compG(color),compB(color),compA(color)
 
 

@@ -4,9 +4,9 @@
 *                                                                            *
 * SDL Text Windows Engine                                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2025 Valerio Messina                   *
 *                                                                            *
-* V 2.10 - 20241230                                                          *
+* V 2.10 - 20250106                                                          *
 *                                                                            *
 *  SDLTWE.c is part of Wilderland - A Hobbit Environment                     *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -33,7 +33,7 @@
 #include "GlobalVars.h"
 
 /*** GLOBAL VARIABLES *******************************************************/
-int delay=20; // with SDL_RENDERER_ACCELERATED min 20 ms to avoid flickering
+int delay=22; // with SDL_RENDERER_ACCELERATED min 22 ms to avoid flickering
 byte firstEditable = 0; // column by SDLTWE_PrintCharTextWindow
 
 

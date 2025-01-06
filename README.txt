@@ -4,7 +4,7 @@
                              A Hobbit Environment
 
                             (c) 2012-2019 by CH
-                    (c) Copyright 2019-2024 Valerio Messina
+                    (c) Copyright 2019-2025 Valerio Messina
 
                             wilderland AT aonDOTat
                                efa AT iol DOT it
@@ -356,4 +356,4 @@ Attributes, each object has 8 binary attributes associated with it:
       but you can G-o where the space misses
 
 
-README.txt Version 2.10 - 20241230
+README.txt Version 2.10 - 20250106

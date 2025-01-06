@@ -1,5 +1,5 @@
 #!/bin/bash
-# WLpkg: Copyright 2019-2024 Valerio Messina efa@iol.it
+# WLpkg: Copyright 2019-2025 Valerio Messina efa@iol.it
 # WLpkg is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -1,4 +1,4 @@
-# Makefile: Copyright 2019-2024 Valerio Messina efa@iol.it
+# Makefile: Copyright 2019-2025 Valerio Messina efa@iol.it
 #
 # Makefile is part of Wilderland - A Hobbit Environment
 # Wilderland is free software: you can redistribute it and/or modify

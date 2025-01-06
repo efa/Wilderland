@@ -4,9 +4,9 @@
 *                                                                            *
 * Spectrum specific subroutines for the WL project                           *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2025 Valerio Messina                   *
 *                                                                            *
-* V 2.10 - 20241230                                                          *
+* V 2.10 - 20250106                                                          *
 *                                                                            *
 *  Spectrum.h is part of Wilderland - A Hobbit Environment                   *
 *  Wilderland is free software: you can redistribute it and/or modify        *
@@ -84,41 +84,28 @@ typedef uint32_t color_t;
 #define SL_48K             0x10000 // 65336
 
 // Spectrum Colors in ARGB888 format
-#define SC_BLACK          0x00000000ul
-#define SC_BLUE           0x000000C0ul
-#define SC_RED            0x00C00000ul
-#define SC_MAGENTA        0x00C000C0ul
-#define SC_GREEN          0x0000C000ul
-#define SC_CYAN           0x0000C0C0ul
-#define SC_YELLOW         0x00C0C000ul
-#define SC_WHITE          0x00C0C0C0ul
-#define SC_BRBLACK        0x00000000ul
-#define SC_BRBLUE         0x000000FFul
-#define SC_BRRED          0x00FF0000ul
-#define SC_BRMAGENTA      0x00FF00FFul
-#define SC_BRGREEN        0x0000FF00ul
-#define SC_BRCYAN         0x0000FFFFul
-#define SC_BRYELLOW       0x00FFFF00ul
-#define SC_BRWHITE        0x00FFFFFFul
+#define SC_BLACK          0x00000000u
+#define SC_BLUE           0x000000C0u
+#define SC_RED            0x00C00000u
+#define SC_MAGENTA        0x00C000C0u
+#define SC_GREEN          0x0000C000u
+#define SC_CYAN           0x0000C0C0u
+#define SC_YELLOW         0x00C0C000u
+#define SC_WHITE          0x00C0C0C0u
+#define SC_BRBLACK        0x00000000u
+#define SC_BRBLUE         0x000000FFu
+#define SC_BRRED          0x00FF0000u
+#define SC_BRMAGENTA      0x00FF00FFu
+#define SC_BRGREEN        0x0000FF00u
+#define SC_BRCYAN         0x0000FFFFu
+#define SC_BRYELLOW       0x00FFFF00u
+#define SC_BRWHITE        0x00FFFFFFu
 
 
 // Hardware stuff
-//#define NUMBER_OF_IN_READS   1
-#if 0
-typedef enum SHR { // keyboard half rows
-   SHR_cV = 0,
-   SHR_AG,
-   SHR_QT,
-   SHR_15,
-   SHR_06,
-   SHR_PY,
-   SHR_eH,
-   SHR_sB
-} SHR;
-#endif
 typedef enum SHRP { // keyboard half row port addresses
-   //   43210 : keys bit number
    //  108421 : keys bit weight hex
+   //   43210 : keys bit number
    SHRP_VCXZc = 0xFE, // c=CAPS SHIFT
    SHRP_GFDSA = 0xFD,
    SHRP_TREWQ = 0xFB,

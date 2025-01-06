@@ -4,9 +4,9 @@
 *                                                                            *
 * The global variables for the WL project                                    *
 *                                                                            *
-* (c) 2012-2019 by CH, Copyright 2019-2024 Valerio Messina                   *
+* (c) 2012-2019 by CH, Copyright 2019-2025 Valerio Messina                   *
 *                                                                            *
-* V 2.10 - 20241230                                                          *
+* V 2.10 - 20250106                                                          *
 *                                                                            *
 *  GlobalVars.h is part of Wilderland - A Hobbit Environment                 *
 *  Wilderland is free software: you can redistribute it and/or modify        *
